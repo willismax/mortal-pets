@@ -157,3 +157,9 @@ for t in range(0, TOTAL, TICK):
     frames.append(im.convert("RGB").quantize(colors=128, method=Image.Quantize.MEDIANCUT))
 frames[0].save(OUT / "update-0.4.0.gif", save_all=True, append_images=frames[1:], duration=TICK, loop=0, optimize=True)
 print("ok")
+
+# 給 Canva 等設計工具用的去背角色圖：每位角色的招牌姿勢，放大 10 倍
+(OUT / "sprites").mkdir(exist_ok=True)
+for cid, nm, r, c in LINEUP:
+    sprite(cid, r, c, 10).save(OUT / "sprites" / f"{cid}.png")
+print("ok sprites")
