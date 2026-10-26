@@ -113,3 +113,47 @@ for t in range(0, TOTAL, TICK):
     frames.append(im.convert("RGB").quantize(colors=128, method=Image.Quantize.MEDIANCUT))
 frames[0].save(OUT / "promo-moves.gif", save_all=True, append_images=frames[1:], duration=TICK, loop=0, optimize=True)
 print("ok")
+
+# 0.4.0 更新公告：新角色魏菊與番外大師兄
+def update_poster(name, version, cast, w=1080, h=1350):
+    im = backdrop(w, h); d = ImageDraw.Draw(im)
+    pad = int(w * .07)
+    d.text((pad, int(h * .06)), "新角色登場", font=font(96), fill=INK)
+    tw = d.textlength("新角色登場", font=font(96))
+    sx, sy = pad + tw + 24, int(h * .06) + 24
+    vw = d.textlength(version, font=font(34))
+    d.rectangle([sx, sy, sx + vw + 28, sy + 54], outline=SEAL, width=4)
+    d.text((sx + 14, sy + 6), version, font=font(34), fill=SEAL)
+    d.text((pad, int(h * .06) + 128), "活俠傳結緣寵物（Codex／Claude Code）", font=font(40), fill=SOFT)
+    slot = (w - 2 * pad) / len(cast)
+    y_base = int(h * .74)
+    for i, (cid, nm, sub, r, c) in enumerate(cast):
+        sp = sprite(cid, r, c, 11)
+        x = int(pad + slot * i + slot / 2 - sp.width / 2)
+        im.alpha_composite(sp, (x, y_base - sp.height))
+        center_text(d, pad + slot * i + slot / 2, y_base + 18, nm, 50, INK)
+        center_text(d, pad + slot * i + slot / 2, y_base + 82, sub, 30, SOFT)
+    foot = h - int(h * .11)
+    d.text((pad, foot), "willismax.github.io/mortal-pets", font=font(38), fill=SEAL)
+    d.text((pad, foot + 50), "非官方同人作品，像素圖與台詞皆為原創", font=font(26), fill=SOFT)
+    im.convert("RGB").save(OUT / name, quality=95)
+
+update_poster("update-0.4.0.png", "v0.4.0",
+              [("weiju", "魏菊", "玄功門掌門・捧手爐", 0, 0), ("tangbuyi", "大師兄", "番外・飛俠唐布衣", 7, 2)])
+
+UPD = [("weiju", "魏菊・害羞冒煙", "waving"), ("tangbuyi", "大師兄・彈金錢", "idle"), ("tangbuyi", "大師兄・連發金錢鏢", "running")]
+frames = []
+W2, H2 = CW * len(UPD), CH + 56
+sheets = {cid: sheet(cid) for cid, _, _ in UPD}
+for t in range(0, TOTAL, TICK):
+    im = Image.new("RGBA", (W2, H2), PAPER + (255,)); d = ImageDraw.Draw(im)
+    for i, (cid, label, st) in enumerate(UPD):
+        row, durs = ROWS[st]
+        tt, col = t % sum(durs), 0
+        while tt >= durs[col]:
+            tt -= durs[col]; col += 1
+        im.alpha_composite(sheets[cid].crop((col * CW, row * CH, (col + 1) * CW, (row + 1) * CH)), (i * CW, 0))
+        center_text(d, i * CW + CW / 2, CH + 8, label, 22, INK)
+    frames.append(im.convert("RGB").quantize(colors=128, method=Image.Quantize.MEDIANCUT))
+frames[0].save(OUT / "update-0.4.0.gif", save_all=True, append_images=frames[1:], duration=TICK, loop=0, optimize=True)
+print("ok")
