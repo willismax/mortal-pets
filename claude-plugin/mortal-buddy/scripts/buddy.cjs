@@ -277,7 +277,9 @@ function status() {
     const n = s.aff[c.id] || 0;
     const mark = c.id === s.current ? "▶" : " ";
     const who = c.fullName === c.name ? c.title : `${c.fullName}${M.sep}${c.title}`;
-    console.log(`${mark} ${c.name}${M.lp}${who}${M.rp} ${M.aff} ${n} ${hearts(n)} ${tierOf(n)}`);
+    const label = c.fullName.startsWith(c.name) && c.fullName !== c.name ? c.fullName : c.name;
+    const detail = label === c.name ? who : c.title;
+    console.log(`${mark} ${label}${M.lp}${detail}${M.rp} ${M.aff} ${n} ${hearts(n)} ${tierOf(n)}`);
   }
   console.log(M.reactions(!s.muted));
 }

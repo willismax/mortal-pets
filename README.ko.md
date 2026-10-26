@@ -18,6 +18,7 @@
 | `xiaoshimei` | 소사매(당묵령) | 당문 장문인의 외동딸. 방울 일곱 줄을 달고도 소리 하나 내지 않는, 숲속 작은 동물 같은 소녀. 종이접기를 좋아한다. |
 | `longxiang` | 용상 | 금향궁의 검객, '닭다리 여협'. 밝고 조금 엉뚱하다. |
 | `xiahoulan` | 하후란 | 탈백문의 '탈백유란'. 지우산을 든 차가운 젊은 사부. 말은 날카롭지만 제자를 끔찍이 챙긴다. |
+| `yeyunshang` | 엽운상 | '점창명주', 엽운주의 친여동생. 장난과 단것을 좋아하는 꼬마 악동. 한여름에도 담비 털옷을 벗지 않고, 반나절만 놀아도 열이 나서 쓰러진다. 대표 동작은 "에헤" 윙크, 뾰로통한 얼굴, 기도하는 손. |
 
 ## Claude Code
 
@@ -43,7 +44,7 @@
 
 | 명령어 | 설명 |
 | --- | --- |
-| `/mortal-buddy:pick xiaozhu` | 펫 바꾸기 (`xiaomei`, `xiaozhu`, `xiaoshimei`, `longxiang`, `xiahoulan`) |
+| `/mortal-buddy:pick xiaozhu` | 펫 바꾸기 (`xiaomei`, `xiaozhu`, `xiaoshimei`, `longxiang`, `xiahoulan`, `yeyunshang`) |
 | `/mortal-buddy:pet feed` | `pet` 쓰다듬기, `feed` 먹이기, `train` 수련(각 +1), `gift` 선물(+3). 같은 행동은 1분에 한 번만 오른다 |
 | `/mortal-buddy:talk` | 캐릭터가 질문합니다. `/mortal-buddy:talk 2`처럼 번호로 대답하면 호감도가 바뀝니다 |
 | `/mortal-buddy:roleplay 오늘 너무 피곤해` | 캐릭터 말투로 대답 (한국어로 말하면 한국어로 대답) |

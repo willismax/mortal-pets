@@ -18,6 +18,7 @@
 | `xiaoshimei` | 小師妹（唐默鈴） | 唐門掌門の一人娘。七つの鈴を身につけているのに音がしない、森の小動物のような少女。折り紙が好き。 |
 | `longxiang` | 龍湘 | 錦香宮の剣士で「鶏ももの女侠」。明るくてちょっと抜けている。 |
 | `xiahoulan` | 夏侯蘭 | 奪魄門の「奪魄幽蘭」。番傘を差したクールな若き師匠。口は悪いが面倒見がいい。 |
+| `yeyunshang` | 葉雲裳 | 「點蒼の明珠」、葉雲舟の妹。いたずら好きでお菓子が大好きな小悪魔。真夏でも毛皮の外套を手放さず、半日はしゃぐと熱を出して倒れてしまう。得意技は「えへへ」のウインク、ふくれっ面、お祈りポーズ。 |
 
 ## Claude Code
 
@@ -43,7 +44,7 @@
 
 | コマンド | 説明 |
 | --- | --- |
-| `/mortal-buddy:pick xiaozhu` | ペットを切り替え（`xiaomei`、`xiaozhu`、`xiaoshimei`、`longxiang`、`xiahoulan`） |
+| `/mortal-buddy:pick xiaozhu` | ペットを切り替え（`xiaomei`、`xiaozhu`、`xiaoshimei`、`longxiang`、`xiahoulan`、`yeyunshang`） |
 | `/mortal-buddy:pet feed` | `pet` なでる・`feed` ごはん・`train` 修行（各 +1）・`gift` 贈り物（+3）。同じ行動は 1 分に 1 回だけ加算 |
 | `/mortal-buddy:talk` | 彼女が質問してきます。`/mortal-buddy:talk 2` のように番号で答えると好感度が変わります |
 | `/mortal-buddy:roleplay 今日は疲れた` | キャラクターの口調で返事してもらう（日本語で話しかければ日本語で返事） |

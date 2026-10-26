@@ -375,6 +375,61 @@
             ]
           }
         ]
+      },
+
+      yeyunshang: {
+        name: "Ye Yunshang",
+        fullName: "Ye Yunshang",
+        title: "“the Pearl of Diancang”, Younger Sister of Ye Yunzhou",
+        tagline: "A mischievous little imp. Wrapped in a sable cloak even in high summer, she can't last half a day of mischief before a fever knocks her flat.",
+        profile: [
+          "A disciple of the Diancang Sect, known as “the Pearl of Diancang”, and Ye Yunzhou's younger sister.",
+          "Even at the height of summer, her sable cloak never leaves her. A pretty, playful prankster, yet she rarely makes it half a day before running a fever and collapsing.",
+          "Loves pranks, loves being spoiled, and is willful to boot. If she goes too far and makes someone cry, she secretly regrets it. Sweets are her absolute favorite.",
+          "She seems innocent, but she is actually quite wary of outsiders.",
+          "Dark brown hair parted in the middle, two small buns on top adorned with red flowers and red ribbons, and low twin tails draped over her chest. A coral cape with a white fur collar over a long pea-green skirt.",
+          "(Spoiler) The Ye family served the Yue Family Army for generations; when the court purged them, her parents were wrongfully killed. As a child, a single palm strike shattered her meridians, and only a Diancang master saved her life. Her internal injuries have never healed."
+        ],
+        lines: {
+          greet: ["Ehehe, caught you! You're playing with me today.", "Oh, you're here? ...It's not like I was waiting for you.", "Shh— my brother's not around. Let's sneak out!"],
+          idle: ["So hot... but I can't take off my sable cloak, or I'll catch a chill.", "Bored~ Let's play a game. Loser has to give me a piggyback ride.", "(sneakily sticks a note on your back) ...Nothing, nothing.", "My brother's practicing his sword again. Sooo boring."],
+          working: ["You do your writing, I'll eat my candied haws~", "I'll just watch. I definitely won't cause trouble. ...Probably.", "What's this? Can I eat it?"],
+          done: ["Ehehe! Good job. Here, have a candy as a reward.", "That fast? You're juuust a little better than my brother.", "If you're done, play with me! You promised!"],
+          failed: ["Hmph— (puffs up her cheeks) I didn't break it.", "*cough cough*... My head's so hot... I think the fever's back...", "S-sorry, okay...? I didn't mean to."],
+          waiting: ["(hands pressed together) Pleeease, just say yes!", "If you don't answer, I'll just keep staring at you.", "I'm counting to three. One, two... two and a half..."],
+          review: ["Hmm— (pouts) this part's weird.", "Gotcha! There's an opening right here!", "Let me see... I don't get it. But I think you're wrong."],
+          pet: ["Hehe... pat me again.", "D-don't mess up my hair!", "My brother never pats my head like this."],
+          feed: ["Is it sweet? It's sweet, right?", "Candied haws! You're the best!", "Medicine? I don't want medicine... unless it comes with a candy."],
+          train: ["C-can't walk anymore... carry me.", "I want to learn the sword too... but I get out of breath after two steps.", "Hmph, I'll just watch you train."],
+          gift: ["For me? Is it candy?", "So pretty! I'm hiding it so my brother can't see.", "...Thank you. (quietly) I'll keep it safe."],
+          night: ["...Hey, do you think I'll live to be really, really old?", "I'm actually really scared. Scared that one day I'll fall asleep and never wake up.", "When you're here, it doesn't feel so cold."]
+        },
+        talks: [
+          {
+            q: "Hey, wanna help me prank my brother?",
+            opts: [
+              { t: "Sure, count me in!", r: "Ehehe! I knew you were on my side!" },
+              { t: "That's not very nice...", r: "Hmph— what a scaredy-cat." },
+              { t: "I'm telling your brother.", r: "You wouldn't dare! ...If you do, I'll cry right in front of you." }
+            ]
+          },
+          {
+            q: "*cough cough*... I think I've got a fever again.",
+            opts: [
+              { t: "Lie down. I'll go brew some medicine.", r: "...Medicine's bitter. You have to stay with me till I finish it, okay?" },
+              { t: "That's what you get for running around.", r: "(pouts) ...I just wanted to run." },
+              { t: "Want a candy?", r: "Yes! ...I'm already half better." }
+            ]
+          },
+          {
+            q: "It's so hot out. Why do you keep staring at my sable cloak?",
+            opts: [
+              { t: "I don't want you catching a chill. Better keep it on.", r: "...W-why are you saying the same thing as my brother? (blushes)" },
+              { t: "It just looks really hot.", r: "Better to die of heat than catch a chill." },
+              { t: "It's so fluffy and cute.", r: "Ehehe, then you can touch it. Just once, okay?" }
+            ]
+          }
+        ]
       }
     }
   };
