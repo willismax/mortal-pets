@@ -1,6 +1,6 @@
 # 活俠傳結緣寵物（同人）
 
-把《活俠傳》的結緣角色做成 **Codex 寵物**和 **Claude Code 寵物**，並依角色個性寫了互動對話。第一批是崆峒四姝裡的小梅（虞小梅）和小竹（郁竹）。
+把《活俠傳》的結緣角色做成 **Codex 寵物**和 **Claude Code 寵物**，並依角色個性寫了互動對話。目前有小梅（虞小梅）、小竹（郁竹）、小師妹（唐默鈴）、龍湘、夏侯蘭五位。
 
 - 線上試玩：<https://willismax.github.io/demo/mortal-pets/>（直接開 `index.html` 也可以）
 - 非官方二創：角色設定整理自公開資料；像素圖、台詞都是原創，沒有使用遊戲素材或原文。
@@ -11,7 +11,7 @@
 mortal-pets/
 ├── index.html                    互動網頁：摸頭、餵食、練功、送禮、聊天、9 種動畫預覽
 ├── install.sh                    安裝 Codex 寵物／skill／通知，以及 Claude Code status line
-├── codex/pets/<id>/              Codex 寵物：xiaomei、xiaozhu、xiaozhu-battle（pet.json + spritesheet.webp）
+├── codex/pets/<id>/              Codex 寵物：xiaomei、xiaozhu、xiaozhu-battle、xiaoshimei、longxiang、xiahoulan
 ├── codex/qa/                     總覽圖與各狀態 GIF，方便檢查動畫
 ├── claude-plugin/mortal-buddy/   Claude Code 外掛
 │   ├── hooks/hooks.json          依工作狀態切換心情與台詞
@@ -29,7 +29,7 @@ mortal-pets/
 cd mortal-pets && ./install.sh codex
 ```
 
-會把三隻寵物（小梅、小竹、小竹・裂骨魔）複製到 `~/.codex/pets/`，角色卡複製到 `~/.codex/skills/`。接著到 Codex 的 Settings → Pets → Refresh，選「小梅」或「小竹」；對話中可用 `/pet` 叫出或收起寵物。
+會把六隻寵物（小梅、小竹、小竹・裂骨魔、小師妹、龍湘、夏侯蘭）複製到 `~/.codex/pets/`，角色卡複製到 `~/.codex/skills/`。接著到 Codex 的 Settings → Pets → Refresh 選一隻；對話中可用 `/pet` 叫出或收起寵物。
 
 想在每輪完成時收到角色的系統通知，在 `~/.codex/config.toml` 加上（安裝腳本會印出實際路徑）：
 
@@ -49,6 +49,21 @@ spritesheet 照 Codex 的固定格式：8 欄 × 9 列、每格 192×208、未�
 | 6 | waiting | 雙手背後、臉紅冒汗地斜眼看你 | 捧著木頭青蛙問你要不要 |
 | 7 | running（工作中） | 攪鍋煮菜、冒熱氣 | 掄錘打鐵、火星四濺，最後**用手套擦汗**大笑 |
 | 8 | review | 閉眼「哼」一聲，再瞇眼打量、指間閃過銀針 | 湊近瞇眼看齒輪 |
+
+小師妹、龍湘、夏侯蘭：
+
+| 列 | 狀態 | 小師妹 | 龍湘 | 夏侯蘭 |
+| --- | --- | --- | --- | --- |
+| 0 | idle | 雙手交握，安靜地眨眼 | 站著啃雞腿 | 抱胸、兩眼無神 |
+| 1–2 | running-right / left | 輕快小跑 | 大步跑 | 冷著臉走 |
+| 3 | waving | 小小地揮手、臉紅 | 舉著雞腿大力揮手 | 伸手示意「懶徒兒，跟我來」 |
+| 4 | jumping | 輕功一躍、張開雙臂 | 以雞腿為劍，躍起直刺 | 難得的驚訝、摀臉臉紅 |
+| 5 | failed | 迷路了：左看右看、冒汗、怕冷發抖 | 錢包又被偷了：摸腰、大哭 | 嘆氣扶額 |
+| 6 | waiting | 抬頭靜靜看著你 | 摸肚子、流口水 | 抱胸斜眼、不耐煩 |
+| 7 | running（工作中） | 摺紅色紙鶴 | 認真練劍 | 示範奪魄門掌法 |
+| 8 | review | 捧著紙鶴端詳 | 歪頭冒問號 | 托腮冷冷打量 |
+
+這三位的服色和髮型目前是依文字設定暫擬的（公開資料沒有描述）：小師妹是雙髻掛金鈴、淡紫衣裙；龍湘是白衣淡藍腰帶、長髮綁淡藍髮帶、左腰佩劍；夏侯蘭是深紫衣、長黑髮、紫色髮帶。有官方立繪後會再修正。
 
 修改造型後重新產生：
 
@@ -81,7 +96,7 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 
 | 指令 | 說明 |
 | --- | --- |
-| `/mortal-buddy:pick xiaozhu` | 換寵物（`xiaomei`／`xiaozhu`） |
+| `/mortal-buddy:pick xiaozhu` | 換寵物（`xiaomei`、`xiaozhu`、`xiaoshimei`、`longxiang`、`xiahoulan`） |
 | `/mortal-buddy:pet feed` | `pet` 摸頭、`feed` 餵食、`train` 練功（各 +1）、`gift` 送禮（+3），同一種互動一分鐘內只算一次 |
 | `/mortal-buddy:talk` | 她出題，用 `/mortal-buddy:talk 2` 回答，答案會加減好感 |
 | `/mortal-buddy:roleplay 今天好累` | 載入角色卡，讓她用自己的口吻回你 |
@@ -123,9 +138,37 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 
 另有戰鬥造型 **小竹・裂骨魔**（`codex/pets/xiaozhu-battle/`）：鐵網護甲；右手（畫面左邊）的前臂是一整塊機關板，頂端三隻爪子抓著刻紅紋的巨劍高舉過頭；左手（畫面右邊）拿虎頭盾。兩者在背後靠虎紋肩甲與背包相連，胸前沒有背帶。開心時巨劍舉更高，失敗時劍尖垂下。日常版開心時會像官方圖那樣一手握拳、一手高舉大鐵鎚大喊。兩種造型的小竹都是圓滾滾的身材（圓身體、粗手腳、圓臉頰）。網頁上可以切換兩種造型。
 
-### 其他結緣角色
+### 小師妹（唐默鈴）
 
-網頁上已預留小師妹、龍湘、夏侯蘭。新增角色的步驟：
+- 唐門掌門的獨生女，本作第一位女主角。母親早逝，幾乎是由趙活一手照顧長大。
+- 安靜靦腆、情感內斂，興趣是摺紙。
+- 練了「天地無聲勢」：身上戴著鈴鐺，走動卻從不發出聲響。
+- 輕功據說可排天下前五，卻常常認不得路；怕冷；對「吃飽」沒什麼概念。
+- 趙活每晚在她窗下說故事、唱山歌（小師妹之歌）哄她睡，她一直都知道。
+- 劇透：掌門曾把她許配給大師兄，大師兄死後三師兄又決定讓她遠嫁。
+
+設計對應：雙髻掛著不會響的金鈴；工作時摺紙鶴；開心時輕功一躍；失敗時迷路、怕冷發抖；說話短、常用「……」。
+
+### 龍湘
+
+- 錦香宮出身的白衣女俠，一代大俠之後，人稱「雞腿女俠」。高挑窈窕、英姿颯爽、劍術高超。
+- 坦率開朗、有點呆：收了劍就呆頭呆腦，烤雞不拔毛、錢包總被割，容易上當。
+- 家傳劍法從小以雞腿為劍練起，最愛餐餐有雞腿；對感情遲鈍，常以武會友。
+
+設計對應：白衣、左腰佩劍、手上總有雞腿；開心時拿雞腿當劍直刺；失敗是錢包又被偷；等待時摸肚子流口水。
+
+### 夏侯蘭
+
+- 崆峒派奪魄門掌門的嫡傳女弟子，「崆峒四姝」之一，江湖人稱「奪魄幽蘭」。
+- 容姿淒艷、武藝一流，曾是最有望成為第一掌派夫人的女弟子；如今是惡名昭彰的女魔頭，居於不見天日的奪魄林。
+- 平時一臉生無可戀、兩眼無神；對趙活嘴上尖酸刻薄，修練與照顧卻無微不至。她的路線裡才看得到驚訝、害羞的表情。
+- 劇透：本名夏侯梅，原為雪山派掌門之女；曾嫁給同門，卻遭夫婿背叛。
+
+設計對應：抱胸、無神的眼睛、紫色髮帶（劇情道具「夏侯蘭的髮帶」）；揮手是「懶徒兒，跟我來」；開心是難得的驚訝臉紅；台詞嘴硬心軟。
+
+### 新增角色
+
+步驟：
 
 1. 在 `tools/build_sprites.py` 的 `CHARACTERS` 加配色與特徵，在 `poses_for()` 設計各狀態動作。
 2. 在 `scripts/characters.js` 加角色資料、各心情台詞與聊天題目。
@@ -143,6 +186,11 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 - [Reko Wiki：活俠傳登場人物一覽](https://rekowiki.org/wiki/%E6%B4%BB%E4%BF%A0%E5%82%B3/%E7%99%BB%E5%A0%B4%E4%BA%BA%E7%89%A9%E4%B8%80%E8%A6%BD-Part1)
 - [巴哈姆特：為什麼小梅又瘋又色？](https://forum.gamer.com.tw/C.php?bsn=73317&snA=4436)、[梅竹線心得](https://forum.gamer.com.tw/C.php?bsn=73317&snA=4443)、[小竹路線討論串](https://forum.gamer.com.tw/C.php?bsn=73317&snA=4304)
 - [TWGameX：虞小梅線完整解析](https://twgamex.com/games/%e6%b4%bb%e4%bf%a0%e5%82%b3/888/)
+- [活俠傳日本語制作会：夏侯蘭角色介紹（X）](https://x.com/Mortal_jp/status/1971182910456959476)、[趙活角色介紹](https://x.com/Mortal_jp/status/1974444394955878833)
+- [LoM Wiki：唐默鈴](https://smilin.net/LoM-wiki/people/characters/girl0.html)、[夏侯蘭](https://smilin.net/LoM-wiki/people/characters/girl5.html)、[龍湘](https://smilin.net/LoM-wiki/people/characters/girl8.html)
+- [巴哈姆特：龍湘線含相關資訊統整](https://forum.gamer.com.tw/C.php?bsn=73317&snA=536)
+- [聯合新聞網：夏侯蘭支線更新](https://game.udn.com/game/story/122089/9823786)
+- [4Gamers：活俠傳女角人氣投票](https://www.4gamers.com.tw/news/detail/66059/legend-of-mortal-female-characters-popularity-charts)
 - Codex 寵物格式：[openai/skills hatch-pet](https://github.com/openai/skills/tree/main/skills/.curated/hatch-pet)（`references/animation-rows.md`）
 
 ## 版權

@@ -203,7 +203,8 @@ function status() {
   for (const c of Object.values(CHARS)) {
     const n = s.aff[c.id] || 0;
     const mark = c.id === s.current ? "▶" : " ";
-    console.log(`${mark} ${c.name}（${c.fullName}，${c.title}）好感 ${n} ${hearts(n)} ${tierOf(n)}`);
+    const who = c.fullName === c.name ? c.title : `${c.fullName}，${c.title}`;
+    console.log(`${mark} ${c.name}（${who}）好感 ${n} ${hearts(n)} ${tierOf(n)}`);
   }
   console.log(`反應訊息：${s.muted ? "關閉" : "開啟"}`);
 }
