@@ -58,24 +58,30 @@ CHARACTERS = {
     "xiaozhu": {
         "displayName": "小竹",
         "description": "崆峒鐵拳門的郁竹，人稱「裂骨魔」：身形嬌小、力大無窮、熬夜打鐵做玩具。眼神兇是因為近視又沒睡。（活俠傳同人）",
-        "hair": (70, 46, 36, 255),
-        "hair_hi": (112, 78, 58, 255),
-        "skin": (255, 222, 196, 255),
-        "skin_sh": (236, 184, 156, 255),
-        "eye": (40, 36, 30, 255),
-        "cloth": (64, 110, 74, 255),
-        "cloth_sh": (44, 80, 54, 255),
-        "accent": (140, 92, 58, 255),  # 皮圍裙
-        "accent_sh": (104, 66, 40, 255),
-        "sleeve": (64, 110, 74, 255),
-        "shoe": (58, 42, 34, 255),
-        "leg": (60, 52, 46, 255),  # 綁腿
-        "blush": (250, 150, 140, 255),
-        "band": (120, 186, 96, 255),  # 竹青色頭帶
-        "bags": (196, 160, 178, 255),  # 黑眼圈
+        # 依官方立繪：卡其頭巾與領巾、淺綠短袖上衣、長工作手套、卡其長圍裙
+        "hair": (44, 38, 36, 255),
+        "hair_hi": (84, 74, 68, 255),
+        "skin": (255, 226, 204, 255),
+        "skin_sh": (238, 190, 166, 255),
+        "eye": (138, 88, 42, 255),  # 琥珀色眼睛
+        "lid": (52, 40, 36, 255),
+        "cloth": (150, 186, 86, 255),
+        "cloth_sh": (110, 144, 60, 255),
+        "accent": (206, 188, 150, 255),  # 卡其長圍裙
+        "accent_sh": (164, 144, 106, 255),
+        "sleeve": (150, 186, 86, 255),
+        "glove": (196, 176, 136, 255),  # 長工作手套
+        "kerchief": (184, 168, 132, 255),  # 頭巾、領巾
+        "kerchief_sh": (146, 130, 98, 255),
+        "belt": (74, 64, 56, 255),
+        "shoe": (74, 58, 46, 255),
+        "leg": (110, 144, 60, 255),
+        "blush": (246, 160, 150, 255),
+        "bags": (214, 176, 180, 255),  # 黑眼圈
+        "blush_always": True,
         "long_hair": False,
         "height_drop": 2,
-        "default_eyes": "squint",
+        "default_eyes": "drowsy",
     },
 }
 
@@ -142,6 +148,8 @@ def draw_frame(cid, pose):
     face_r = pose["facing"] == "right"
     look = 2 if face_r else 0
     eyes = pose["eyes"] or c["default_eyes"]
+    if eyes == "squint" and c["default_eyes"] == "drowsy":
+        eyes = "drowsy"  # 小竹的「兇」其實是睏
 
     hx = 24 + dx + pose["tilt"]  # 頭中心
     hy = 19 + dy
@@ -160,6 +168,10 @@ def draw_frame(cid, pose):
         p.rect(hx - 2, hy - 15, hx - 1, hy - 14, c["hair_hi"])
     else:
         p.ell(hx - 12, hy - 12, hx + 12, hy + 9, c["hair"], OUTLINE)
+        # 腦後隨手紮起的一小撮頭髮
+        tx = hx + 9 - (5 if face_r else 0) + sway
+        p.ell(tx, hy - 1, tx + 5, hy + 5, c["hair"], OUTLINE)
+        p.line([(tx + 3, hy + 5), (tx + 4, hy + 9)], c["hair"], 2)
 
     # 腿
     legs = pose["legs"]
@@ -206,11 +218,14 @@ def draw_frame(cid, pose):
         p.px(30 + dx, 40 + dy, c["accent"])  # 腰帶垂穗
         p.px(30 + dx, 41 + dy, c["accent"])
     else:
-        # 皮圍裙與腰帶
-        p.poly([(21 + dx, 36 + dy), (27 + dx, 36 + dy), (29 + dx + flare, 44 + dy), (19 + dx + flare, 44 + dy)],
-               c["accent"], c["accent_sh"])
-        p.rect(20 + dx, 38 + dy, 28 + dx, 38 + dy, c["accent_sh"])
-        p.px(24 + dx, 41 + dy, c["accent_sh"])
+        # 圍裙吊帶、深色腰帶、卡其長圍裙
+        p.line([(21 + dx, 33 + dy), (21 + dx, 38 + dy)], c["accent"])
+        p.line([(27 + dx, 33 + dy), (27 + dx, 38 + dy)], c["accent"])
+        p.poly([(20 + dx, 39 + dy), (28 + dx, 39 + dy), (30 + dx + flare, 45 + dy), (18 + dx + flare, 45 + dy)],
+               c["accent"], OUTLINE)
+        p.line([(22 + dx, 41 + dy), (21 + dx + flare, 44 + dy)], c["accent_sh"])
+        p.line([(26 + dx, 41 + dy), (27 + dx + flare, 44 + dy)], c["accent_sh"])
+        p.rect(19 + dx, 38 + dy, 29 + dx, 38 + dy, c["belt"])
 
     # 手臂
     al, ar = pose["arms"]
@@ -221,11 +236,13 @@ def draw_frame(cid, pose):
         p.line([(sx, sy), (ex, ey)], OUTLINE, 4)
         p.line([(sx, sy), (ex, ey)], c["sleeve"], 2)
         p.px(ex, ey, OUTLINE)
-        if cid == "xiaozhu":  # 袖子捲起，前臂露出
-            mx, my = (sx + ex) // 2, (sy + ey) // 2
-            p.line([(mx, my), (ex, ey)], c["skin"], 2)
+        hand = c["skin"]
+        if "glove" in c:  # 短袖，前臂到手掌是長手套
+            mx, my = (sx * 2 + ex) // 3, (sy * 2 + ey) // 3
+            p.line([(mx, my), (ex, ey)], c["glove"], 2)
+            hand = c["glove"]
         p.rect(ex - 1, ey - 1, ex + 1, ey + 1, OUTLINE)
-        p.rect(ex - 1, ey - 1, ex, ey, c["skin"])
+        p.rect(ex - 1, ey - 1, ex, ey, hand)
         return ex, ey
 
     hand_l = arm(sx_l, al, 0)
@@ -255,11 +272,18 @@ def draw_frame(cid, pose):
         p.px(bx, by, (255, 214, 90, 255))
         p.px(bx + 2, by + 2, c["accent_sh"])
     else:
-        # 竹青頭帶與呆毛
-        p.line([(hx - 10, hy - 5), (hx + 10, hy - 5)], c["band"], 1)
-        p.px(hx + 11, hy - 4, c["band"])
-        p.px(hx + 12, hy - 3, c["band"])
-        p.line([(hx + 1, hy - 12), (hx + 3, hy - 15), (hx + 5, hy - 14)], hair)
+        # 卡其頭巾包住頭頂，結打在腦後
+        p.d.chord([hx - 11, hy - 12, hx + 11, hy + 9], 180, 360, fill=c["kerchief"], outline=OUTLINE)
+        p.line([(hx - 8, hy - 6), (hx - 3, hy - 9)], c["kerchief_sh"])
+        p.line([(hx + 2, hy - 9), (hx + 7, hy - 6)], c["kerchief_sh"])
+        # 頭巾下露出的瀏海
+        for i, fx_ in enumerate(range(hx - 8, hx + 8, 3)):
+            p.poly([(fx_, hy - 2), (fx_ + 3, hy - 2), (fx_ + 1, hy + (2 if i % 2 else 1))], hair)
+        kx = hx - 13 if face_r else hx + 11
+        kd = -1 if face_r else 1
+        p.poly([(kx, hy - 6), (kx + 3 * kd, hy - 4), (kx + 2 * kd, hy - 1), (kx, hy - 3)], c["kerchief"], OUTLINE)
+        # 翹起的髮梢
+        p.px(hx - 11, hy - 4, hair); p.px(hx - 12, hy - 3, hair)
 
     # 五官
     ey = hy + 3
@@ -268,8 +292,11 @@ def draw_frame(cid, pose):
     white = (255, 255, 255, 255)
 
     def eye_open(x, big=False):
-        p.rect(x, ey - (1 if big else 0), x + 1, ey + 2, eye)
-        p.px(x, ey - (1 if big else 0), white)
+        top = ey - (1 if big else 0)
+        p.rect(x, top, x + 1, ey + 2, eye)
+        if "lid" in c:
+            p.line([(x - 1, top - 1), (x + 2, top - 1)], c["lid"])
+        p.px(x, top, white)
 
     if eyes in ("open", "wide"):
         eye_open(lx, eyes == "wide")
@@ -296,6 +323,11 @@ def draw_frame(cid, pose):
     elif eyes == "closed":
         p.line([(lx - 1, ey + 2), (lx + 2, ey + 2)], eye)
         p.line([(rx - 1, ey + 2), (rx + 2, ey + 2)], eye)
+    elif eyes == "drowsy":  # 眼皮半垂、琥珀色眼珠
+        for x in (lx, rx):
+            p.line([(x - 1, ey), (x + 2, ey)], c["lid"])
+            p.rect(x, ey + 1, x + 1, ey + 2, eye)
+            p.px(x + 1, ey + 1, white)
     elif eyes == "look_up":
         p.rect(lx, ey - 1, lx + 1, ey + 1, eye)
         p.rect(rx, ey - 1, rx + 1, ey + 1, eye)
@@ -313,6 +345,8 @@ def draw_frame(cid, pose):
         p.rect(mx - 1, my - 1, mx + 2, my, mouth); p.line([(mx - 1, my - 1), (mx + 2, my - 1)], white)
     elif m == "open":
         p.rect(mx, my - 1, mx + 1, my + 1, mouth)
+    elif m == "small":
+        p.line([(mx, my), (mx + 1, my)], (196, 96, 96, 255))
     elif m == "o":
         p.rect(mx, my, mx + 1, my + 1, mouth)
     elif m == "flat":
@@ -324,7 +358,11 @@ def draw_frame(cid, pose):
     elif m == "smirk":
         p.px(mx, my, mouth); p.px(mx + 1, my, mouth); p.px(mx + 2, my - 1, mouth)
 
-    if pose["blush"]:
+    if "kerchief" in c:  # 領巾
+        p.poly([(hx - 4, hy + 11), (hx + 4, hy + 11), (hx, hy + 15)], c["kerchief"], OUTLINE)
+        p.px(hx - 1, hy + 12, c["kerchief_sh"])
+
+    if pose["blush"] or c.get("blush_always"):
         p.rect(hx - 8 + look, hy + 6, hx - 7 + look, hy + 6, c["blush"])
         p.rect(hx + 6 + look, hy + 6, hx + 7 + look, hy + 6, c["blush"])
 
@@ -413,8 +451,10 @@ def poses_for(cid):
     mei = cid == "xiaomei"
     rows = {}
     # 0 idle：呼吸與眨眼
+    m0 = "smile" if mei else "small"  # 小竹平常微張著嘴、有點害羞
     rows["idle"] = [
-        P(), P(dy=0), P(eyes="blink"), P(dy=1), P(dy=1, hair_sway=1), P(),
+        P(mouth=m0), P(mouth=m0), P(eyes="blink", mouth=m0), P(dy=1, mouth=m0),
+        P(dy=1, hair_sway=1, mouth=m0), P(mouth=m0),
     ]
     # 1 running-right
     run = []
