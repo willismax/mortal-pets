@@ -1180,17 +1180,49 @@ def draw_bitmap_frame(c, pose):
     elif mouth == "o":
         put(24, 26, eye); put(24, 27, m)
 
-    # 道具：金錢鏢
+    # 道具：金錢鏢（方孔金錢）
+    gold, shine, hole = (226, 182, 70, 255), (255, 236, 160, 255), (90, 60, 30, 255)
+
+    def coin(cx, cy, edge=False):
+        if edge:  # 轉到側面時只剩一條細線
+            for y in (cy - 1, cy, cy + 1):
+                put(cx, y, gold)
+            put(cx - 1, cy, O); put(cx + 1, cy, O)
+            return
+        for x, y in ((cx - 1, cy - 2), (cx, cy - 2), (cx + 1, cy - 2), (cx - 1, cy + 2), (cx, cy + 2), (cx + 1, cy + 2),
+                     (cx - 2, cy - 1), (cx - 2, cy), (cx - 2, cy + 1), (cx + 2, cy - 1), (cx + 2, cy), (cx + 2, cy + 1)):
+            put(x, y, O)
+        for x in (cx - 1, cx, cx + 1):
+            for y in (cy - 1, cy, cy + 1):
+                put(x, y, gold)
+        put(cx, cy, hole); put(cx - 1, cy - 1, shine)
+
     prop = pose["prop"]
     if prop and prop[0] == "coins":
-        gold, shine = (226, 182, 70, 255), (255, 232, 150, 255)
         x, y = hands[1]
-        if prop[1] == "throw":
-            spots = ((5, -2), (9, -4), (13, -1))
-        else:
-            spots = ((2, -2), (3, 0)) if prop[1] == 0 else ((3, -1), (1, -3))
-        for ox, oy in spots:
-            put(x + ox, y + oy, gold); put(x + ox + 1, y + oy, shine); put(x + ox, y + oy + 1, shine)
+        if prop[1] == "throw":  # 擲出：三枚金錢鏢帶著殘影飛出去
+            k = prop[2] if len(prop) > 2 else 0
+            # 手邊空間不多，三枚排成扇形往上、前、下散開，後面拖著殘影
+            for i, (ox, oy) in enumerate(((3, -7), (5, -1), (3, 5))):
+                cx = min(45, x + ox + 2 * k)
+                cy = y + oy + (-2 * k if oy < 0 else 2 * k if oy > 0 else 0)
+                for t in range(1, 4):
+                    put(cx - 2 - t, cy - (oy // 4) * t // 2, (255, 236, 160, 170 - t * 40))
+                coin(cx, cy, edge=(i + k) % 2 == 1)
+            if k >= 1:  # 命中的火花
+                for ox, oy in ((0, -2), (0, 2), (-2, 0), (2, 0), (0, 0)):
+                    put(46 + min(0, ox), y - 1 + oy, (255, 220, 120, 255))
+        else:  # 指間夾著兩三枚，輪流轉動
+            fan = ((2, -2), (3, 1)) if prop[1] == 0 else ((3, -1), (1, -3), (4, 2))
+            for i, (ox, oy) in enumerate(fan):
+                coin(x + ox, y + oy, edge=(i + prop[1]) % 2 == 1)
+    elif prop and prop[0] == "coin_up":  # 用拇指把一枚金錢彈上去再接住
+        x, y = hands[0]  # 用沒被馬尾擋住的那隻手
+        h = prop[1]
+        coin(x - 1, y - 2 - h, edge=h == 5)
+        if h:
+            for t in range(1, min(h, 4)):
+                put(x - 1, y - 2 - h + 2 + t, (255, 236, 160, 120))
 
     # 效果
     for f in pose["fx"]:
@@ -1507,13 +1539,13 @@ def poses_weiju():
 def poses_tangbuyi():
     """大師兄（依 Q 版參考）：叉腰轉金錢鏢、豎指「有了！」、摸後腦大笑、抱胸、出掌擲鏢。"""
     return {
-        # 叉腰歪著頭，指間轉著金錢鏢，痞痞地笑、眨眼、哼小調
-        "idle": [P(arms=("hip", "hold"), prop=("coins", 0), mouth="smirk", tilt=1),
-                 P(arms=("hip", "hold"), prop=("coins", 1), mouth="smirk", tilt=1, fx=("note",)),
-                 P(arms=("hip", "hold"), prop=("coins", 0), eyes="wink", mouth="fang", tilt=1, fx=("note",)),
-                 P(arms=("hip", "hold"), prop=("coins", 1), mouth="smirk", dy=1, fx=("note",)),
-                 P(arms=("hip", "hold"), prop=("coins", 0), mouth="smirk", dy=1),
-                 P(arms=("hip", "hold"), prop=("coins", 1), mouth="smirk", hair_sway=1)],
+        # 叉腰歪著頭，用拇指把金錢彈上去再接住，接到了眨眼一笑
+        "idle": [P(arms=("beckon", "hip"), prop=("coin_up", 0), mouth="smirk", tilt=1),
+                 P(arms=("beckon", "hip"), prop=("coin_up", 5), mouth="smirk", tilt=1, eyes="look_up"),
+                 P(arms=("beckon", "hip"), prop=("coin_up", 9), mouth="smirk", tilt=1, eyes="look_up", fx=("note",)),
+                 P(arms=("beckon", "hip"), prop=("coin_up", 6), mouth="smirk", tilt=1, fx=("note",)),
+                 P(arms=("beckon", "hip"), prop=("coin_up", 0), eyes="wink", mouth="fang", tilt=1),
+                 P(arms=("hip", "hold"), prop=("coins", 1), mouth="smirk", tilt=1)],
         "running-right": run_row(mouth="grin", eyes="drowsy"),
         # 一手叉腰、一手豎起手指：「師弟，有了！」
         "waving": [P(arms=("hip", "up"), mouth="fang", eyes="happy", fx=("idea",)),
@@ -1523,8 +1555,8 @@ def poses_tangbuyi():
         # 飛俠：壓低身子出掌，一躍擲出金錢鏢
         "jumping": [P(dy=2, legs="crouch", arms=("thrust", "hip"), eyes="drowsy", mouth="smirk"),
                     P(dy=0, legs="tuck", arms=("spread", "thrust"), prop=("coins", 1), mouth="grin"),
-                    P(dy=-1, legs="tuck", arms=("spread", "thrust"), prop=("coins", "throw"), mouth="fang", eyes="happy"),
-                    P(dy=0, legs="stand", arms=("spread", "thrust"), prop=("coins", "throw"), mouth="grin"),
+                    P(dy=-1, legs="tuck", arms=("spread", "thrust"), prop=("coins", "throw", 0), mouth="fang", eyes="happy"),
+                    P(dy=0, legs="stand", arms=("spread", "thrust"), prop=("coins", "throw", 1), mouth="grin"),
                     P(dy=1, legs="crouch", arms=("hip", "hold"), prop=("coins", 0), mouth="smirk", fx=("note",))],
         # 失敗：愣住冒汗，接著摸著後腦哈哈大笑帶過
         "failed": [P(arms=("down", "down"), eyes="open", mouth="flat", fx=("speechless",)),
@@ -1542,13 +1574,13 @@ def poses_tangbuyi():
                     P(arms=("hip", "wave_mid"), eyes="blink", mouth="open", fx=("q",)),
                     P(arms=("hip", "ask"), eyes="open", mouth="smirk", fx=("q",), tilt=1),
                     P(arms=("hip", "wave_mid"), eyes="open", mouth="open", fx=("q",))],
-        # 工作中：拉開架式出掌、擲鏢
-        "running": [P(legs="crouch", arms=("thrust", "hip"), eyes="drowsy", mouth="smirk"),
-                    P(legs="crouch", arms=("hip", "thrust"), prop=("coins", "throw"), eyes="drowsy", mouth="grin", dx=1),
-                    P(legs="crouch", arms=("thrust", "hip"), eyes="drowsy", mouth="smirk"),
-                    P(arms=("hip", "hold"), prop=("coins", 0), eyes="closed", mouth="smirk", fx=("note",)),
-                    P(legs="crouch", arms=("hip", "thrust"), prop=("coins", "throw"), eyes="drowsy", mouth="grin", dx=1),
-                    P(arms=("hip", "hold"), prop=("coins", 1), eyes="happy", mouth="smirk")],
+        # 工作中：拉開架式，連發金錢鏢、命中冒火花
+        "running": [P(legs="crouch", arms=("hip", "hold"), prop=("coins", 0), eyes="drowsy", mouth="smirk"),
+                    P(legs="crouch", arms=("hip", "thrust"), prop=("coins", "throw", 0), eyes="open", mouth="grin", dx=1),
+                    P(legs="crouch", arms=("hip", "thrust"), prop=("coins", "throw", 1), eyes="drowsy", mouth="smirk", dx=1),
+                    P(arms=("hip", "hold"), prop=("coins", 1), eyes="closed", mouth="smirk", fx=("note",)),
+                    P(legs="crouch", arms=("hip", "thrust"), prop=("coins", "throw", 0), eyes="open", mouth="grin", dx=1),
+                    P(legs="crouch", arms=("hip", "thrust"), prop=("coins", "throw", 1), eyes="happy", mouth="smirk", dx=1)],
         # 審視：雙手抱胸，板著臉看，看完了才嘴角一勾
         "review": [P(arms=("cross", "cross"), eyes="drowsy", mouth="flat"),
                    P(arms=("cross", "cross"), eyes="drowsy", mouth="flat", tilt=1),
