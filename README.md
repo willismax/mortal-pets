@@ -199,6 +199,7 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 1. 在 `tools/build_sprites.py` 的 `CHARACTERS` 加配色與特徵，在 `poses_for()` 設計各狀態動作。
 2. 在 `scripts/characters.js` 加角色資料、各心情台詞與聊天題目。
 3. 在 `skills/` 加角色卡，然後執行 `python3 tools/build_sprites.py --preview`。
+4. 改了角色資料或圖之後，把 `index.html` 裡所有 `?v=` 版本號加一，瀏覽器才不會拿快取的舊檔配新網頁（會整頁空白）。
 
 ### 參考來源
 

@@ -179,10 +179,11 @@ cd mortal-pets && ./install.sh codex</pre>
   </footer>
 </main>
 
-<script src="claude-plugin/mortal-buddy/scripts/characters.js"></script>
-<script src="claude-plugin/mortal-buddy/scripts/locales/ja.js"></script>
-<script src="claude-plugin/mortal-buddy/scripts/locales/ko.js"></script>
-<script src="claude-plugin/mortal-buddy/scripts/locales/en.js"></script>
+<!-- ?v= 是版本號：更新角色資料時一起改，避免瀏覽器拿快取裡的舊檔配新網頁 -->
+<script src="claude-plugin/mortal-buddy/scripts/characters.js?v=0.3.1"></script>
+<script src="claude-plugin/mortal-buddy/scripts/locales/ja.js?v=0.3.1"></script>
+<script src="claude-plugin/mortal-buddy/scripts/locales/ko.js?v=0.3.1"></script>
+<script src="claude-plugin/mortal-buddy/scripts/locales/en.js?v=0.3.1"></script>
 <script>
   const BASE = window.MORTAL_CHARS;
   const { UPCOMING } = BASE;
@@ -434,7 +435,7 @@ cd mortal-pets && ./install.sh codex</pre>
     document.querySelectorAll("#tabs .tab").forEach((t) => t.setAttribute("aria-selected", t.dataset.id === id));
     const outfits = c.outfits || [{ id, name: "" }];
     const petId = outfits.some((o) => o.id === store.outfit[id]) ? store.outfit[id] : outfits[0].id;
-    sprite.style.backgroundImage = `url(codex/pets/${petId}/spritesheet.webp)`;
+    sprite.style.backgroundImage = `url(codex/pets/${petId}/spritesheet.webp?v=0.3.1)`;
     const ob = $("outfits");
     ob.innerHTML = "";
     ob.hidden = outfits.length < 2;
@@ -522,7 +523,10 @@ cd mortal-pets && ./install.sh codex</pre>
     T = UI[lang];
     store.lang = lang;
     persist();
-    ({ CHARS, TIERS } = BASE.localize(lang === "zh" ? null : (window.MORTAL_LOCALES || {})[lang]));
+    // 拿到舊版 characters.js（沒有 localize）時退回中文資料，不讓整頁空白
+    ({ CHARS, TIERS } = typeof BASE.localize === "function"
+      ? BASE.localize(lang === "zh" ? null : (window.MORTAL_LOCALES || {})[lang])
+      : BASE);
     document.documentElement.lang = T.htmlLang;
     document.title = T.title;
     document.querySelector('meta[name="description"]').content = T.desc;
