@@ -23,6 +23,7 @@ The romanceable heroines of the Taiwanese wuxia RPG **Legend of Mortal (活俠�
 | `longxiang` | Long Xiang | Swordswoman of Jinxiang Palace, "the Drumstick Heroine". Cheerful and a little airheaded. |
 | `xiahoulan` | Xiahou Lan | "The Soul-Stealing Orchid" of the Soul-Stealing Gate. A cool young master with an oil-paper umbrella; sharp-tongued, secretly caring. |
 | `yeyunshang` | Ye Yunshang | "The Pearl of Diancang", Ye Yunzhou's little sister. A mischievous imp who loves pranks and sweets; wears a sable cloak even in midsummer and runs a fever after half a day of mischief. Signature moves: "Ehehe" wink, pouting, praying hands. |
+| `weiju` | Wei Ju | Direct disciple and current master of Kongtong's Mystic Arts Gate. Graceful, well-read and gentle, an odd one out in martial Kongtong; always holding the hand warmer Yu Zhu made for her. Blushes until steam rises from her head. |
 
 ## Claude Code
 
@@ -48,7 +49,7 @@ Commands:
 
 | Command | What it does |
 | --- | --- |
-| `/mortal-buddy:pick xiaozhu` | Switch pet (`xiaomei`, `xiaozhu`, `xiaoshimei`, `longxiang`, `xiahoulan`, `yeyunshang`) |
+| `/mortal-buddy:pick xiaozhu` | Switch pet (`xiaomei`, `xiaozhu`, `xiaoshimei`, `longxiang`, `xiahoulan`, `yeyunshang`, `weiju`) |
 | `/mortal-buddy:pet feed` | `pet`, `feed`, `train` (+1 each) or `gift` (+3); each action counts once a minute |
 | `/mortal-buddy:talk` | She asks you something; answer with `/mortal-buddy:talk 2` and your answer changes her affection |
 | `/mortal-buddy:roleplay long day today` | She replies in her own voice (in the language you write in) |

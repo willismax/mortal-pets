@@ -430,6 +430,59 @@
             ]
           }
         ]
+      },
+      weiju: {
+        name: "Wei Ju",
+        fullName: "Wei Ju",
+        title: "Direct Disciple of Kongtong's Mystic Arts Gate, Master of the Mystic Arts Gate",
+        tagline: "Well-read, courteous, quiet and graceful: a remarkable woman who could not fit Kongtong less. She always cradles the hand warmer Xiaozhu made for her.",
+        profile: [
+          "The current direct disciple of the Mystic Arts Gate of the Kongtong Sect, who also serves as the Master of the Mystic Arts Gate, and one of “the Four Beauties of Kongtong”.",
+          "Dignified, well-read and courteous, quiet and elegantly beautiful: a remarkable woman who could not fit the Kongtong Sect less.",
+          "Gentle by nature and no lover of fighting, yet deeply respected within the sect. In her youth she was a famed talent of Jinling, and once rather proud. She loves books and tea.",
+          "Long hair coiled into a bun atop her head with a golden hairpin, a pale blue ribbon trailing at the side. A wide-sleeved yellow robe over a long orange-yellow skirt, and in her hands the clever hand warmer Yu Zhu crafted.",
+          "(Spoiler) If her affection is high enough, she reveals her hidden identity in an inner voice when you leave Kongtong."
+        ],
+        lines: {
+          greet: ["Young Master Zhao, welcome. Please, have a seat. The tea is just warm.", "The wind is strong today. Come in and warm your hands.", "Here to slack off again? ...I jest. You're welcome here."],
+          idle: ["(cradling her hand warmer, quietly reading)", "Yu Zhu made this hand warmer for me. I couldn't get through winter without it.", "Everyone in Kongtong would rather use their fists. I'd rather use my brush.", "Tea is to be savored slowly, and matters to be pondered slowly."],
+          working: ["Go on with your writing. I'll read beside you; I won't disturb you.", "(turns a page) Mm, this line is well written.", "If you tire, rest a while. I've poured you some tea."],
+          done: ["Very well done. This passage is clear and well ordered.", "Thank you for your hard work. Here, have some hot tea.", "(smiles with her eyes closed) ...How lovely. I'm happy for you."],
+          failed: ["Oh—! (covers her mouth) ...F-forgive me.", "Don't panic. Have a sip of tea first, then look it over from the start.", "Mistakes are no matter. A scholar fears revisions least of all."],
+          waiting: ["Hm? ...Would you like me to decide for you?", "(tilts her head slightly) You haven't finished speaking, Young Master.", "I'll wait. There's no hurry."],
+          review: ["(the corners of her mouth curve) ...There's an error hiding right here.", "The words are correct, but the meaning doesn't follow.", "Hmm... take your time. I'll look it over with you."],
+          pet: ["(instantly turns red) ...Y-Young Master, this is hardly proper.", "...J-just this once.", "(steam rises from her head)"],
+          feed: ["What fragrant pastries. Perfect with tea.", "Thank you, Young Master. I'll share half with you.", "Do chew slowly when you eat."],
+          train: ["Training? ...Perhaps I'll leaf through the manuals and find the techniques for you instead.", "I'm no good at fighting, but I can see where you're going wrong.", "(holds up her hand warmer and cheers from the side)"],
+          gift: ["This is... for me? Thank you.", "I'll keep it safe in my book chest.", "(blushes) ...How thoughtful of you, Young Master."],
+          night: ["Only late at night are people willing to speak from the heart.", "...There are things I cannot tell you either. When the time comes, I will.", "In Kongtong, you're the only one I can talk to without keeping up appearances."]
+        },
+        talks: [
+          {
+            q: "What have you been reading lately, Young Master?",
+            opts: [
+              { t: "I'm reading an anthology of Song lyrics.", r: "(her eyes light up) What a coincidence. Those are some of my favorite poems. Let's read them together some day." },
+              { t: "I barely have time to train, let alone read.", r: "...I suppose so. Most people in Kongtong are the same." },
+              { t: "I'd like a recommendation from you, Master Wei.", r: "Then let us start with the Analects. Don't frown, it's quite interesting." }
+            ]
+          },
+          {
+            q: "Is this hand warmer warm? You may hold it for a while.",
+            opts: [
+              { t: "It's warm. Just like you.", r: "(steam rises from her head) ...Young Master, please don't tease." },
+              { t: "Xiaozhu made this, didn't she? Fine craftsmanship.", r: "Yes. Yu Zhu's handiwork is the finest in Kongtong." },
+              { t: "I'm not cold. You keep it.", r: "How considerate of you... then I won't stand on ceremony." }
+            ]
+          },
+          {
+            q: "I hear everyone in the Kongtong Sect thinks I'm rather strange?",
+            opts: [
+              { t: "You're the most graceful sect master there is.", r: "(smiles with her eyes closed) ...Hearing that from you isn't so bad." },
+              { t: "You're a little unlike Kongtong folk, I'll admit.", r: "Hehe, I think so myself." },
+              { t: "Maybe they're afraid of you?", r: "(the corners of her mouth curve) ...Afraid of me? Why ever would they be?" }
+            ]
+          }
+        ]
       }
     }
   };

@@ -172,6 +172,27 @@ CHARACTERS["yeyunshang"] = {
     "long_hair": False, "height_drop": 2, "default_eyes": "open",
 }
 
+CHARACTERS["weiju"] = {
+    "displayName": "魏菊",
+    "description": "崆峒玄功門的當代掌門魏菊：儀態端莊、知書達禮，文靜秀麗、與崆峒派格格不入的奇女子；手裡總捧著郁竹打造的手爐。（活俠傳同人）",
+    # 依 LoM Wiki 立繪：長髮往後梳露出額頭、頭頂盤髻插金簪、側邊淺藍髮帶；
+    # 白色內衣淺藍交領、黃色寬袖外袍、橙黃長裙配藍色腰帶，雙手捧著深綠手爐
+    "hair": (52, 48, 50, 255), "hair_hi": (96, 90, 92, 255),
+    "skin": (255, 238, 228, 255), "skin_sh": (240, 206, 190, 255),
+    "eye": (86, 80, 74, 255),
+    "cloth": (250, 248, 238, 255), "cloth_sh": (222, 216, 200, 255),
+    "accent": (234, 172, 74, 255), "accent_sh": (204, 140, 50, 255),
+    "collar": (124, 176, 196, 255),
+    "sash": (110, 158, 180, 255),
+    "robe": (240, 202, 96, 255), "robe_sh": (214, 170, 66, 255),
+    "sleeve": (240, 202, 96, 255), "wide_sleeves": True,
+    "pin": (214, 168, 60, 255), "ribbon": (150, 196, 214, 255),
+    "shoe": (110, 158, 180, 255), "leg": (250, 248, 238, 255),
+    "blush": (255, 160, 160, 255),
+    "outfit": "dress", "head": "updo", "topknot": True,
+    "long_hair": True, "height_drop": -1, "tall": 1, "default_eyes": "open",
+}
+
 # 小竹・裂骨魔：同一個人，換上鐵網護甲、虎紋背帶、虎頭面具與機關臂，背著刻紅紋的大刀
 CHARACTERS["xiaozhu-battle"] = {
     **CHARACTERS["xiaozhu"],
@@ -240,6 +261,8 @@ ARM_HANDS = {
     "hair_hold": ((-1, -3), (1, -3)),  # 雙手握著胸前的鬢髮
     "ribbon": ((4, -3), (-4, -3)),  # 葉雲裳：雙手捏著胸前的領結緞帶
     "cape_open": ((-7, -4), (7, -4)),  # 雙手抓著斗篷往兩邊張開
+    "cradle": ((5, 4), (-5, 4)),  # 雙手捧著手爐
+    "mouth_cover": ((6, -9), (-5, -6)),  # 一手摀嘴、一手舉在胸前（摀嘴的手在畫完臉之後補上）
     "tremble": ((2, -4), (-2, -4)),  # 嚇得縮起雙手
     "umbrella": ((2, 2), (3, 0)),  # 握傘柄
     "sleeve_face": ((6, -6), (-6, -6)),  # 用袖子遮臉
@@ -409,6 +432,12 @@ def draw_frame(cid, pose):
             p.line([(k_ + dx, 42 + dy), (k_ + dx + flare, hem - 1)], c["accent_sh"])
         if "skirt_band" in c:  # 白裙正中的青色長帶
             p.line([(24 + dx, 41 + dy), (24 + dx + flare, hem - 1)], c["skirt_band"], 2)
+        if "robe" in c:
+            for side in (-1, 1):
+                x_in, x_out = 24 + dx + 3 * side, 24 + dx + 9 * side
+                p.poly([(x_in, 33 + dy), (24 + dx + 5 * side, 33 + dy), (x_out + flare + side, hem),
+                        (x_in + 2 * side + flare, hem)], c["robe"], OUTLINE)
+                p.line([(x_in + side, 35 + dy), (x_in + 3 * side + flare, hem - 1)], c["robe_sh"])
         col = c.get("collar", c["accent_sh"])
         p.line([(21 + dx, 33 + dy), (24 + dx, 37 + dy)], col)
         p.line([(27 + dx, 33 + dy), (24 + dx, 37 + dy)], col)
@@ -615,6 +644,19 @@ def draw_frame(cid, pose):
         p.line([(hx + 5 * k, hy - 12), (hx + 8 * k, hy - 6)], c["ribbon"])
         p.rect(hx - 11, hy - 2, hx - 9, hy + 10, hair)
         p.rect(hx + 9, hy - 2, hx + 11, hy + 10, hair)
+    elif c.get("head") == "updo":
+        # 長髮往後梳、額頭露出來：只留髮際線，兩側長髮順著臉頰垂下
+        p.ell(hx - 7, hy - 5, hx + 7, hy + 3, c["skin"])
+        p.line([(hx - 5, hy - 5), (hx - 1, hy - 6)], c["hair_hi"])
+        p.rect(hx - 11, hy - 3, hx - 9, hy + 12, hair)
+        p.rect(hx + 9, hy - 3, hx + 11, hy + 12, hair)
+        # 頭頂髮髻上橫插的金簪
+        k = -1 if face_r else 1
+        p.line([(hx - 6 * k, hy - 13), (hx + 8 * k, hy - 15)], OUTLINE, 3)
+        p.line([(hx - 6 * k, hy - 13), (hx + 8 * k, hy - 15)], c["pin"], 1)
+        p.px(hx - 7 * k, hy - 13, c["pin"])
+        # 側邊垂下的淺藍髮帶
+        p.line([(hx + 10 * k, hy - 8), (hx + 12 * k, hy - 1)], c["ribbon"], 2)
     elif c.get("head") == "twin":
         # 中分瀏海：額頭正中間露出一小塊
         p.poly([(hx - 2, hy + 1), (hx + 2, hy + 1), (hx, hy - 3)], c["skin"])
@@ -745,6 +787,9 @@ def draw_frame(cid, pose):
     elif m == "fang":  # 張大嘴生氣，露出小虎牙
         p.rect(mx - 1, my - 1, mx + 2, my + 1, mouth)
         p.px(mx - 1, my - 1, white); p.px(mx + 2, my - 1, white)
+    elif m == "scream":  # 嚇到尖叫
+        p.rect(mx - 1, my - 2, mx + 2, my + 2, mouth)
+        p.line([(mx - 1, my - 2), (mx + 2, my - 2)], white)
     elif m == "wobble":  # 要哭的抖抖嘴
         p.px(mx - 1, my, mouth); p.px(mx, my - 1, mouth); p.px(mx + 1, my, mouth); p.px(mx + 2, my - 1, mouth)
     elif m == "small":
@@ -781,6 +826,12 @@ def draw_frame(cid, pose):
     if "kerchief" in c:  # 領巾
         p.poly([(hx - 4, hy + 11), (hx + 4, hy + 11), (hx, hy + 15)], c["kerchief"], OUTLINE)
         p.px(hx - 1, hy + 12, c["kerchief_sh"])
+
+    if al == "mouth_cover":  # 摀著嘴的那隻手要蓋在臉上
+        hand = (hx - 2 + look, hy + 9)
+        p.line([(sx_l + 2, sy - 2), hand], OUTLINE, 5)
+        p.line([(sx_l + 2, sy - 2), hand], c["sleeve"], 3)
+        p.ell(hand[0] - 2, hand[1] - 2, hand[0] + 2, hand[1] + 1, c["skin"], OUTLINE)
 
     if ar == "wipe":
         # 擦汗：戴手套的前臂從手肘橫到額頭前
@@ -857,6 +908,28 @@ def draw_frame(cid, pose):
             p.line([(x, y), tip], OUTLINE, 3)
             p.line([(x, y), tip], (214, 222, 236, 255), 1)
             p.line([(x - 1, y + 1), (x + 1, y - 1)], (200, 170, 90, 255), 2)
+        elif kind == "warmer":  # 郁竹打造的深綠手爐，雙手捧在身前
+            x, y = (hand_l[0] + hand_r[0]) // 2, max(hand_l[1], hand_r[1]) - 1
+            green, lid = (46, 76, 72, 255), (70, 104, 98, 255)
+            p.ell(x - 4, y - 4, x + 4, y + 3, green, OUTLINE)
+            p.line([(x - 3, y - 2), (x + 3, y - 2)], lid)
+            p.px(x - 1, y, lid); p.px(x + 1, y, lid)
+            p.d.arc([x - 3, y - 8, x + 3, y - 2], 180, 360, fill=OUTLINE)  # 提把
+            if prop[1:] == ("steam",):
+                for ox, oy in ((-1, -9), (1, -10), (0, -11)):
+                    p.px(x + ox, y + oy, (236, 236, 244, 255))
+        elif kind == "book":  # 攤開的書，prop[1] 是翻到第幾頁（讓書頁動起來）
+            x, y = (hand_l[0] + hand_r[0]) // 2, min(hand_l[1], hand_r[1]) + 2
+            p.rect(x - 7, y - 3, x + 7, y + 2, OUTLINE)
+            p.rect(x - 6, y - 2, x - 1, y + 1, (252, 250, 240, 255))
+            p.rect(x + 1, y - 2, x + 6, y + 1, (252, 250, 240, 255))
+            p.line([(x, y - 3), (x, y + 2)], (140, 90, 60, 255))
+            for k_ in range(2):
+                yy = y - 1 + k_ * 2
+                p.line([(x - 5, yy), (x - 2, yy)], (170, 170, 180, 255))
+                p.line([(x + 2, yy), (x + 5, yy)], (170, 170, 180, 255))
+            if prop[1] % 2:  # 正在翻的那一頁
+                p.poly([(x, y - 3), (x + 4, y - 6), (x + 5, y - 2), (x + 1, y)], (252, 250, 240, 255), OUTLINE)
         elif kind == "stick":  # 葉雲裳的樹枝（聽雲棒）：up 舉起、down 揮下
             x, y = hand_r
             tip = (x - 3, max(1, y - 18)) if prop[1] == "up" else (min(46, x + 13), y + 4)
@@ -954,6 +1027,14 @@ def draw_frame(cid, pose):
                 for ox, oy in ((0, -1), (-1, 0), (1, 0), (0, 1)):
                     p.px(fx0 + ox, fy0 + oy, (240, 170, 200, 255))
                 p.px(fx0, fy0, (255, 230, 150, 255))
+        elif f == "head_steam":  # 害羞得頭頂冒熱氣
+            for ox, oy in ((-6, -16), (-4, -18), (5, -17), (7, -19), (0, -19)):
+                p.px(hx + ox, hy + oy, (236, 236, 244, 255))
+        elif f == "gloom":  # 臉上一片陰影、只剩眼睛發亮（她藏起來的另一面）
+            for yy in range(hy - 6, ey):
+                for xx in range(hx - 8, hx + 9):
+                    if img_px(p, xx, yy) == c["skin"]:
+                        p.px(xx, yy, (206, 192, 210, 255))
         elif f == "grumble":  # 嘟嘴生悶氣：頭的兩側冒出白色小氣團
             for gx, gy in ((hx - 14, hy - 8), (hx + 13, hy - 8)):
                 p.ell(gx - 2, gy - 1, gx + 2, gy + 2, (250, 250, 250, 255), OUTLINE)
@@ -972,6 +1053,12 @@ def draw_frame(cid, pose):
                 p.px(x + ox, y + oy, col)
 
     return p.img.resize((CELL_W, CELL_H), Image.NEAREST)
+
+
+def img_px(p, x, y):
+    if 0 <= x < W and 0 <= y < H:
+        return p.img.getpixel((x, y))
+    return None
 
 
 def mirror_row(frames):
@@ -1206,7 +1293,60 @@ def poses_yeyunshang():
     }
 
 
-CUSTOM_POSES = {"xiaoshimei": poses_shimei, "longxiang": poses_longxiang, "xiahoulan": poses_xiahoulan,
+def poses_weiju():
+    """魏菊：捧手爐微笑、害羞冒熱氣、閉眼臉紅笑、讀書、驚訝冒汗、嚇到尖叫、陰影微笑。"""
+    cr = ("cradle", "cradle")
+    wm = ("warmer",)
+    return {
+        "idle": [P(arms=cr, prop=wm, mouth="smile"), P(arms=cr, prop=wm, mouth="smile"),
+                 P(arms=cr, prop=wm, eyes="blink", mouth="smile"), P(arms=cr, prop=("warmer", "steam"), mouth="smile", dy=1),
+                 P(arms=cr, prop=("warmer", "steam"), mouth="smile", dy=1), P(arms=cr, prop=wm, mouth="smile")],
+        "running-right": run_row(mouth="smile", eyes="open"),
+        # 打招呼：微微欠身，害羞得頭頂冒熱氣
+        "waving": [P(arms=cr, prop=wm, mouth="smile", eyes="happy"),
+                   P(arms=cr, prop=wm, mouth="smile", eyes="side", blush=True, dy=1, fx=("sweat",)),
+                   P(arms=cr, prop=wm, mouth="smile", eyes="side", blush=True, dy=1, fx=("head_steam", "sweat")),
+                   P(arms=cr, prop=wm, mouth="smile", eyes="happy", blush=True, fx=("head_steam",))],
+        # 開心：閉眼臉紅笑，端莊地輕輕一跳
+        "jumping": [P(arms=cr, prop=wm, eyes="closed", mouth="smile"),
+                    P(dy=-2, legs="tuck", arms=cr, prop=wm, eyes="closed", mouth="grin", blush=True),
+                    P(dy=-3, legs="tuck", arms=cr, prop=wm, eyes="closed", mouth="grin", blush=True),
+                    P(dy=-1, legs="stand", arms=cr, prop=wm, eyes="closed", mouth="grin", blush=True),
+                    P(arms=cr, prop=wm, eyes="happy", mouth="smile", blush=True)],
+        # 失敗：嚇到摀嘴尖叫、全身發抖，再勉強鎮定
+        "failed": [P(arms=cr, prop=wm, eyes="wide", mouth="o", fx=("sweat",)),
+                   P(arms=("mouth_cover", "tremble"), eyes="wide", mouth="scream", fx=("sweat", "chill")),
+                   P(arms=("mouth_cover", "tremble"), eyes="wide", mouth="scream", fx=("chill",), dx=1),
+                   P(arms=("mouth_cover", "tremble"), eyes="wide", mouth="scream", fx=("chill", "sweat"), dx=-1),
+                   P(arms=("mouth_cover", "tremble"), eyes="wide", mouth="scream", fx=("chill",), dx=1),
+                   P(arms=cr, prop=wm, eyes="sad", mouth="o", fx=("sweat",)),
+                   P(arms=cr, prop=wm, eyes="closed", mouth="flat"),
+                   P(arms=cr, prop=wm, eyes="open", mouth="small")],
+        # 等你回覆：驚訝地看著你，冒一滴汗
+        "waiting": [P(arms=cr, prop=wm, eyes="wide", mouth="o", fx=("q", "sweat")),
+                    P(arms=cr, prop=wm, eyes="wide", mouth="o", fx=("q", "sweat"), tilt=1),
+                    P(arms=cr, prop=wm, eyes="open", mouth="o", fx=("q",), tilt=1),
+                    P(arms=cr, prop=wm, eyes="blink", mouth="small", fx=("q",), tilt=1),
+                    P(arms=cr, prop=wm, eyes="open", mouth="o", fx=("q", "sweat")),
+                    P(arms=cr, prop=wm, eyes="wide", mouth="o", fx=("q",))],
+        # 工作中：捧著書安靜地讀，翻頁
+        "running": [P(arms=("hold_up", "hold_up"), prop=("book", 0), eyes="side", mouth="smile"),
+                    P(arms=("hold_up", "hold_up"), prop=("book", 0), eyes="side", mouth="smile"),
+                    P(arms=("hold_up", "hold_up"), prop=("book", 1), eyes="blink", mouth="smile"),
+                    P(arms=("hold_up", "hold_up"), prop=("book", 0), eyes="side", mouth="smile"),
+                    P(arms=("hold_up", "hold_up"), prop=("book", 0), eyes="happy", mouth="smile"),
+                    P(arms=("hold_up", "hold_up"), prop=("book", 1), eyes="blink", mouth="smile")],
+        # 審視：臉上一片陰影，意味深長地微笑
+        "review": [P(arms=cr, prop=wm, eyes="open", mouth="smile"),
+                   P(arms=cr, prop=wm, eyes="happy", mouth="grin", fx=("gloom",)),
+                   P(arms=cr, prop=wm, eyes="happy", mouth="grin", fx=("gloom",), tilt=1),
+                   P(arms=cr, prop=wm, eyes="happy", mouth="grin", fx=("gloom",), tilt=1),
+                   P(arms=cr, prop=wm, eyes="happy", mouth="smile", fx=("gloom",)),
+                   P(arms=cr, prop=wm, eyes="open", mouth="smile")],
+    }
+
+
+CUSTOM_POSES = {"weiju": poses_weiju, "xiaoshimei": poses_shimei, "longxiang": poses_longxiang, "xiahoulan": poses_xiahoulan,
                 "yeyunshang": poses_yeyunshang}
 
 
