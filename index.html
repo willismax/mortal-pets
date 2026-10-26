@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>活俠傳結緣寵物</title>
+<meta name="description" content="活俠傳同人：小梅、小竹的 Codex 與 Claude Code 寵物，可摸頭、餵食、練功、聊天累積好感。">
+<style>
+  :root {
+    --paper: #f3ead8;
+    --paper-2: #fbf6ec;
+    --ink: #2a1c24;
+    --ink-soft: #6b5a5f;
+    --line: #d9c9ad;
+    --seal: #b8282f;
+    --char: #c82c3c;
+    --char-soft: #f6dcdc;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Noto Serif TC", "Source Han Serif TC", "PMingLiU", serif;
+    line-height: 1.7;
+  }
+  main { max-width: 980px; margin: 0 auto; padding: 24px 16px 48px; }
+  header h1 { margin: 0; font-size: 1.9rem; letter-spacing: .08em; }
+  header h1 small { font-size: .9rem; color: var(--seal); border: 2px solid var(--seal); padding: 0 6px; margin-left: 8px; vertical-align: middle; letter-spacing: 0; }
+  header p { margin: 4px 0 18px; color: var(--ink-soft); }
+
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .tab {
+    border: 1px solid var(--line); background: var(--paper-2); color: var(--ink);
+    padding: 6px 16px; font: inherit; cursor: pointer; border-radius: 2px;
+  }
+  .tab[aria-selected="true"] { background: var(--char); border-color: var(--char); color: #fff; }
+  .tab:disabled { opacity: .45; cursor: not-allowed; }
+
+  .grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: var(--paper-2); border: 1px solid var(--line); padding: 16px; border-radius: 2px; }
+  .card h2 { margin: 0 0 8px; font-size: 1.1rem; letter-spacing: .05em; }
+
+  .stage {
+    position: relative; height: 330px; overflow: hidden;
+    background:
+      linear-gradient(to bottom, transparent 78%, rgba(42, 28, 36, .06) 78%),
+      radial-gradient(circle at 80% 18%, var(--char-soft) 0 42px, transparent 43px),
+      var(--paper-2);
+    border: 1px solid var(--line);
+  }
+  .sprite {
+    position: absolute; bottom: 30px; left: 50%;
+    width: 192px; height: 208px; margin-left: -96px;
+    background-repeat: no-repeat; image-rendering: pixelated; cursor: pointer;
+    transition: left 2.4s linear;
+  }
+  .bubble {
+    position: absolute; top: 12px; left: 12px; right: 12px;
+    background: #fff; border: 2px solid var(--ink); padding: 8px 12px; border-radius: 4px;
+    font-size: 1rem; min-height: 3.4em;
+  }
+  .bubble b { color: var(--char); margin-right: 4px; }
+  .nameplate { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .nameplate strong { font-size: 1.3rem; color: var(--char); }
+  .nameplate span { color: var(--ink-soft); font-size: .9rem; }
+
+  .aff { margin-top: 8px; }
+  .aff-bar { height: 10px; background: #eadfca; border-radius: 5px; overflow: hidden; }
+  .aff-fill { height: 100%; background: var(--char); width: 0; transition: width .4s; }
+  .aff-text { display: flex; justify-content: space-between; font-size: .85rem; color: var(--ink-soft); }
+
+  .actions { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 12px; }
+  @media (max-width: 420px) { .actions { grid-template-columns: repeat(3, 1fr); } }
+  .btn {
+    font: inherit; padding: 8px 4px; border: 1px solid var(--ink); background: #fff; color: var(--ink);
+    cursor: pointer; border-radius: 2px;
+  }
+  .btn:hover { background: var(--char-soft); }
+  .btn:focus-visible, .tab:focus-visible, .chip:focus-visible { outline: 2px solid var(--char); outline-offset: 2px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font: inherit; font-size: .85rem; padding: 2px 10px; border: 1px solid var(--line); background: #fff; color: var(--ink); cursor: pointer; border-radius: 999px; }
+  .chip[aria-pressed="true"] { border-color: var(--char); color: var(--char); }
+
+  .talk-q { margin: 0 0 8px; }
+  .talk-opts { display: grid; gap: 6px; }
+  .talk-opts .btn { text-align: left; padding: 8px 12px; }
+
+  ul.profile { padding-left: 1.2em; margin: 0; }
+  ul.profile li { margin-bottom: 4px; }
+  .spoiler { filter: blur(5px); cursor: pointer; transition: filter .2s; }
+  .spoiler.shown { filter: none; }
+  .muted { color: var(--ink-soft); font-size: .88rem; }
+  code { background: #efe5d2; padding: 1px 4px; border-radius: 2px; font-size: .88em; word-break: break-all; }
+  pre { background: #efe5d2; padding: 10px; overflow-x: auto; font-size: .82rem; margin: 6px 0; }
+  .stack { display: grid; gap: 16px; }
+  footer { margin-top: 24px; font-size: .82rem; color: var(--ink-soft); }
+  footer a, .card a { color: var(--seal); }
+  @media (prefers-reduced-motion: reduce) { .sprite { transition: none; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>活俠傳結緣寵物<small>同人</small></h1>
+    <p>把崆峒四姝養在 Codex 與 Claude Code 裡。點她、餵她、陪她練功，好感會慢慢累積。</p>
+  </header>
+
+  <div class="tabs" role="tablist" id="tabs"></div>
+
+  <div class="grid">
+    <section class="card">
+      <div class="stage" id="stage">
+        <div class="bubble" id="bubble" aria-live="polite"></div>
+        <div class="sprite" id="sprite" role="button" tabindex="0" aria-label="摸頭"></div>
+      </div>
+      <div class="nameplate">
+        <strong id="name"></strong>
+        <span id="title"></span>
+      </div>
+      <div class="aff">
+        <div class="aff-bar"><div class="aff-fill" id="affFill"></div></div>
+        <div class="aff-text"><span id="tier"></span><span id="affNum"></span></div>
+      </div>
+      <div class="actions">
+        <button class="btn" data-act="pet">摸頭</button>
+        <button class="btn" data-act="feed">餵食</button>
+        <button class="btn" data-act="train">練功</button>
+        <button class="btn" data-act="gift">送禮</button>
+        <button class="btn" data-act="talk">聊天</button>
+      </div>
+    </section>
+
+    <div class="stack">
+      <section class="card" id="talkCard" hidden>
+        <h2>聊天</h2>
+        <p class="talk-q" id="talkQ"></p>
+        <div class="talk-opts" id="talkOpts"></div>
+      </section>
+
+      <section class="card">
+        <h2>Codex 動畫狀態預覽</h2>
+        <p class="muted">Codex 依工作狀態切換這 9 種動畫，點一下就能預覽。</p>
+        <div class="chips" id="states"></div>
+      </section>
+
+      <section class="card">
+        <h2>角色檔案</h2>
+        <p class="muted" id="tagline"></p>
+        <ul class="profile" id="profile"></ul>
+      </section>
+    </div>
+  </div>
+
+  <section class="card" style="margin-top:16px">
+    <h2>帶回家</h2>
+    <p><b>Codex</b>：把 <code id="petPath"></code> 資料夾（<a id="petJson">pet.json</a>、<a id="petSheet">spritesheet.webp</a>）複製到 <code>~/.codex/pets/</code>，再到 Settings → Pets → Refresh。或在 repo 裡執行：</p>
+    <pre>cd mortal-pets && ./install.sh codex</pre>
+    <p><b>Claude Code</b>：安裝外掛後，她會依你的工作狀態說話，也能用指令互動。</p>
+    <pre>/plugin install mortal-buddy --marketplace willismax/demo
+/mortal-buddy:pick xiaozhu     換寵物
+/mortal-buddy:pet feed         摸頭 pet／餵食 feed／練功 train／送禮 gift
+/mortal-buddy:talk             聊天（回答用 /mortal-buddy:talk 2）
+/mortal-buddy:roleplay 今天好累  讓她用自己的口吻回你</pre>
+    <p class="muted">完整說明見 <a href="https://github.com/willismax/demo/tree/main/mortal-pets">mortal-pets/README.md</a>。網頁上的好感只存在這個瀏覽器，和 Codex／Claude Code 的好感是分開的。</p>
+  </section>
+
+  <footer>
+    《活俠傳》（Legend of Mortal）及其角色的著作權屬於原開發商與發行商。本頁為非官方同人作品：角色設定整理自公開資料，像素圖與台詞為原創二創，並非遊戲素材或原文。
+  </footer>
+</main>
+
+<script src="claude-plugin/mortal-buddy/scripts/characters.js"></script>
+<script>
+  const { CHARS, UPCOMING, TIERS } = window.MORTAL_CHARS;
+  const CELL_W = 192, CELL_H = 208;
+  // 與 tools/build_sprites.py 的 ROW_SPEC 一致
+  const ROWS = {
+    "idle": { row: 0, d: [280, 110, 110, 140, 140, 320], label: "閒置" },
+    "running-right": { row: 1, d: [120, 120, 120, 120, 120, 120, 120, 220], label: "往右跑" },
+    "running-left": { row: 2, d: [120, 120, 120, 120, 120, 120, 120, 220], label: "往左跑" },
+    "waving": { row: 3, d: [140, 140, 140, 280], label: "揮手" },
+    "jumping": { row: 4, d: [140, 140, 140, 140, 280], label: "開心跳" },
+    "failed": { row: 5, d: [140, 140, 140, 140, 140, 140, 140, 240], label: "失敗" },
+    "waiting": { row: 6, d: [150, 150, 150, 150, 150, 260], label: "等你回覆" },
+    "running": { row: 7, d: [120, 120, 120, 120, 120, 220], label: "工作中" },
+    "review": { row: 8, d: [150, 150, 150, 150, 150, 280], label: "審視" },
+  };
+  const ACT_ANIM = { pet: "waving", feed: "jumping", train: "running", gift: "jumping" };
+  const ACT_GAIN = { pet: 1, feed: 1, train: 1, gift: 3 };
+  const AFF_MAX = 99;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const $ = (id) => document.getElementById(id);
+  const sprite = $("sprite");
+  const pick = (a) => a[Math.floor(Math.random() * a.length)];
+
+  // 只在這個瀏覽器記住好感；讀寫失敗時照常運作
+  function loadSave() {
+    try { return JSON.parse(localStorage.getItem("mortal-pets") || "{}"); } catch { return {}; }
+  }
+  const store = Object.assign({ current: "xiaomei", aff: {} }, loadSave());
+  function persist() {
+    try { localStorage.setItem("mortal-pets", JSON.stringify(store)); } catch {}
+  }
+
+  let anim = { timer: null, state: "idle", frame: 0, loops: 0, then: null };
+
+  function play(state, { loops = Infinity, then = null } = {}) {
+    clearTimeout(anim.timer);
+    anim = { timer: null, state, frame: 0, loops, then };
+    tick();
+    document.querySelectorAll("#states .chip").forEach((c) => c.setAttribute("aria-pressed", c.dataset.state === state));
+  }
+
+  function tick() {
+    const spec = ROWS[anim.state];
+    sprite.style.backgroundPosition = `${-anim.frame * CELL_W}px ${-spec.row * CELL_H}px`;
+    if (reduceMotion && anim.state === "idle") return;
+    anim.timer = setTimeout(() => {
+      anim.frame++;
+      if (anim.frame >= spec.d.length) {
+        anim.frame = 0;
+        anim.loops--;
+        if (anim.loops <= 0) {
+          const next = anim.then;
+          if (typeof next === "function") return next();
+          return play("idle");
+        }
+      }
+      tick();
+    }, spec.d[anim.frame]);
+  }
+
+  const cur = () => CHARS[store.current];
+  const aff = () => store.aff[store.current] || 0;
+  const tierOf = (n) => TIERS.filter((t) => n >= t.min).pop();
+
+  function addAff(n) {
+    store.aff[store.current] = Math.max(0, Math.min(AFF_MAX, aff() + n));
+    persist();
+    renderAff();
+  }
+
+  function renderAff() {
+    const n = aff();
+    const t = tierOf(n);
+    const next = TIERS.find((x) => x.min > n);
+    $("affFill").style.width = `${(n / AFF_MAX) * 100}%`;
+    $("tier").textContent = `好感階段：${t.name}`;
+    $("affNum").textContent = next ? `${n}（再 ${next.min - n} 點到「${next.name}」）` : `${n}`;
+  }
+
+  function speak(mood, line) {
+    const c = cur();
+    const face = c.face[mood] || c.face.idle;
+    $("bubble").innerHTML = "";
+    const b = document.createElement("b");
+    b.textContent = `${c.name}${face}`;
+    $("bubble").append(b, `「${line}」`);
+  }
+
+  function isNight() {
+    const h = new Date().getHours();
+    return h >= 23 || h < 5;
+  }
+
+  function act(kind) {
+    const c = cur();
+    if (kind === "talk") return startTalk();
+    addAff(ACT_GAIN[kind]);
+    speak(kind, pick(c.lines[kind]));
+    play(ACT_ANIM[kind], { loops: kind === "train" ? 3 : 2 });
+  }
+
+  function startTalk() {
+    const c = cur();
+    const t = pick(c.talks);
+    $("talkCard").hidden = false;
+    $("talkQ").textContent = `${c.name}：「${t.q}」`;
+    const box = $("talkOpts");
+    box.innerHTML = "";
+    t.opts.forEach((o) => {
+      const btn = document.createElement("button");
+      btn.className = "btn";
+      btn.textContent = o.t;
+      btn.onclick = () => {
+        addAff(o.aff);
+        const mood = o.aff > 0 ? "done" : o.aff < 0 ? "failed" : "review";
+        speak(mood, o.r);
+        play(o.aff > 1 ? "jumping" : o.aff < 0 ? "failed" : "review", { loops: 2 });
+        $("talkCard").hidden = true;
+      };
+      box.append(btn);
+    });
+    speak("waiting", pick(c.lines.waiting));
+    play("waiting");
+    box.firstChild.focus();
+  }
+
+  // 閒置時偶爾在舞台上散步或自言自語
+  let wanderTimer = null;
+  function wander() {
+    clearTimeout(wanderTimer);
+    wanderTimer = setTimeout(() => {
+      if (anim.state === "idle" && !reduceMotion) {
+        const stage = $("stage").clientWidth;
+        const now = parseFloat(sprite.style.left) || stage / 2;
+        const target = Math.max(110, Math.min(stage - 110, now + (Math.random() < 0.5 ? -1 : 1) * (60 + Math.random() * 120)));
+        play(target > now ? "running-right" : "running-left");
+        sprite.style.left = `${target}px`;
+        setTimeout(() => { if (anim.state.startsWith("running-")) play("idle"); }, 2400);
+      } else if (anim.state === "idle") {
+        const c = cur();
+        const pool = isNight() && aff() >= 30 && Math.random() < 0.3 ? c.lines.night : c.lines.idle;
+        speak("idle", pick(pool));
+      }
+      wander();
+    }, 7000 + Math.random() * 6000);
+  }
+
+  function select(id) {
+    store.current = id;
+    persist();
+    const c = cur();
+    document.documentElement.style.setProperty("--char", c.color);
+    document.documentElement.style.setProperty("--char-soft", c.color + "22");
+    document.querySelectorAll("#tabs .tab").forEach((t) => t.setAttribute("aria-selected", t.dataset.id === id));
+    sprite.style.backgroundImage = `url(codex/pets/${id}/spritesheet.webp)`;
+    sprite.style.transition = "none";
+    sprite.style.left = "50%";
+    requestAnimationFrame(() => { sprite.style.transition = ""; });
+    $("name").textContent = `${c.name}（${c.fullName}）`;
+    $("title").textContent = c.title;
+    $("tagline").textContent = c.tagline;
+    $("petPath").textContent = `mortal-pets/codex/pets/${id}/`;
+    $("petJson").href = `codex/pets/${id}/pet.json`;
+    $("petSheet").href = `codex/pets/${id}/spritesheet.webp`;
+    const ul = $("profile");
+    ul.innerHTML = "";
+    c.profile.forEach((p) => {
+      const li = document.createElement("li");
+      li.textContent = p;
+      if (p.startsWith("（劇透）")) {
+        li.className = "spoiler";
+        li.title = "點一下顯示劇透";
+        li.onclick = () => li.classList.toggle("shown");
+      }
+      ul.append(li);
+    });
+    $("talkCard").hidden = true;
+    renderAff();
+    speak("idle", pick(c.lines.greet));
+    play("waving", { loops: 2 });
+  }
+
+  // 分頁
+  for (const c of Object.values(CHARS)) {
+    const b = document.createElement("button");
+    b.className = "tab";
+    b.role = "tab";
+    b.dataset.id = c.id;
+    b.textContent = c.name;
+    b.onclick = () => select(c.id);
+    $("tabs").append(b);
+  }
+  for (const u of UPCOMING) {
+    const b = document.createElement("button");
+    b.className = "tab";
+    b.disabled = true;
+    b.textContent = `${u.name}（製作中）`;
+    b.title = u.note;
+    $("tabs").append(b);
+  }
+
+  // 狀態預覽
+  for (const [state, spec] of Object.entries(ROWS)) {
+    const b = document.createElement("button");
+    b.className = "chip";
+    b.dataset.state = state;
+    b.textContent = spec.label;
+    b.onclick = () => {
+      if (state.startsWith("running-")) {
+        const stage = $("stage").clientWidth;
+        sprite.style.left = `${state === "running-right" ? stage - 110 : 110}px`;
+      }
+      const mood = { failed: "failed", waiting: "waiting", running: "working", review: "review", jumping: "done" }[state];
+      if (mood) speak(mood, pick(cur().lines[mood]));
+      play(state, { loops: 3 });
+    };
+    $("states").append(b);
+  }
+
+  document.querySelectorAll("[data-act]").forEach((b) => (b.onclick = () => act(b.dataset.act)));
+  sprite.onclick = () => act("pet");
+  sprite.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); act("pet"); } };
+
+  select(CHARS[store.current] ? store.current : "xiaomei");
+  wander();
+</script>
+</body>
+</html>
