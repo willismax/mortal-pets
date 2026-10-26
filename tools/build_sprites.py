@@ -90,7 +90,7 @@ CHARACTERS = {
 CHARACTERS["xiaozhu-battle"] = {
     **CHARACTERS["xiaozhu"],
     "displayName": "小竹・裂骨魔",
-    "description": "郁竹的戰鬥裝束：鐵網護甲，右臂是扛著紅紋巨劍的機關臂，虎紋背帶連著左手的虎頭盾。平常睏睏的，掄起兵器就是「裂骨魔」。（活俠傳同人）",
+    "description": "郁竹的戰鬥裝束：鐵網護甲、虎紋肩甲，右臂是扛著紅紋巨劍的機關臂，左手拿虎頭盾，兩者在背後靠背包相連。平常睏睏的，掄起兵器就是「裂骨魔」。（活俠傳同人）",
     "battle": True,
 }
 
@@ -220,6 +220,14 @@ def draw_frame(cid, pose):
         leg(20 + dx, hip_y, base_bottom)
         leg(27 + dx, hip_y, base_bottom)
 
+    if battle:
+        # 背包與虎紋背架：從背後把機關臂和虎頭盾連在一起，只露出邊緣
+        p.rect(12 + dx, 27 + dy, 36 + dx, 41 + dy, OUTLINE)
+        p.rect(13 + dx, 28 + dy, 35 + dx, 40 + dy, (112, 92, 70, 255))
+        p.line([(13 + dx, 29 + dy), (35 + dx, 29 + dy)], (232, 160, 40, 255), 2)
+        for k in range(14, 36, 4):
+            p.px(k + dx, 29 + dy, (30, 24, 20, 255)); p.px(k + dx, 30 + dy, (30, 24, 20, 255))
+
     # 身體（裙裝）
     flare = -1 if face_r else 0
     if rnd:
@@ -297,14 +305,11 @@ def draw_frame(cid, pose):
     hand_r = arm(sx_r, ar, 1)
 
     if battle:
-        # 虎紋背帶：從右邊機關臂斜過胸前，連到左手的虎頭盾
-        p.line([(33 + dx, 30 + rig_y), (16 + dx, hand_l[1])], OUTLINE, 4)
-        p.line([(33 + dx, 30 + rig_y), (16 + dx, hand_l[1])], (232, 160, 40, 255), 2)
-        for k in range(1, 5):
-            t = k / 5
-            px_ = round(33 + dx + (16 - 33) * t)
-            py_ = round(30 + rig_y + (hand_l[1] - 30 - rig_y) * t)
-            p.px(px_, py_, (30, 24, 20, 255))
+        # 肩甲：虎紋護肩蓋在兩邊肩膀上（與背後的背包相連）
+        for shx in (sx_l, sx_r):
+            p.ell(shx - 3, sy - 3, shx + 3, sy + 2, (232, 160, 40, 255), OUTLINE)
+            p.line([(shx - 1, sy - 2), (shx - 2, sy + 1)], (30, 24, 20, 255))
+            p.line([(shx + 2, sy - 2), (shx + 1, sy + 1)], (30, 24, 20, 255))
         # 虎頭盾
         sx0, sy0 = hand_l[0] - 7, hand_l[1] - 6
         orange, dark, stripe = (214, 132, 60, 255), (30, 24, 20, 255), (150, 78, 30, 255)
@@ -713,6 +718,11 @@ def render_rows(cid):
         assert len(frames) == len(durations), (cid, state, len(frames))
         out[state] = frames
     out["running-left"] = mirror_row(out["running-right"])
+    if CHARACTERS[cid].get("battle"):
+        # 畫的時候武器在畫面右邊；小竹是右手持武器、左手持盾，
+        # 正面看武器應在畫面左邊，所以整格鏡像，左右跑的兩列對調
+        out = {k: mirror_row(v) for k, v in out.items()}
+        out["running-right"], out["running-left"] = out["running-left"], out["running-right"]
     return out
 
 
