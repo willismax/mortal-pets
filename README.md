@@ -2,11 +2,11 @@
 
 **中文** ｜ [日本語](README.ja.md) ｜ [한국어](README.ko.md) ｜ [English](README.en.md)
 
-![活俠傳結緣寵物：小梅、小竹、裂骨魔、小師妹、龍湘、夏侯蘭、葉雲裳的像素寵物](promo/promo-landscape.png)
+![活俠傳結緣寵物：小梅、小竹、裂骨魔、小師妹、龍湘、夏侯蘭、葉雲裳、魏菊、大師兄的像素寵物](promo/promo-landscape.png)
 
-![六人招牌動作：小梅飛踢、小竹擦汗、小師妹抖抖抖、龍湘雞腿劍、夏侯蘭跟我來、葉雲裳欸嘿](promo/promo-moves.gif)
+![招牌動作：小梅飛踢、小竹擦汗、小師妹抖抖抖、龍湘雞腿劍、夏侯蘭跟我來、葉雲裳欸嘿、魏菊嚇到、大師兄擲鏢](promo/promo-moves.gif)
 
-把《活俠傳》的結緣角色做成 **Codex 寵物**和 **Claude Code 寵物**，並依角色個性寫了互動對話。目前有小梅（虞小梅）、小竹（郁竹）、小師妹（唐默鈴）、龍湘、夏侯蘭、葉雲裳六位。
+把《活俠傳》的結緣角色做成 **Codex 寵物**和 **Claude Code 寵物**，並依角色個性寫了互動對話。目前有小梅（虞小梅）、小竹（郁竹）、小師妹（唐默鈴）、龍湘、夏侯蘭、葉雲裳、魏菊七位，另有番外的大師兄唐布衣（非結緣對象，應網友許願加入）。
 
 - 線上試玩：<https://willismax.github.io/mortal-pets/>（直接開 `index.html` 也可以；右上角可切換中文、日本語、한국어、English，分享時可加 `?lang=ja`、`?lang=ko`、`?lang=en`）
 - Claude Code 安裝：`/plugin install mortal-buddy --marketplace willismax/mortal-pets`
@@ -19,7 +19,7 @@ mortal-pets/
 ├── .claude-plugin/marketplace.json  Claude Code 外掛市集設定
 ├── index.html                    互動網頁：摸頭、餵食、練功、送禮、聊天、9 種動畫預覽
 ├── install.sh                    安裝 Codex 寵物／skill／通知，以及 Claude Code status line
-├── codex/pets/<id>/              Codex 寵物：xiaomei、xiaozhu、xiaozhu-battle、xiaoshimei、longxiang、xiahoulan、yeyunshang
+├── codex/pets/<id>/              Codex 寵物：xiaomei、xiaozhu、xiaozhu-battle、xiaoshimei、longxiang、xiahoulan、yeyunshang、weiju、tangbuyi
 ├── codex/qa/                     總覽圖與各狀態 GIF，方便檢查動畫
 ├── claude-plugin/mortal-buddy/   Claude Code 外掛
 │   ├── hooks/hooks.json          依工作狀態切換心情與台詞
@@ -43,7 +43,7 @@ git clone https://github.com/willismax/mortal-pets.git
 cd mortal-pets && ./install.sh codex
 ```
 
-會把七隻寵物（小梅、小竹、小竹・裂骨魔、小師妹、龍湘、夏侯蘭、葉雲裳）複製到 `~/.codex/pets/`，角色卡複製到 `~/.codex/skills/`。接著到 Codex 的 Settings → Pets → Refresh 選一隻；對話中可用 `/pet` 叫出或收起寵物。
+會把九隻寵物（小梅、小竹、小竹・裂骨魔、小師妹、龍湘、夏侯蘭、葉雲裳、魏菊、大師兄）複製到 `~/.codex/pets/`，角色卡複製到 `~/.codex/skills/`。接著到 Codex 的 Settings → Pets → Refresh 選一隻；對話中可用 `/pet` 叫出或收起寵物。
 
 想在每輪完成時收到角色的系統通知，在 `~/.codex/config.toml` 加上（安裝腳本會印出實際路徑）：
 
@@ -110,11 +110,11 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 
 | 指令 | 說明 |
 | --- | --- |
-| `/mortal-buddy:pick xiaozhu` | 換寵物（`xiaomei`、`xiaozhu`、`xiaoshimei`、`longxiang`、`xiahoulan`、`yeyunshang`） |
+| `/mortal-buddy:pick xiaozhu` | 換寵物（`xiaomei`、`xiaozhu`、`xiaoshimei`、`longxiang`、`xiahoulan`、`yeyunshang`、`weiju`、`tangbuyi`） |
 | `/mortal-buddy:pet feed` | `pet` 摸頭、`feed` 餵食、`train` 練功（各 +1）、`gift` 送禮（+3），同一種互動一分鐘內只算一次 |
 | `/mortal-buddy:talk` | 她出題，用 `/mortal-buddy:talk 2` 回答，答案會加減好感 |
 | `/mortal-buddy:roleplay 今天好累` | 載入角色卡，讓她用自己的口吻回你 |
-| `/mortal-buddy:status` | 查看兩人的好感與階段 |
+| `/mortal-buddy:status` | 查看所有角色的好感與階段，以及目前版本 |
 | `/mortal-buddy:mute` | 開關對話中的反應訊息 |
 | `/mortal-buddy:lang ja` | 切換語言：`zh` 中文、`ja` 日本語、`ko` 한국어、`en` English（第一次會依系統語系自動判斷） |
 
@@ -127,6 +127,21 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 ```
 
 狀態存在 `~/.mortal-buddy/state.json`，Claude Code 與 Codex 通知共用同一份好感。
+
+### 更新
+
+目前版本 **0.4.0**（新增魏菊、番外大師兄），各版內容見 [CHANGELOG.md](CHANGELOG.md)。
+
+- Claude Code：在終端機執行下面兩行，再重開 Claude Code。從 0.4.0 起，有新版時開新對話會提醒你（一天最多一次），更新後第一次開對話會介紹新內容；不想自動檢查可設環境變數 `MORTAL_BUDDY_NO_UPDATE_CHECK=1`。
+
+  ```bash
+  claude plugin marketplace update mortal-pets
+  claude plugin update mortal-buddy@mortal-pets
+  ```
+
+- Codex：在 repo 資料夾執行 `git pull && ./install.sh codex`，再到 Settings → Pets → Refresh。
+- 網頁版會自動拿到最新內容。
+- `/mortal-buddy:status` 最後一行會顯示目前版本。
 
 ## 素材整理
 
@@ -170,7 +185,7 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 - 坦率開朗、有點呆：收了劍就呆頭呆腦，烤雞不拔毛、錢包總被割，容易上當。
 - 家傳劍法從小以雞腿為劍練起，最愛餐餐有雞腿；對感情遲鈍，常以武會友。
 
-設計對應（參考 LoM Wiki 立繪）：半束髮髻插青簪、額間紅花鈿、白衣青領青腰帶與護腕、深色劍鞘配紅劍穗，手上總有雞腿；開心時拿雞腿當劍直刺；失敗是錢包又被偷；等待時摸肚子流口水。
+設計對應：依網友提供的像素參考圖逐格描成底圖（`tools/ref/tangbuyi_base.png`），表情與手臂依動作重畫。蓬亂深棕髮、大呆毛、後腦金繩低綁的馬尾、劍眉、紅褐眼睛；青藍交領長袍、白內領、胸前金色十字、玉珮紅流蘇、金邊下襬、棕色袖套、黑長靴，指間夾著金錢鏢。
 
 ### 夏侯蘭
 
@@ -200,11 +215,51 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 | 7 | running（工作中） | 拿著樹枝（聽雲棒）氣呼呼地比劃 |
 | 8 | review | **有心事**：垂著眼安靜下來，最後害羞一笑 |
 
+### 魏菊
+
+- 崆峒派玄功門當代的嫡傳女弟子，兼任當代掌門，「崆峒四姝」之一。
+- 儀態端莊，知書達禮，文靜而秀麗脫俗，與崆峒派格格不入的奇女子。
+- 溫和、不愛動武，卻很受派內敬重；早年是金陵有名的才女。愛讀書、愛品茶。
+- 手裡捧的手爐，是郁竹打造的機巧之物。
+- 劇透：好感夠高時，離開崆峒會以心聲揭露她隱藏的身分。
+
+設計對應（參考 LoM Wiki 立繪與表情）：長髮往後梳、頭頂盤髻插金簪、側邊淺藍髮帶、黃色寬袖外袍、白內衣淺藍交領、橙黃長裙配藍腰帶，雙手捧著深綠手爐。
+
+| 列 | 狀態 | 魏菊 |
+| --- | --- | --- |
+| 0 | idle | 捧著手爐溫柔微笑，手爐冒著熱氣 |
+| 3 | waving | 微微欠身，害羞得**頭頂冒熱氣** |
+| 4 | jumping | **閉眼臉紅地笑**，端莊地輕輕一跳 |
+| 5 | failed | **嚇到摀嘴尖叫**發抖，再努力恢復端莊 |
+| 6 | waiting | **驚訝冒汗**地看著你 |
+| 7 | running（工作中） | 捧著書安靜地讀、翻頁 |
+| 8 | review | 臉上一片**陰影**，意味深長地微笑 |
+
+### 大師兄 唐布衣（番外）
+
+- 唐門掌門座下第一大弟子，人稱「飛俠」，暗器與輕功當世一流。不是結緣對象，應網友許願加入。
+- 爽朗不羈，常帶師弟妹翹課、惡作劇；嘴上沒正經，心裡最照顧師弟妹。
+- 暗器是真金打的金錢鏢，遇到愛錢的人改用腳踢；自誇輕功「天下前五」，不肯只說前十。
+- 夢想退隱江湖，跟師弟搭檔說相聲。
+- 劇透：與小師妹有婚約；第三年身故，早在杏花林就預感到了。
+
+設計對應（參考 LoM Wiki 立繪）：紫黑長髮帶紅褐髮梢、層次短髮與呆毛、斜掃瀏海、頸後草繩紮的細長馬尾、臉頰小疤；青藍立領長袍配金色盤扣、深色褲管、紅褐護腕，指間夾著金錢鏢。
+
+| 列 | 狀態 | 大師兄 |
+| --- | --- | --- |
+| 0 | idle | 叉腰歪頭，用拇指把**方孔金錢彈上去再接住**，接到了眨眼一笑 |
+| 3 | waving | 一手叉腰、**豎起手指**大笑：「師弟，有了！」 |
+| 4 | jumping | **飛俠**：壓低身子，一躍而起張開雙臂，**金錢鏢扇形散射**出去 |
+| 5 | failed | 愣住冒汗，再**摸著後腦哈哈大笑**帶過 |
+| 6 | waiting | 伸手在你眼前晃：「回神了沒？」 |
+| 7 | running（工作中） | 拉開架式**連發金錢鏢**，帶著殘影飛出、命中冒火花 |
+| 8 | review | **雙手抱胸**板著臉看，看完嘴角一勾 |
+
 ### 新增角色
 
 步驟：
 
-1. 在 `tools/build_sprites.py` 的 `CHARACTERS` 加配色與特徵，在 `poses_for()` 設計各狀態動作。
+1. 在 `tools/build_sprites.py` 的 `CHARACTERS` 加配色與特徵，在 `poses_for()` 設計各狀態動作（也可以像大師兄一樣，用 `"bitmap"` 指定一張 48×52 的點陣底圖）。
 2. 在 `scripts/characters.js` 加角色資料、各心情台詞與聊天題目。
 3. 在 `skills/` 加角色卡，然後執行 `python3 tools/build_sprites.py --preview`。
 4. 改了角色資料或圖之後，把 `index.html` 裡所有 `?v=` 版本號加一，瀏覽器才不會拿快取的舊檔配新網頁（會整頁空白）。
@@ -227,6 +282,8 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 - [聯合新聞網：夏侯蘭支線更新](https://game.udn.com/game/story/122089/9823786)
 - [4Gamers：活俠傳女角人氣投票](https://www.4gamers.com.tw/news/detail/66059/legend-of-mortal-female-characters-popularity-charts)
 - [聯合新聞網：葉雲裳結緣攻略](https://game.udn.com/game/story/122090/8970592)、[LoM Wiki：葉雲裳](https://smilin.net/LoM-wiki/people/characters/girl2.html)、[GAMEX JP：葉雲裳ルート解説](https://gamexjp.com/games/1538/)
+- [LoM Wiki：魏菊](https://smilin.net/LoM-wiki/people/characters/girl7.html)、[巴哈姆特：魏菊系列劇情影片](https://forum.gamer.com.tw/C.php?bsn=73317&snA=1670)、[遊戲狂：魏菊隱藏劇情攻略](https://gamemad.com/guide/336609)
+- [LoM Wiki：唐布衣](https://smilin.net/LoM-wiki/people/characters/brother1.html)
 - Codex 寵物格式：[openai/skills hatch-pet](https://github.com/openai/skills/tree/main/skills/.curated/hatch-pet)（`references/animation-rows.md`）
 
 ## 版權

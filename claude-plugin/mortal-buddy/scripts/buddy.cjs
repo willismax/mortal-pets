@@ -9,11 +9,13 @@
 //   node buddy.cjs mute | status
 //   node buddy.cjs lang ja              # 切換語言：zh 中文、ja 日本語、ko 한국어、en English
 //   node buddy.cjs codex-notify '<json>' # Codex 的 notify 設定呼叫
+//   node buddy.cjs check-update         # 背景查 GitHub 上的最新版本（SessionStart 一天最多查一次）
 
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
-const { execFile } = require("child_process");
+const https = require("https");
+const { execFile, spawn } = require("child_process");
 const DATA = require("./characters.js");
 
 const LANGS = ["zh", "ja", "ko", "en"];
@@ -26,6 +28,9 @@ const MSG = {
     answer: "（回答：/mortal-buddy:talk <編號>）", range: (n) => `請選 1 到 ${n}。`,
     choices: "可選：", aff: "好感", reactions: (on) => `反應訊息：${on ? "開啟" : "關閉"}`,
     muted: (on) => `反應訊息已${on ? "開啟" : "關閉"}。`,
+    updated: (v, news) => `（mortal-buddy 已更新到 ${v}：${news}！用 /mortal-buddy:pick 換寵物）`,
+    newVersion: (v, cur) => `（mortal-buddy 有新版 ${v}（目前 ${cur}）：在終端機執行 claude plugin marketplace update mortal-pets，再執行 claude plugin update mortal-buddy@mortal-pets，重開 Claude Code 即可）`,
+    version: (v) => `mortal-buddy v${v}`,
     lang: "語言已切換為中文。", langs: "可選語言：zh 中文、ja 日本語、ko 한국어、en English",
     usage: "用法：buddy.cjs hook|statusline|pick <id>|act <pet|feed|train|gift>|talk [n]|mute|status|lang <zh|ja|ko|en>|codex-notify <json>"
   },
@@ -36,6 +41,9 @@ const MSG = {
     answer: "（答え方：/mortal-buddy:talk <番号>）", range: (n) => `1〜${n} の番号を選んでね。`,
     choices: "選べるキャラ：", aff: "好感度", reactions: (on) => `リアクション表示：${on ? "オン" : "オフ"}`,
     muted: (on) => `リアクション表示を${on ? "オン" : "オフ"}にしました。`,
+    updated: (v, news) => `（mortal-buddy を ${v} に更新しました：${news}！/mortal-buddy:pick でペットを切り替えられます）`,
+    newVersion: (v, cur) => `（mortal-buddy の新バージョン ${v} があります（現在 ${cur}）：ターミナルで claude plugin marketplace update mortal-pets と claude plugin update mortal-buddy@mortal-pets を実行し、Claude Code を再起動してください）`,
+    version: (v) => `mortal-buddy v${v}`,
     lang: "言語を日本語に切り替えました。", langs: "選べる言語：zh 中文、ja 日本語、ko 한국어、en English",
     usage: "使い方：buddy.cjs hook|statusline|pick <id>|act <pet|feed|train|gift>|talk [n]|mute|status|lang <zh|ja|ko|en>|codex-notify <json>"
   },
@@ -46,6 +54,9 @@ const MSG = {
     answer: "(대답: /mortal-buddy:talk <번호>)", range: (n) => `1부터 ${n} 사이에서 골라 주세요.`,
     choices: "선택 가능: ", aff: "호감도", reactions: (on) => `반응 메시지: ${on ? "켜짐" : "꺼짐"}`,
     muted: (on) => `반응 메시지를 ${on ? "켰어요" : "껐어요"}.`,
+    updated: (v, news) => ` (mortal-buddy가 ${v}(으)로 업데이트됐어요: ${news}! /mortal-buddy:pick 으로 펫을 바꿀 수 있어요)`,
+    newVersion: (v, cur) => ` (mortal-buddy 새 버전 ${v}이 나왔어요(현재 ${cur}): 터미널에서 claude plugin marketplace update mortal-pets, claude plugin update mortal-buddy@mortal-pets 를 실행한 뒤 Claude Code를 다시 시작하세요)`,
+    version: (v) => `mortal-buddy v${v}`,
     lang: "언어를 한국어로 바꿨어요.", langs: "선택 가능한 언어: zh 中文, ja 日本語, ko 한국어, en English",
     usage: "사용법: buddy.cjs hook|statusline|pick <id>|act <pet|feed|train|gift>|talk [n]|mute|status|lang <zh|ja|ko|en>|codex-notify <json>"
   },
@@ -56,6 +67,9 @@ const MSG = {
     answer: "(answer with /mortal-buddy:talk <number>)", range: (n) => `Pick a number from 1 to ${n}.`,
     choices: "Available: ", aff: "affection", reactions: (on) => `Reaction messages: ${on ? "on" : "off"}`,
     muted: (on) => `Reaction messages turned ${on ? "on" : "off"}.`,
+    updated: (v, news) => ` (mortal-buddy updated to ${v}: ${news}! Switch pets with /mortal-buddy:pick)`,
+    newVersion: (v, cur) => ` (mortal-buddy ${v} is out (you have ${cur}): run claude plugin marketplace update mortal-pets, then claude plugin update mortal-buddy@mortal-pets, and restart Claude Code)`,
+    version: (v) => `mortal-buddy v${v}`,
     lang: "Language switched to English.", langs: "Languages: zh 中文, ja 日本語, ko 한국어, en English",
     usage: "Usage: buddy.cjs hook|statusline|pick <id>|act <pet|feed|train|gift>|talk [n]|mute|status|lang <zh|ja|ko|en>|codex-notify <json>"
   }
@@ -105,6 +119,79 @@ function load() {
 function save(s) {
   fs.mkdirSync(HOME, { recursive: true });
   fs.writeFileSync(STATE_FILE, JSON.stringify(s, null, 2));
+}
+
+// 版本：外掛裡讀 ../.claude-plugin/plugin.json，install.sh 裝的則讀同資料夾的 plugin.json
+function readVersion() {
+  for (const p of [path.join(__dirname, "..", ".claude-plugin", "plugin.json"), path.join(__dirname, "plugin.json")]) {
+    try {
+      return JSON.parse(fs.readFileSync(p, "utf8")).version;
+    } catch {}
+  }
+  return null;
+}
+const VERSION = readVersion();
+const REMOTE_MANIFEST = "https://raw.githubusercontent.com/willismax/mortal-pets/main/claude-plugin/mortal-buddy/.claude-plugin/plugin.json";
+const LATEST_FILE = path.join(HOME, "latest.json");
+const DAY_MS = 24 * 60 * 60 * 1000;
+// 各版新增的內容，更新後第一次開對話時說一次
+const NEWS = {
+  "0.4.0": {
+    zh: "新增魏菊、番外大師兄唐布衣",
+    ja: "魏菊と番外編の大師兄・唐布衣が仲間入り",
+    ko: "위국과 번외편 대사형 당포의 추가",
+    en: "Wei Ju and bonus character Senior Brother Tang Buyi join the cast"
+  }
+};
+
+function newer(a, b) {
+  const pa = String(a).split(".").map(Number), pb = String(b).split(".").map(Number);
+  for (let i = 0; i < 3; i++) {
+    if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) > (pb[i] || 0);
+  }
+  return false;
+}
+
+// 背景查最新版，寫進 latest.json；查不到就算了，不影響寵物
+function checkUpdate() {
+  const req = https.get(REMOTE_MANIFEST, { timeout: 5000 }, (res) => {
+    let body = "";
+    res.on("data", (d) => (body += d));
+    res.on("end", () => {
+      try {
+        const version = JSON.parse(body).version;
+        fs.mkdirSync(HOME, { recursive: true });
+        fs.writeFileSync(LATEST_FILE, JSON.stringify({ version, checkedAt: Date.now() }));
+      } catch {}
+    });
+  });
+  req.on("timeout", () => req.destroy());
+  req.on("error", () => {});
+}
+
+// 開新對話時：剛更新過就介紹新內容；GitHub 上有新版就提醒（一天最多一次）
+function updateNotes(s, existed) {
+  const notes = [];
+  if (!VERSION) return notes;
+  if (s.seenVersion !== VERSION) {
+    const news = NEWS[VERSION] && NEWS[VERSION][s.lang];
+    if (existed && news) notes.push(M.updated(VERSION, news));
+    s.seenVersion = VERSION;
+  }
+  let latest = {};
+  try {
+    latest = JSON.parse(fs.readFileSync(LATEST_FILE, "utf8"));
+  } catch {}
+  if (latest.version && newer(latest.version, VERSION) && Date.now() - (s.updateToldAt || 0) > DAY_MS) {
+    notes.push(M.newVersion(latest.version, VERSION));
+    s.updateToldAt = Date.now();
+  }
+  if (!process.env.MORTAL_BUDDY_NO_UPDATE_CHECK && Date.now() - (latest.checkedAt || 0) > DAY_MS) {
+    try {
+      spawn(process.execPath, [__filename, "check-update"], { detached: true, stdio: "ignore" }).unref();
+    } catch {}
+  }
+  return notes;
 }
 
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -164,13 +251,16 @@ function hook() {
   try {
     ev = JSON.parse(readStdin() || "{}");
   } catch {}
+  const existed = fs.existsSync(STATE_FILE);
   const s = load();
   let speak = false;
+  let notes = [];
   switch (ev.hook_event_name) {
     case "SessionStart":
       say(s, "greet");
       s.mood = "idle";
       speak = true;
+      notes = updateNotes(s, existed);
       break;
     case "UserPromptSubmit":
       say(s, "review");
@@ -193,8 +283,10 @@ function hook() {
       break;
   }
   save(s);
-  if (speak && !s.muted) {
-    process.stdout.write(JSON.stringify({ systemMessage: format(s, s.line), suppressOutput: true }));
+  // 更新提醒即使關掉反應訊息也照樣顯示
+  const lines = [...(speak && !s.muted ? [format(s, s.line)] : []), ...notes.map((n) => n.trim())];
+  if (lines.length) {
+    process.stdout.write(JSON.stringify({ systemMessage: lines.join("\n"), suppressOutput: true }));
   }
 }
 
@@ -282,6 +374,7 @@ function status() {
     console.log(`${mark} ${label}${M.lp}${detail}${M.rp} ${M.aff} ${n} ${hearts(n)} ${tierOf(n)}`);
   }
   console.log(M.reactions(!s.muted));
+  if (VERSION) console.log(M.version(VERSION));
 }
 
 // Codex 在每輪結束時呼叫 notify 程式，最後一個參數是事件 JSON。
@@ -337,6 +430,7 @@ switch (cmd) {
   }
   case "status": status(); break;
   case "codex-notify": codexNotify(args[args.length - 1]); break;
+  case "check-update": checkUpdate(); break;
   default:
     load();
     console.log(M.usage);

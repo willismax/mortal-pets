@@ -430,6 +430,114 @@
             ]
           }
         ]
+      },
+      weiju: {
+        name: "Wei Ju",
+        fullName: "Wei Ju",
+        title: "Direct Disciple of Kongtong's Mystic Arts Gate, Master of the Mystic Arts Gate",
+        tagline: "Well-read, courteous, quiet and graceful: a remarkable woman who could not fit Kongtong less. She always cradles the hand warmer Xiaozhu made for her.",
+        profile: [
+          "The current direct disciple of the Mystic Arts Gate of the Kongtong Sect, who also serves as the Master of the Mystic Arts Gate, and one of “the Four Beauties of Kongtong”.",
+          "Dignified, well-read and courteous, quiet and elegantly beautiful: a remarkable woman who could not fit the Kongtong Sect less.",
+          "Gentle by nature and no lover of fighting, yet deeply respected within the sect. In her youth she was a famed talent of Jinling, and once rather proud. She loves books and tea.",
+          "Long hair coiled into a bun atop her head with a golden hairpin, a pale blue ribbon trailing at the side. A wide-sleeved yellow robe over a long orange-yellow skirt, and in her hands the clever hand warmer Yu Zhu crafted.",
+          "(Spoiler) If her affection is high enough, she reveals her hidden identity in an inner voice when you leave Kongtong."
+        ],
+        lines: {
+          greet: ["Young Master Zhao, welcome. Please, have a seat. The tea is just warm.", "The wind is strong today. Come in and warm your hands.", "Here to slack off again? ...I jest. You're welcome here."],
+          idle: ["(cradling her hand warmer, quietly reading)", "Yu Zhu made this hand warmer for me. I couldn't get through winter without it.", "Everyone in Kongtong would rather use their fists. I'd rather use my brush.", "Tea is to be savored slowly, and matters to be pondered slowly."],
+          working: ["Go on with your writing. I'll read beside you; I won't disturb you.", "(turns a page) Mm, this line is well written.", "If you tire, rest a while. I've poured you some tea."],
+          done: ["Very well done. This passage is clear and well ordered.", "Thank you for your hard work. Here, have some hot tea.", "(smiles with her eyes closed) ...How lovely. I'm happy for you."],
+          failed: ["Oh—! (covers her mouth) ...F-forgive me.", "Don't panic. Have a sip of tea first, then look it over from the start.", "Mistakes are no matter. A scholar fears revisions least of all."],
+          waiting: ["Hm? ...Would you like me to decide for you?", "(tilts her head slightly) You haven't finished speaking, Young Master.", "I'll wait. There's no hurry."],
+          review: ["(the corners of her mouth curve) ...There's an error hiding right here.", "The words are correct, but the meaning doesn't follow.", "Hmm... take your time. I'll look it over with you."],
+          pet: ["(instantly turns red) ...Y-Young Master, this is hardly proper.", "...J-just this once.", "(steam rises from her head)"],
+          feed: ["What fragrant pastries. Perfect with tea.", "Thank you, Young Master. I'll share half with you.", "Do chew slowly when you eat."],
+          train: ["Training? ...Perhaps I'll leaf through the manuals and find the techniques for you instead.", "I'm no good at fighting, but I can see where you're going wrong.", "(holds up her hand warmer and cheers from the side)"],
+          gift: ["This is... for me? Thank you.", "I'll keep it safe in my book chest.", "(blushes) ...How thoughtful of you, Young Master."],
+          night: ["Only late at night are people willing to speak from the heart.", "...There are things I cannot tell you either. When the time comes, I will.", "In Kongtong, you're the only one I can talk to without keeping up appearances."]
+        },
+        talks: [
+          {
+            q: "What have you been reading lately, Young Master?",
+            opts: [
+              { t: "I'm reading an anthology of Song lyrics.", r: "(her eyes light up) What a coincidence. Those are some of my favorite poems. Let's read them together some day." },
+              { t: "I barely have time to train, let alone read.", r: "...I suppose so. Most people in Kongtong are the same." },
+              { t: "I'd like a recommendation from you, Master Wei.", r: "Then let us start with the Analects. Don't frown, it's quite interesting." }
+            ]
+          },
+          {
+            q: "Is this hand warmer warm? You may hold it for a while.",
+            opts: [
+              { t: "It's warm. Just like you.", r: "(steam rises from her head) ...Young Master, please don't tease." },
+              { t: "Xiaozhu made this, didn't she? Fine craftsmanship.", r: "Yes. Yu Zhu's handiwork is the finest in Kongtong." },
+              { t: "I'm not cold. You keep it.", r: "How considerate of you... then I won't stand on ceremony." }
+            ]
+          },
+          {
+            q: "I hear everyone in the Kongtong Sect thinks I'm rather strange?",
+            opts: [
+              { t: "You're the most graceful sect master there is.", r: "(smiles with her eyes closed) ...Hearing that from you isn't so bad." },
+              { t: "You're a little unlike Kongtong folk, I'll admit.", r: "Hehe, I think so myself." },
+              { t: "Maybe they're afraid of you?", r: "(the corners of her mouth curve) ...Afraid of me? Why ever would they be?" }
+            ]
+          }
+        ]
+      },
+      tangbuyi: {
+        name: "Senior Brother",
+        fullName: "Tang Buyi",
+        title: "First Disciple of the Tang Clan Master, known as “the Flying Knight”",
+        tagline: "The Tang Clan's breezy, free-spirited eldest senior brother. First-rate at hidden weapons and lightness skill, he dreams of retiring from the jianghu to do a comic double act (xiangsheng) with you. (Bonus character)",
+        profile: [
+          "The first disciple of the Tang Clan's master. His name is Buyi, and the jianghu calls him “the Flying Knight.” (Bonus character, not a romance option)",
+          "Naturally gifted, open-hearted and unconstrained; his mastery of both hidden weapons and lightness skill ranks among the finest of his age.",
+          "Free-spirited to a fault, he regularly drags his juniors off to skip class and play pranks, sending the Master into fits of rage. He grew up alongside Junior Sister and shares a deep bond with Zhao Huo.",
+          "His hidden weapons are real gold-coin darts; against money-loving opponents, he kicks them instead.",
+          "His dream is to one day retire from the jianghu and take the stage with Zhao Huo in a comic double act (xiangsheng).",
+          "Long purplish-black hair with reddish-brown tips, tied in a low ponytail with a straw cord; a blue-teal stand-collar robe with gold frog buttons, reddish-brown bracers on his forearms with red feather ornaments.",
+          "(Spoiler) The Master once promised Junior Sister to him. In the third year he dies in the story; it's said he had his fortune told in the Apricot Blossom Grove long before and knew this trial was fated."
+        ],
+        lines: {
+          greet: ["Little brother! Hey, little brother! There you are, I was bored out of my skull!", "Yo, little brother. Today's lesson... you skipped it, right?", "Perfect timing, little brother. Come pick fruit with me on the back hill."],
+          idle: ["(twirling a gold-coin dart between his fingers, humming a tune)", "My lightness skill isn't top ten under heaven... top five, though? Sure.", "Sigh, the Master's looking for me again, isn't he? Shh, you didn't see me.", "Once we retire from the jianghu, we're doing a comic double act. I've already got the sign picked out."],
+          working: ["You do your thing. I'll keep watch for you.", "With this in your hands, little brother, I can relax completely.", "(feet up) Mm-hm, nicely done. Keep going, keep going."],
+          done: ["Yes! That's my little brother!", "All done? Come on, drinks are on me. You're paying, of course.", "Beautiful move. More accurate than my gold-coin darts."],
+          failed: ["Oops... the Master's going to chew us out. Tell him it was my idea.", "It's fine, it's fine. I caused way bigger messes than this back in the day.", "Tch, missed? Go again. I'm watching."],
+          waiting: ["Little brother? Little brother! Hey, little brother! Say something already!", "(waving a hand in front of your face) Anybody home?", "Just say the word and I'll make my move."],
+          review: ["(squinting with a grin) Right here, there's an opening. Obvious as the Master's beard.", "Hmm, this move looks flashy, but it isn't really.", "Let me take a look... heh, gotcha."],
+          pet: ["Hey, hey, little brother, patting your senior brother's head? Have you no decorum? ...Okay, one more.", "Haha, did you pick that up from Junior Sister?", "Quit it. If my hair gets messy, the Master will nag me again."],
+          feed: ["Delicious! Your cooking's gotten better, little brother.", "Could I... get another serving? It's for Junior Sister.", "Gotta eat well if we're going to have the energy to skip class."],
+          train: ["Watch closely, I'm only showing you once. The gold-coin dart goes here... whoosh!", "The secret of lightness skill? Just run faster than the Master's yelling.", "Training? ...Fine, but promise me: afterward you'll practice our double act with me."],
+          gift: ["For me? You really get me, little brother!", "Is this... real gold? Now I can't bear to throw it as a dart.", "Nice! I'll take it. Next round of drinks is on me."],
+          night: ["Little brother, if one day I'm not around anymore, look after Junior Sister for me.", "In this life, there are some things you just can't dodge. ...Just talking. Don't take it seriously.", "It's quiet at night. Makes me think of when we were kids skipping class together."]
+        },
+        talks: [
+          {
+            q: "Little brother, skipping the next lesson? I'll cover for you.",
+            opts: [
+              { t: "Let's skip! Lead the way, Senior Brother!", r: "That's my boy! Come on, the fruit on the back hill is ripe." },
+              { t: "No way, the Master will scold us.", r: "Tch. You're getting more like the Master every day." },
+              { t: "I'm telling the Master.", r: "...Little brother, you've gone bad." }
+            ]
+          },
+          {
+            q: "When we retire and do our comic double act (xiangsheng), will you be the funny man or the straight man?",
+            opts: [
+              { t: "I'll be the straight man; you be the funny man.", r: "It's a deal! We'll call the act “Buyi & Zhao Huo.”" },
+              { t: "I'll be the funny man!", r: "Ooh, ambitious. Guess I'll have to play straight man for you, then." },
+              { t: "Maybe focus on your training first, Senior Brother.", r: "...You sound exactly like the Master." }
+            ]
+          },
+          {
+            q: "Little brother, what kind of gift do you think Junior Sister would like?",
+            opts: [
+              { t: "She loves paper folding. Get her some pretty paper.", r: "Yes, yes! You really do know her best. I'm off to buy some right now." },
+              { t: "Gold-coin darts?", r: "...Those are hidden weapons, little brother." },
+              { t: "Think of something yourself, Senior Brother.", r: "Haha, fair enough. Can't cut corners on something like this." }
+            ]
+          }
+        ]
       }
     }
   };

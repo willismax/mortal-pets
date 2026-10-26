@@ -11,7 +11,7 @@
       "name": "mortal-buddy",
       "source": "./claude-plugin/mortal-buddy",
       "description": "活俠傳結緣角色當 Claude Code 寵物，支援中文、日本語、한국어、English／Legend of Mortal heroines as Claude Code pets in Chinese, Japanese, Korean and English (fan-made)",
-      "version": "0.3.0"
+      "version": "0.4.0"
     }
   ]
 }

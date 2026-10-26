@@ -2,9 +2,9 @@
 
 [中文](README.md) ｜ [日本語](README.ja.md) ｜ **한국어** ｜ [English](README.en.md)
 
-![활협전 인연 펫: 소매, 소죽, 열골마, 소사매, 용상, 하후란, 엽운상 도트 그림](promo/promo-landscape.png)
+![활협전 인연 펫: 소매, 소죽, 열골마, 소사매, 용상, 하후란, 엽운상, 위국, 대사형 도트 그림](promo/promo-landscape.png)
 
-![6명의 대표 동작 애니메이션](promo/promo-moves.gif)
+![대표 동작 애니메이션](promo/promo-moves.gif)
 
 대만 무협 RPG **활협전(Legend of Mortal)** 의 인연 캐릭터들을 **Codex 펫**과 **Claude Code 펫**으로 만들었습니다. 캐릭터 성격에 맞춘 대사로 작업 중에 반응해 줍니다.
 
@@ -23,6 +23,8 @@
 | `longxiang` | 용상 | 금향궁의 검객, '닭다리 여협'. 밝고 조금 엉뚱하다. |
 | `xiahoulan` | 하후란 | 탈백문의 '탈백유란'. 지우산을 든 차가운 젊은 사부. 말은 날카롭지만 제자를 끔찍이 챙긴다. |
 | `yeyunshang` | 엽운상 | '점창명주', 엽운주의 친여동생. 장난과 단것을 좋아하는 꼬마 악동. 한여름에도 담비 털옷을 벗지 않고, 반나절만 놀아도 열이 나서 쓰러진다. 대표 동작은 "에헤" 윙크, 뾰로통한 얼굴, 기도하는 손. |
+| `weiju` | 위국 | 공동파 현공문의 직전 여제자이자 당대 장문인. 단정하고 학식 있는, 무예를 숭상하는 공동파와는 어울리지 않는 독특한 여인. 욱죽이 만든 손난로를 늘 들고 다닌다. 부끄러우면 머리에서 김이 난다. |
+| `tangbuyi` | 대사형(당포의) | 번외편(인연 대상 아님). 당문 장문인의 첫째 제자, '비협'. 호탕하고 자유분방하며 진짜 금으로 만든 금전표를 손가락으로 돌린다. 경공은 '천하 5위 안'이라고 우긴다. 꿈은 은퇴해서 사제와 만담을 하는 것. |
 
 ## Claude Code
 
@@ -48,7 +50,7 @@
 
 | 명령어 | 설명 |
 | --- | --- |
-| `/mortal-buddy:pick xiaozhu` | 펫 바꾸기 (`xiaomei`, `xiaozhu`, `xiaoshimei`, `longxiang`, `xiahoulan`, `yeyunshang`) |
+| `/mortal-buddy:pick xiaozhu` | 펫 바꾸기 (`xiaomei`, `xiaozhu`, `xiaoshimei`, `longxiang`, `xiahoulan`, `yeyunshang`, `weiju`, `tangbuyi`) |
 | `/mortal-buddy:pet feed` | `pet` 쓰다듬기, `feed` 먹이기, `train` 수련(각 +1), `gift` 선물(+3). 같은 행동은 1분에 한 번만 오른다 |
 | `/mortal-buddy:talk` | 캐릭터가 질문합니다. `/mortal-buddy:talk 2`처럼 번호로 대답하면 호감도가 바뀝니다 |
 | `/mortal-buddy:roleplay 오늘 너무 피곤해` | 캐릭터 말투로 대답 (한국어로 말하면 한국어로 대답) |
@@ -70,6 +72,20 @@ cd mortal-pets && ./install.sh codex
 Codex의 Settings → Pets → Refresh에서 펫을 고르세요. 대화 중에는 `/pet`으로 보이기/숨기기를 할 수 있습니다. 턴이 끝날 때마다 캐릭터 알림을 받고 싶다면, 설치할 때 출력되는 `notify = [...]`를 `~/.codex/config.toml`에 추가하세요.
 
 ※ Codex 펫 이름(displayName)은 중국어 그대로입니다. 알림 대사는 `/mortal-buddy:lang`으로 고른 언어로 나옵니다(Claude Code와 같은 설정 파일 `~/.mortal-buddy/state.json`을 사용합니다).
+
+## 업데이트
+
+현재 버전은 **0.4.0**(위국과 번외편 대사형 추가)입니다. 변경 내용은 [CHANGELOG.md](CHANGELOG.md)를 참고하세요.
+
+- Claude Code: 터미널에서 아래 두 줄을 실행한 뒤 Claude Code를 다시 시작하세요. 0.4.0부터는 새 버전이 나오면 대화를 시작할 때 알려 줍니다(하루 최대 한 번). 자동 확인을 끄려면 환경 변수 `MORTAL_BUDDY_NO_UPDATE_CHECK=1`을 설정하세요.
+
+  ```bash
+  claude plugin marketplace update mortal-pets
+  claude plugin update mortal-buddy@mortal-pets
+  ```
+
+- Codex: 저장소 폴더에서 `git pull && ./install.sh codex`를 실행하고 Settings → Pets → Refresh.
+- 브라우저 버전은 자동으로 최신이 됩니다.
 
 ## 저작권
 
