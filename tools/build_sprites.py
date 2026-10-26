@@ -196,7 +196,7 @@ CHARACTERS["weiju"] = {
 CHARACTERS["tangbuyi"] = {
     "displayName": "大師兄",
     "description": "唐門大師兄唐布衣，人稱「飛俠」：爽朗不羈、暗器輕功當世一流，指間轉著金錢鏢、哼著小調，夢想是退隱江湖說相聲。（活俠傳同人・番外）",
-    # 依 LoM Wiki 立繪：紫黑長髮帶紅褐髮梢、斜掃的瀏海、草繩紮的長馬尾；
+    # 依 LoM Wiki 立繪：紫黑長髮帶紅褐髮梢、層次短髮與呆毛、斜掃瀏海、頸後草繩紮的細長馬尾；
     # 青藍立領長袍配金色盤扣、紅褐護腕與紅羽飾，指間夾著金錢鏢，臉頰一道小疤
     "hair": (42, 32, 50, 255), "hair_hi": (82, 66, 96, 255), "hair_tip": (140, 70, 60, 255),
     "skin": (252, 236, 228, 255), "skin_sh": (232, 204, 194, 255),
@@ -337,18 +337,17 @@ def draw_frame(cid, pose):
         p.poly(pts, c["hair"], OUTLINE)
         p.line([(bx0 + 5 * k, hy - 12), (bx0 + 10 * k + sway * k, hy - 5)], c["hair_hi"])
     elif c.get("head") == "swept":
-        # 大師兄：草繩把長髮束在腦後，一束長馬尾順順地往後垂，髮尾帶紅褐
-        p.ell(hx - 12, hy - 13, hx + 12, hy + 10, c["hair"], OUTLINE)
+        # 大師兄（參考官方模型）：頭頂短髮層次分明、後腦幾撮俐落的髮尖，
+        # 頸後用草繩紮一束細長馬尾往後飄，髮尾紅褐
         k = -1 if face_r else 1
-        bx0 = hx + 9 * k
-        pts = [(bx0, hy - 3), (bx0 + 4 * k, hy - 2), (bx0 + 7 * k + sway * k, hy + 8),
-               (bx0 + 6 * k + sway * 2 * k, hy + 20), (bx0 + 3 * k + sway * 2 * k, hy + 25),
-               (bx0 + 1 * k + sway * k, hy + 16), (bx0 - 1 * k, hy + 6)]
-        p.poly(pts, c["hair"], OUTLINE)
-        p.line([(bx0 + 3 * k, hy + 1), (bx0 + 5 * k + sway * k, hy + 10)], c["hair_hi"])
-        p.poly([(bx0 + 5 * k + sway * 2 * k, hy + 18), (bx0 + 6 * k + sway * 2 * k, hy + 20),
-                (bx0 + 3 * k + sway * 2 * k, hy + 24), (bx0 + 2 * k + sway * k, hy + 18)], c["hair_tip"])
-        p.line([(bx0 - k, hy - 2), (bx0 + 4 * k, hy - 1)], c["rope"], 2)  # 草繩
+        P_ = lambda u, v: (hx + u * k, hy + v)
+        p.ell(hx - 11, hy - 13, hx + 11, hy + 4, c["hair"], OUTLINE)
+        for tuft in ([(7, -11), (14, -11), (10, -7)], [(10, -6), (15, -4), (10, -2)], [(9, 0), (13, 3), (8, 3)]):
+            p.poly([P_(u, v) for u, v in tuft], c["hair"], OUTLINE)
+        tail = [(8, 1), (11, 1), (13 + sway, 10), (14 + 2 * sway, 21), (12 + 2 * sway, 25), (11 + sway, 14), (8, 5)]
+        p.poly([P_(u, v) for u, v in tail], c["hair"], OUTLINE)
+        p.poly([P_(u, v) for u, v in [(13 + 2 * sway, 18), (14 + 2 * sway, 21), (12 + 2 * sway, 25), (12 + sway, 18)]], c["hair_tip"])
+        p.line([P_(8, 1), P_(11, 2)], c["rope"], 2)  # 草繩
     elif c.get("head") == "twin":
         # 葉雲裳：頭頂兩側的小髻
         p.ell(hx - 12, hy - 12, hx + 12, hy + 9, c["hair"], OUTLINE)
@@ -688,20 +687,21 @@ def draw_frame(cid, pose):
         p.rect(hx - 11, hy - 2, hx - 9, hy + 10, hair)
         p.rect(hx + 9, hy - 2, hx + 11, hy + 10, hair)
     elif c.get("head") == "swept":
-        # 大師兄：頭頂的髮順順往後，一大片瀏海從分線斜斜掃過額頭，髮尾分成幾綹尖尖的
+        # 大師兄：分線在後側、露出半邊額頭，瀏海一層層斜掃向臉前方，尖端俐落；頭頂一根呆毛
         k = -1 if face_r else 1
         P_ = lambda u, v: (hx + u * k, hy + v)
-        p.d.chord([hx - 11, hy - 13, hx + 11, hy - 1], 180, 360, fill=hair, outline=OUTLINE)
-        p.poly([P_(-10, -7), P_(10, -7), P_(11, 1), P_(8, -1), P_(7, 3), P_(4, -2), P_(2, 1),
-                P_(0, -3), P_(-4, -1), P_(-6, -4), P_(-10, -2)], hair, OUTLINE)
-        p.line([P_(-5, -10), P_(1, -9)], c["hair_hi"])  # 髮頂的光澤
-        p.line([P_(3, -5), P_(7, -2)], c["hair_hi"])  # 瀏海的髮流
-        # 兩側鬢髮順著臉頰垂到下巴，髮尾紅褐
-        for side in (-1, 1):
-            x0 = hx + 10 * side
-            p.poly([(x0 - side, hy - 4), (x0 + side * 2, hy - 3), (x0 + side * 2, hy + 8),
-                    (x0, hy + 12), (x0 - side * 2, hy + 7), (x0 - side * 2, hy + 1)], hair, OUTLINE)
-            p.line([(x0, hy + 7), (x0, hy + 10)], c["hair_tip"])
+        p.d.chord([hx - 11, hy - 13, hx + 11, hy - 3], 180, 360, fill=hair, outline=OUTLINE)
+        p.poly([P_(u, v) for u, v in [(7, -9), (-11, -7), (-11, 1), (-9, -2), (-8, 3), (-6, -2), (-4, 1),
+                                       (-2, -3), (0, 0), (2, -4), (5, -4), (7, -7)]], hair, OUTLINE)
+        p.line([P_(4, -9), P_(-3, -6)], c["hair_hi"])  # 髮流
+        p.line([P_(-5, -5), P_(-8, -1)], c["hair_hi"])
+        p.poly([P_(u, v) for u, v in [(0, -12), (2, -16), (5, -16), (2, -13)]], hair, OUTLINE)  # 呆毛
+        # 臉前方一綹鬢髮垂到下巴，後側只到耳下
+        for u0, end in ((-10, 9), (10, 4)):
+            sd = -1 if u0 < 0 else 1
+            p.poly([P_(u0 - sd, -4), P_(u0 + sd * 2, -3), P_(u0 + sd * 2, end - 2), P_(u0, end), P_(u0 - sd, end - 3)],
+                   hair, OUTLINE)
+        p.px(*P_(-10, 7), c["hair_tip"])
     elif c.get("head") == "updo":
         # 長髮往後梳、額頭露出來：只留髮際線，兩側長髮順著臉頰垂下
         p.ell(hx - 7, hy - 5, hx + 7, hy + 3, c["skin"])
