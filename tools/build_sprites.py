@@ -196,7 +196,7 @@ CHARACTERS["weiju"] = {
 CHARACTERS["tangbuyi"] = {
     "displayName": "大師兄",
     "description": "唐門大師兄唐布衣，人稱「飛俠」：爽朗不羈、暗器輕功當世一流，指間轉著金錢鏢、哼著小調，夢想是退隱江湖說相聲。（活俠傳同人・番外）",
-    # 依 LoM Wiki 立繪：紫黑長髮帶紅褐髮梢、層次短髮與呆毛、斜掃瀏海、頸後草繩紮的細長馬尾；
+    # 依 LoM Wiki 立繪：紫黑長髮帶紅褐髮梢、凌亂瀏海與呆毛、細長鬢髮、頸後草繩紮的低馬尾垂到腰；
     # 青藍立領長袍配金色盤扣、紅褐護腕與紅羽飾，指間夾著金錢鏢，臉頰一道小疤
     "hair": (42, 32, 50, 255), "hair_hi": (82, 66, 96, 255), "hair_tip": (140, 70, 60, 255),
     "skin": (252, 236, 228, 255), "skin_sh": (232, 204, 194, 255),
@@ -204,11 +204,11 @@ CHARACTERS["tangbuyi"] = {
     "cloth": (66, 106, 132, 255), "cloth_sh": (46, 80, 104, 255),
     "accent": (62, 100, 126, 255), "accent_sh": (44, 76, 98, 255),
     "collar": (84, 128, 156, 255),
-    "sash": (38, 54, 70, 255),
-    "sleeve": (70, 112, 140, 255), "wide_sleeves": True,
+    "sash": (104, 140, 166, 255), "brows": True, "jade": (110, 186, 140, 255), "jade_tassel": (190, 50, 60, 255),
+    "sleeve": (70, 112, 140, 255), "wide_sleeves": True, "boots": True,
     "bracer": (138, 74, 60, 255),
     "rope": (206, 184, 140, 255), "button": (214, 176, 80, 255),
-    "shoe": (36, 34, 42, 255), "leg": (40, 44, 58, 255),
+    "shoe": (30, 30, 36, 255), "leg": (46, 62, 100, 255),
     "blush": (244, 206, 196, 255), "lips": (150, 80, 74, 255),
     "outfit": "dress", "male": True, "head": "swept", "scar": True,
     "long_hair": False, "height_drop": -4, "tall": 4, "default_eyes": "drowsy",
@@ -337,17 +337,20 @@ def draw_frame(cid, pose):
         p.poly(pts, c["hair"], OUTLINE)
         p.line([(bx0 + 5 * k, hy - 12), (bx0 + 10 * k + sway * k, hy - 5)], c["hair_hi"])
     elif c.get("head") == "swept":
-        # 大師兄（參考官方模型）：頭頂短髮層次分明、後腦幾撮俐落的髮尖，
-        # 頸後用草繩紮一束細長馬尾往後飄，髮尾紅褐
+        # 大師兄（參考官方立繪）：長髮在頸後用草繩紮成低馬尾，垂到腰；
+        # 另一側散著幾綹長髮往後飄，髮梢紅褐
         k = -1 if face_r else 1
         P_ = lambda u, v: (hx + u * k, hy + v)
-        p.ell(hx - 11, hy - 13, hx + 11, hy + 4, c["hair"], OUTLINE)
-        for tuft in ([(7, -11), (14, -11), (10, -7)], [(10, -6), (15, -4), (10, -2)], [(9, 0), (13, 3), (8, 3)]):
-            p.poly([P_(u, v) for u, v in tuft], c["hair"], OUTLINE)
-        tail = [(8, 1), (11, 1), (13 + sway, 10), (14 + 2 * sway, 21), (12 + 2 * sway, 25), (11 + sway, 14), (8, 5)]
+        p.ell(hx - 11, hy - 13, hx + 11, hy + 5, c["hair"], OUTLINE)
+        loose = [(-9, 2), (-12, 3), (-14 - sway, 14), (-13 - 2 * sway, 22), (-11 - sway, 15), (-9, 8)]
+        p.poly([P_(u, v) for u, v in loose], c["hair"], OUTLINE)
+        p.line([P_(-12 - sway, 13), P_(-12 - 2 * sway, 20)], c["hair_tip"])
+        tail = [(7, 2), (11, 2), (13 + sway, 12), (13 + 2 * sway, 24), (11 + 2 * sway, 29), (10 + sway, 18), (8, 7)]
         p.poly([P_(u, v) for u, v in tail], c["hair"], OUTLINE)
-        p.poly([P_(u, v) for u, v in [(13 + 2 * sway, 18), (14 + 2 * sway, 21), (12 + 2 * sway, 25), (12 + sway, 18)]], c["hair_tip"])
-        p.line([P_(8, 1), P_(11, 2)], c["rope"], 2)  # 草繩
+        p.line([P_(10, 6), P_(11 + sway, 15)], c["hair_hi"])
+        p.poly([P_(u, v) for u, v in [(12 + 2 * sway, 22), (13 + 2 * sway, 24), (11 + 2 * sway, 29), (11 + sway, 22)]], c["hair_tip"])
+        p.line([P_(7, 3), P_(11, 4)], c["rope"], 2)  # 草繩
+        p.px(*P_(12, 6), c["rope"])
     elif c.get("head") == "twin":
         # 葉雲裳：頭頂兩側的小髻
         p.ell(hx - 12, hy - 12, hx + 12, hy + 9, c["hair"], OUTLINE)
@@ -382,6 +385,8 @@ def draw_frame(cid, pose):
         p.rect(x - 1, top, x + w, bottom - lift, OUTLINE)
         p.rect(x, top, x + w - 1, bottom - lift, c["leg"])
         p.rect(x - 1, bottom - lift + 1, x + w, bottom - lift + 2, shoe)
+        if c.get("boots") and bottom - lift - top > 3:  # 黑色長靴包到小腿
+            p.rect(x, bottom - lift - 2, x + w - 1, bottom - lift, shoe)
 
     base_bottom = 47 + dy + c.get("tall", 0)
     if legs == "stand":
@@ -464,8 +469,9 @@ def draw_frame(cid, pose):
         else:
             skirt = [(18 + dx, 40 + dy), (30 + dx, 40 + dy), (33 + dx + flare, hem), (15 + dx + flare, hem)]
         p.poly(skirt, c["accent"], OUTLINE)
-        if c.get("male"):
-            p.line([(24 + dx, 41 + dy), (24 + dx + flare, hem - 1)], c["accent_sh"])  # 前襟開衩
+        if c.get("male"):  # 長袍前襟開衩，露出燈籠褲
+            p.poly([(24 + dx, 42 + dy), (27 + dx + flare, hem), (21 + dx + flare, hem)], c["leg"], OUTLINE)
+            p.line([(19 + dx, 42 + dy), (18 + dx + flare, hem - 1)], c["accent_sh"])
         else:
             for k_ in (21, 24, 27):
                 p.line([(k_ + dx, 42 + dy), (k_ + dx + flare, hem - 1)], c["accent_sh"])
@@ -494,6 +500,9 @@ def draw_frame(cid, pose):
             for k_ in (20, 24, 28):
                 p.px(k_ + dx, 38 + dy, c["sash_pattern"]); p.px(k_ + 1 + dx, 39 + dy, c["sash_pattern"])
         p.line([(29 + dx, 41 + dy), (30 + dx + flare, 44 + dy)], c["sash"])  # 腰帶垂下的帶子
+        if "jade" in c:  # 大師兄腰間的玉珮與紅流蘇
+            p.ell(19 + dx, 40 + dy, 21 + dx, 42 + dy, c["jade"], OUTLINE)
+            p.line([(20 + dx, 43 + dy), (20 + dx + flare, 46 + dy)], c["jade_tassel"])
         if c.get("tassel"):  # 小師妹腰間的小荷包與流蘇
             p.ell(25 + dx, 40 + dy, 28 + dx, 43 + dy, (176, 140, 90, 255), OUTLINE)
             p.line([(21 + dx, 41 + dy), (21 + dx + flare, 46 + dy)], (200, 160, 80, 255))
@@ -687,21 +696,22 @@ def draw_frame(cid, pose):
         p.rect(hx - 11, hy - 2, hx - 9, hy + 10, hair)
         p.rect(hx + 9, hy - 2, hx + 11, hy + 10, hair)
     elif c.get("head") == "swept":
-        # 大師兄：分線在後側、露出半邊額頭，瀏海一層層斜掃向臉前方，尖端俐落；頭頂一根呆毛
+        # 大師兄：凌亂的瀏海一綹綹垂在額前、頭頂一根呆毛；兩側細長的鬢髮垂過肩到胸前
         k = -1 if face_r else 1
         P_ = lambda u, v: (hx + u * k, hy + v)
         p.d.chord([hx - 11, hy - 13, hx + 11, hy - 3], 180, 360, fill=hair, outline=OUTLINE)
-        p.poly([P_(u, v) for u, v in [(7, -9), (-11, -7), (-11, 1), (-9, -2), (-8, 3), (-6, -2), (-4, 1),
-                                       (-2, -3), (0, 0), (2, -4), (5, -4), (7, -7)]], hair, OUTLINE)
-        p.line([P_(4, -9), P_(-3, -6)], c["hair_hi"])  # 髮流
-        p.line([P_(-5, -5), P_(-8, -1)], c["hair_hi"])
-        p.poly([P_(u, v) for u, v in [(0, -12), (2, -16), (5, -16), (2, -13)]], hair, OUTLINE)  # 呆毛
-        # 臉前方一綹鬢髮垂到下巴，後側只到耳下
-        for u0, end in ((-10, 9), (10, 4)):
-            sd = -1 if u0 < 0 else 1
-            p.poly([P_(u0 - sd, -4), P_(u0 + sd * 2, -3), P_(u0 + sd * 2, end - 2), P_(u0, end), P_(u0 - sd, end - 3)],
-                   hair, OUTLINE)
-        p.px(*P_(-10, 7), c["hair_tip"])
+        p.poly([P_(u, v) for u, v in [(-11, -7), (11, -7), (11, -2), (8, -5), (6, -1), (3, -5), (1, -1), (-2, -6),
+                                       (-4, -2), (-7, -5), (-9, -1), (-11, -3)]], hair, OUTLINE)
+        for tuft in ([(4, -12), (9, -15), (8, -10)], [(8, -10), (13, -11), (10, -6)]):  # 頭頂蓬起的髮束
+            p.poly([P_(u, v) for u, v in tuft], hair, OUTLINE)
+        p.line([P_(-6, -9), P_(1, -8)], c["hair_hi"])  # 髮頂光澤
+        p.line([P_(-2, -4), P_(-3, -2)], c["hair_tip"])  # 瀏海裡的紅褐挑染
+        p.poly([P_(u, v) for u, v in [(-1, -12), (1, -16), (4, -17), (5, -15), (2, -15), (1, -12)]], hair, OUTLINE)  # 呆毛
+        for side, end in ((-1, 16), (1, 14)):
+            x0 = hx + 10 * side
+            p.poly([(x0, hy - 4), (x0 + side * 2, hy - 3), (x0 + side * 2, hy + 6),
+                    (x0 + side, hy + end), (x0, hy + end - 3), (x0, hy + 4)], hair, OUTLINE)
+            p.line([(x0, hy + end - 4), (x0 + side, hy + end - 1)], c["hair_tip"])
     elif c.get("head") == "updo":
         # 長髮往後梳、額頭露出來：只留髮際線，兩側長髮順著臉頰垂下
         p.ell(hx - 7, hy - 5, hx + 7, hy + 3, c["skin"])
@@ -757,6 +767,10 @@ def draw_frame(cid, pose):
     lx, rx = hx - 5 + look, hx + 3 + look
     eye = c["eye"]
     white = (255, 255, 255, 255)
+
+    if c.get("brows"):  # 大師兄的劍眉：內低外高
+        p.line([(lx - 1, ey - 3), (lx + 2, ey - 2)], OUTLINE)
+        p.line([(rx - 1, ey - 2), (rx + 2, ey - 3)], OUTLINE)
 
     def eye_open(x, big=False):
         top = ey - (1 if big else 0)
