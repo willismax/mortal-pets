@@ -107,8 +107,8 @@ CHARACTERS["xiaoshimei"] = {
     "sleeve": (150, 44, 52, 255), "cuff": (250, 246, 244, 255), "bells": True,
     "shoe": (112, 30, 38, 255), "leg": (250, 240, 240, 255),
     "blush": (255, 160, 170, 255),
-    "outfit": "dress", "head": "locks", "tassel": True,
-    "long_hair": True, "height_drop": 2, "default_eyes": "open",
+    "outfit": "dress", "head": "locks", "tassel": True, "waist": True,
+    "long_hair": False, "height_drop": 2, "default_eyes": "open",
 }
 CHARACTERS["longxiang"] = {
     "displayName": "龍湘",
@@ -215,6 +215,7 @@ ARM_HANDS = {
     "wipe": ((-5, -9), (5, -9)),
     "cross": ((7, 3), (-7, 3)),  # 雙手抱胸
     "clasp": ((5, -1), (-5, -1)),  # 雙手交握在胸前（小師妹的招牌姿勢）
+    "hair_hold": ((-1, -3), (1, -3)),  # 雙手握著胸前的鬢髮
     "tremble": ((2, -4), (-2, -4)),  # 嚇得縮起雙手
     "umbrella": ((2, 2), (3, 0)),  # 握傘柄
     "sleeve_face": ((6, -6), (-6, -6)),  # 用袖子遮臉
@@ -267,6 +268,10 @@ def draw_frame(cid, pose):
                (bx0 + 9 * k + sway * k, hy - 4), (bx0 + 3 * k, hy - 10)]
         p.poly(pts, c["hair"], OUTLINE)
         p.line([(bx0 + 5 * k, hy - 12), (bx0 + 10 * k + sway * k, hy - 5)], c["hair_hi"])
+    elif c.get("head") == "locks":
+        # 小師妹：頭髮往後梳，後面只到肩膀
+        p.ell(hx - 12, hy - 12, hx + 12, hy + 10, c["hair"], OUTLINE)
+        p.rect(hx - 10, hy + 6, hx + 10, hy + 12, c["hair"])
     elif c["long_hair"]:
         tail = -3 if face_r else 0
         p.poly([(hx - 11 + tail + sway, hy), (hx + 11 + tail + sway, hy),
@@ -336,6 +341,8 @@ def draw_frame(cid, pose):
         p.ell(14 + dx + flare, 30 + dy, 34 + dx + flare, 47 + dy, c["cloth"], OUTLINE)
     else:
         body = [(20 + dx, 33 + dy), (28 + dx, 33 + dy), (32 + dx + flare, 45 + dy), (16 + dx + flare, 45 + dy)]
+        if c.get("waist"):  # 小師妹：泡泡袖撐起肩膀、腰帶束出細腰
+            body = [(17 + dx, 33 + dy), (31 + dx, 33 + dy), (29 + dx, 38 + dy), (19 + dx, 38 + dy)]
         p.poly(body, c["cloth"], OUTLINE)
         p.line([(17 + dx + flare, 44 + dy), (31 + dx + flare, 44 + dy)], c["cloth_sh"])
     if c.get("outfit") == "hakama":
@@ -357,7 +364,8 @@ def draw_frame(cid, pose):
         # 上衣、交領、腰帶與長裙（長裙蓋住大半雙腿，身高高的角色裙子較長）
         hem = 46 + dy + c.get("tall", 0)
         kick = legs == "kick"
-        p.poly([(18 + dx, 40 + dy), (30 + dx, 40 + dy), (33 + dx + flare, hem), (15 + dx + flare, hem)],
+        w = 2 if c.get("waist") else 0  # 有腰身的裙子從細腰往外撐開
+        p.poly([(18 + w + dx, 40 + dy), (30 - w + dx, 40 + dy), (33 + w + dx + flare, hem), (15 - w + dx + flare, hem)],
                c["accent"], OUTLINE)
         for k_ in (21, 24, 27):
             p.line([(k_ + dx, 42 + dy), (k_ + dx + flare, hem - 1)], c["accent_sh"])
@@ -366,7 +374,8 @@ def draw_frame(cid, pose):
         col = c.get("collar", c["accent_sh"])
         p.line([(21 + dx, 33 + dy), (24 + dx, 37 + dy)], col)
         p.line([(27 + dx, 33 + dy), (24 + dx, 37 + dy)], col)
-        p.rect(18 + dx, (37 if "sash_pattern" in c else 38) + dy, 30 + dx, 40 + dy, c["sash"])  # 龍湘的腰帶較寬
+        sw = 1 if c.get("waist") else 0  # 細腰的腰帶窄一點
+        p.rect(18 + sw + dx, (37 if "sash_pattern" in c else 38) + dy, 30 - sw + dx, 40 + dy, c["sash"])  # 龍湘的腰帶較寬
         if "sash_pattern" in c:  # 腰帶上的菱形紋
             for k_ in (20, 24, 28):
                 p.px(k_ + dx, 38 + dy, c["sash_pattern"]); p.px(k_ + 1 + dx, 39 + dy, c["sash_pattern"])
@@ -510,7 +519,7 @@ def draw_frame(cid, pose):
     hair = c["hair"]
     if c.get("head") == "locks":
         # 小師妹：側分、露出額頭，不畫整排瀏海
-        p.d.chord([hx - 11, hy - 12, hx + 11, hy + 3], 180, 360, fill=hair, outline=OUTLINE)
+        p.d.chord([hx - 11, hy - 13, hx + 11, hy - 1], 180, 360, fill=hair, outline=OUTLINE)
     else:
         # 瀏海
         p.d.chord([hx - 11, hy - 12, hx + 11, hy + 8], 180, 360, fill=hair, outline=OUTLINE)
@@ -538,19 +547,20 @@ def draw_frame(cid, pose):
         if "forehead" in c:  # 額間的紅色花鈿
             p.px(hx + look, hy - 2, c["forehead"])
     elif c.get("head") == "locks":
-        # 依官方設定圖：在一側分線、露出額頭，一大綹頭髮斜斜蓋過另一側額角，
-        # 兩側長鬢髮順著臉頰垂到胸前，髮尾往外散開
+        # 依官方立繪：頭髮往後梳、額頭露出來，一側分線，
+        # 一綹頭髮從分線斜斜梳到另一側額角；鬢髮順著臉頰垂到鎖骨
         k = -1 if face_r else 1
         part = hx - 4 * k
-        p.poly([(part, hy - 6), (hx + 11 * k, hy - 5), (hx + 10 * k, hy + 4), (hx + 6 * k, hy - 1),
-                (hx + 1 * k, hy - 3)], hair)  # 蓋過額角的一綹
-        p.poly([(part, hy - 6), (hx - 11 * k, hy - 5), (hx - 10 * k, hy + 1), (hx - 7 * k, hy - 3)], hair)
-        p.line([(part, hy - 7), (part + k, hy - 5)], c["hair_hi"])  # 分線
+        # 斜斜的髮際線：分線這側額頭露出來，一大綹瀏海往另一側額角梳過去
+        p.poly([(part, hy - 8), (hx + 11 * k, hy - 7), (hx + 11 * k, hy + 3), (hx + 8 * k, hy + 1),
+                (hx + 3 * k, hy - 3), (part + 2 * k, hy - 6)], hair, OUTLINE)
+        p.poly([(part, hy - 8), (hx - 11 * k, hy - 7), (hx - 11 * k, hy - 1), (hx - 8 * k, hy - 5)], hair)
+        p.line([(part + 2 * k, hy - 7), (hx + 9 * k, hy - 4)], c["hair_hi"])  # 往後梳的髮絲光澤
+        p.line([(part - k, hy - 10), (hx - 7 * k, hy - 9)], c["hair_hi"])
         for side in (-1, 1):
             x0 = hx + 10 * side
-            p.poly([(x0 - side, hy - 3), (x0 + side * 2, hy - 2), (x0 + side * 3, hy + 17),
-                    (x0 + side * 1, hy + 19), (x0 - side * 2, hy + 14), (x0 - side * 2, hy + 4)], hair, OUTLINE)
-        p.line([(hx - 11, hy + 2), (hx - 12, hy + 14)], c["hair_hi"])
+            p.poly([(x0 - side, hy - 3), (x0 + side * 2, hy - 2), (x0 + side * 2, hy + 12),
+                    (x0, hy + 14), (x0 - side * 2, hy + 10), (x0 - side * 2, hy + 3)], hair, OUTLINE)
     elif c.get("head") == "ribbon":
         # 頭頂髮髻插著青色髮簪，簪尾垂著青色髮帶
         k = -1 if face_r else 1
@@ -853,6 +863,11 @@ def draw_frame(cid, pose):
             for yy in (32, 36, 40):
                 p.line([(12 + dx, yy + dy), (13 + dx, yy + dy - 1)], OUTLINE)
                 p.line([(35 + dx, yy + dy - 1), (36 + dx, yy + dy)], OUTLINE)
+        elif f == "flowers":  # 開心時身邊冒出的小花（貼在頭的周圍）
+            for fx0, fy0 in ((hx - 14, hy - 8), (hx + 13, hy - 10), (hx - 13, hy + 6), (hx + 13, hy + 4)):
+                for ox, oy in ((0, -1), (-1, 0), (1, 0), (0, 1)):
+                    p.px(fx0 + ox, fy0 + oy, (240, 170, 200, 255))
+                p.px(fx0, fy0, (255, 230, 150, 255))
         elif f == "q":  # 等待：頭上小問號（貼著頭頂）
             x, y = hx + 8, hy - 15
             col = (250, 200, 80, 255)
@@ -886,10 +901,11 @@ def poses_shimei():
                  P(arms=cl, mouth=m0, dy=1), P(arms=cl, mouth=m0, dy=1, hair_sway=1), P(arms=cl, mouth=m0)],
         "running-right": run_row(mouth="small", eyes="open"),
         # 雙手交握、閉眼微笑，害羞地點頭
+        # 依官方立繪：雙手握著鬢髮，開心得身邊冒出小花
         "waving": [P(arms=cl, mouth=m0, blush=True),
-                   P(arms=cl, mouth="smile", eyes="closed", blush=True, dy=1),
-                   P(arms=("clasp", "wave_mid"), mouth="smile", eyes="happy", blush=True),
-                   P(arms=cl, mouth="smile", eyes="closed", blush=True)],
+                   P(arms=("hair_hold", "hair_hold"), mouth="small", eyes="open", blush=True, fx=("flowers",)),
+                   P(arms=("hair_hold", "hair_hold"), mouth="smile", eyes="happy", blush=True, fx=("flowers",), dy=-1),
+                   P(arms=("hair_hold", "hair_hold"), mouth="smile", eyes="happy", blush=True, fx=("flowers",))],
         # 輕功：一躍而起，比誰都高
         "jumping": [P(dy=2, legs="crouch", arms=cl, eyes="closed", mouth=m0),
                     P(dy=-4, legs="tuck", arms=("spread", "spread"), mouth=m0),
