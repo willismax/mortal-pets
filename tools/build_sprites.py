@@ -106,7 +106,7 @@ CHARACTERS["xiaoshimei"] = {
     "sash": (62, 66, 112, 255),
     "sleeve": (150, 44, 52, 255), "cuff": (250, 246, 244, 255), "bells": True,
     "shoe": (112, 30, 38, 255), "leg": (250, 240, 240, 255),
-    "blush": (255, 160, 170, 255),
+    "blush": (255, 186, 190, 255), "blush_always": True,  # 臉上淡淡的腮紅
     "outfit": "dress", "head": "locks", "tassel": True, "waist": True,
     "long_hair": False, "height_drop": 2, "default_eyes": "open",
 }
@@ -559,10 +559,13 @@ def draw_frame(cid, pose):
         p.poly([(part, hy - 8), (hx - 11 * k, hy - 7), (hx - 11 * k, hy - 1), (hx - 8 * k, hy - 5)], hair)
         p.line([(part + 2 * k, hy - 7), (hx + 9 * k, hy - 4)], c["hair_hi"])  # 往後梳的髮絲光澤
         p.line([(part - k, hy - 10), (hx - 7 * k, hy - 9)], c["hair_hi"])
+        # 鬢髮一部分順著肩膀垂到胸前（分線那側較長）
         for side in (-1, 1):
             x0 = hx + 10 * side
-            p.poly([(x0 - side, hy - 3), (x0 + side * 2, hy - 2), (x0 + side * 2, hy + 12),
-                    (x0, hy + 14), (x0 - side * 2, hy + 10), (x0 - side * 2, hy + 3)], hair, OUTLINE)
+            end = 19 if side == -k else 16
+            p.poly([(x0 - side, hy - 3), (x0 + side * 2, hy - 2), (x0 + side * 2, hy + 10),
+                    (x0 - side, hy + end), (x0 - side * 3, hy + end - 2), (x0 - side * 2, hy + 3)], hair, OUTLINE)
+            p.line([(x0, hy + 4), (x0 - side, hy + end - 3)], c["hair_hi"])
     elif c.get("head") == "ribbon":
         # 頭頂髮髻插著青色髮簪，簪尾垂著青色髮帶
         k = -1 if face_r else 1
