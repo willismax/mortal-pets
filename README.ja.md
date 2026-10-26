@@ -73,6 +73,20 @@ Codex の Settings → Pets → Refresh でペットを選びます。会話中�
 
 ※Codex のペット名（displayName）は中国語のままです。通知のセリフは `/mortal-buddy:lang` で選んだ言語になります（Claude Code と同じ設定ファイル `~/.mortal-buddy/state.json` を使います）。
 
+## アップデート
+
+現在のバージョンは **0.4.0**（魏菊と番外編の大師兄を追加）。変更点は [CHANGELOG.md](CHANGELOG.md) を参照してください。
+
+- Claude Code：ターミナルで次の 2 行を実行し、Claude Code を再起動します。0.4.0 以降は、新しいバージョンが出ると会話の開始時に知らせてくれます（1 日 1 回まで）。自動チェックを止めるには環境変数 `MORTAL_BUDDY_NO_UPDATE_CHECK=1` を設定してください。
+
+  ```bash
+  claude plugin marketplace update mortal-pets
+  claude plugin update mortal-buddy@mortal-pets
+  ```
+
+- Codex：リポジトリのフォルダで `git pull && ./install.sh codex` を実行し、Settings → Pets → Refresh。
+- ブラウザ版は自動で最新になります。
+
 ## 著作権
 
 『活俠傳』（Legend of Mortal）とそのキャラクターの著作権は開発元・販売元に帰属します。本リポジトリは非公式のファン作品で、コードは MIT ライセンスです。

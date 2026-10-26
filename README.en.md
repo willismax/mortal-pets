@@ -73,6 +73,20 @@ Pick a pet in Codex under Settings → Pets → Refresh, and use `/pet` in a con
 
 Note: Codex pet names (displayName) stay in Chinese. Notification lines follow the language chosen with `/mortal-buddy:lang` (Claude Code and Codex share `~/.mortal-buddy/state.json`).
 
+## Updating
+
+The current version is **0.4.0** (adds Wei Ju and bonus character Senior Brother Tang Buyi). See [CHANGELOG.md](CHANGELOG.md) for what changed.
+
+- Claude Code: run these two lines in a terminal, then restart Claude Code. From 0.4.0 on, a new session tells you when a newer version is out (at most once a day). To turn the check off, set `MORTAL_BUDDY_NO_UPDATE_CHECK=1`.
+
+  ```bash
+  claude plugin marketplace update mortal-pets
+  claude plugin update mortal-buddy@mortal-pets
+  ```
+
+- Codex: run `git pull && ./install.sh codex` in the repo folder, then Settings → Pets → Refresh.
+- The browser version updates on its own.
+
 ## Copyright
 
 Legend of Mortal (活俠傳) and its characters belong to their developer and publisher. This repository is an unofficial fan project; the code is MIT licensed.

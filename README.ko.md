@@ -73,6 +73,20 @@ Codex의 Settings → Pets → Refresh에서 펫을 고르세요. 대화 중에�
 
 ※ Codex 펫 이름(displayName)은 중국어 그대로입니다. 알림 대사는 `/mortal-buddy:lang`으로 고른 언어로 나옵니다(Claude Code와 같은 설정 파일 `~/.mortal-buddy/state.json`을 사용합니다).
 
+## 업데이트
+
+현재 버전은 **0.4.0**(위국과 번외편 대사형 추가)입니다. 변경 내용은 [CHANGELOG.md](CHANGELOG.md)를 참고하세요.
+
+- Claude Code: 터미널에서 아래 두 줄을 실행한 뒤 Claude Code를 다시 시작하세요. 0.4.0부터는 새 버전이 나오면 대화를 시작할 때 알려 줍니다(하루 최대 한 번). 자동 확인을 끄려면 환경 변수 `MORTAL_BUDDY_NO_UPDATE_CHECK=1`을 설정하세요.
+
+  ```bash
+  claude plugin marketplace update mortal-pets
+  claude plugin update mortal-buddy@mortal-pets
+  ```
+
+- Codex: 저장소 폴더에서 `git pull && ./install.sh codex`를 실행하고 Settings → Pets → Refresh.
+- 브라우저 버전은 자동으로 최신이 됩니다.
+
 ## 저작권
 
 활협전(Legend of Mortal)과 등장인물의 저작권은 개발사와 배급사에 있습니다. 이 저장소는 비공식 팬 작품이며, 코드는 MIT 라이선스입니다.

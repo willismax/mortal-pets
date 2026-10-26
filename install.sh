@@ -12,7 +12,7 @@ CODEX="${CODEX_HOME:-$HOME/.codex}"
 
 install_bin() {
   mkdir -p "$BIN"
-  cp "$PLUGIN/scripts/buddy.cjs" "$PLUGIN/scripts/characters.js" "$BIN/"
+  cp "$PLUGIN/scripts/buddy.cjs" "$PLUGIN/scripts/characters.js" "$PLUGIN/.claude-plugin/plugin.json" "$BIN/"
   mkdir -p "$BIN/locales"
   cp "$PLUGIN"/scripts/locales/*.js "$BIN/locales/"
 }

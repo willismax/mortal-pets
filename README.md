@@ -114,7 +114,7 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 | `/mortal-buddy:pet feed` | `pet` 摸頭、`feed` 餵食、`train` 練功（各 +1）、`gift` 送禮（+3），同一種互動一分鐘內只算一次 |
 | `/mortal-buddy:talk` | 她出題，用 `/mortal-buddy:talk 2` 回答，答案會加減好感 |
 | `/mortal-buddy:roleplay 今天好累` | 載入角色卡，讓她用自己的口吻回你 |
-| `/mortal-buddy:status` | 查看兩人的好感與階段 |
+| `/mortal-buddy:status` | 查看所有角色的好感與階段，以及目前版本 |
 | `/mortal-buddy:mute` | 開關對話中的反應訊息 |
 | `/mortal-buddy:lang ja` | 切換語言：`zh` 中文、`ja` 日本語、`ko` 한국어、`en` English（第一次會依系統語系自動判斷） |
 
@@ -127,6 +127,21 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 ```
 
 狀態存在 `~/.mortal-buddy/state.json`，Claude Code 與 Codex 通知共用同一份好感。
+
+### 更新
+
+目前版本 **0.4.0**（新增魏菊、番外大師兄），各版內容見 [CHANGELOG.md](CHANGELOG.md)。
+
+- Claude Code：在終端機執行下面兩行，再重開 Claude Code。從 0.4.0 起，有新版時開新對話會提醒你（一天最多一次），更新後第一次開對話會介紹新內容；不想自動檢查可設環境變數 `MORTAL_BUDDY_NO_UPDATE_CHECK=1`。
+
+  ```bash
+  claude plugin marketplace update mortal-pets
+  claude plugin update mortal-buddy@mortal-pets
+  ```
+
+- Codex：在 repo 資料夾執行 `git pull && ./install.sh codex`，再到 Settings → Pets → Refresh。
+- 網頁版會自動拿到最新內容。
+- `/mortal-buddy:status` 最後一行會顯示目前版本。
 
 ## 素材整理
 
