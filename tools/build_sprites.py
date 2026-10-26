@@ -364,9 +364,11 @@ def draw_frame(cid, pose):
         # 上衣、交領、腰帶與長裙（長裙蓋住大半雙腿，身高高的角色裙子較長）
         hem = 46 + dy + c.get("tall", 0)
         kick = legs == "kick"
-        w = 2 if c.get("waist") else 0  # 有腰身的裙子從細腰往外撐開
-        p.poly([(18 + w + dx, 40 + dy), (30 - w + dx, 40 + dy), (33 + w + dx + flare, hem), (15 - w + dx + flare, hem)],
-               c["accent"], OUTLINE)
+        if c.get("waist"):  # 小師妹：裙子從細腰順順往下垂，只微微變寬
+            skirt = [(19 + dx, 40 + dy), (29 + dx, 40 + dy), (31 + dx + flare, hem), (17 + dx + flare, hem)]
+        else:
+            skirt = [(18 + dx, 40 + dy), (30 + dx, 40 + dy), (33 + dx + flare, hem), (15 + dx + flare, hem)]
+        p.poly(skirt, c["accent"], OUTLINE)
         for k_ in (21, 24, 27):
             p.line([(k_ + dx, 42 + dy), (k_ + dx + flare, hem - 1)], c["accent_sh"])
         if "skirt_band" in c:  # 白裙正中的青色長帶
