@@ -79,6 +79,7 @@ CHARACTERS = {
         "blush": (246, 160, 150, 255),
         "bags": (214, 176, 180, 255),  # 黑眼圈
         "blush_always": True,
+        "round": True,  # 整隻圓滾滾：圓身體、粗手腳
         "long_hair": False,
         "height_drop": 2,
         "default_eyes": "drowsy",
@@ -89,7 +90,7 @@ CHARACTERS = {
 CHARACTERS["xiaozhu-battle"] = {
     **CHARACTERS["xiaozhu"],
     "displayName": "小竹・裂骨魔",
-    "description": "郁竹的戰鬥裝束：鐵網護甲、虎紋背帶、腰掛虎頭面具，機關臂扛著刻了紅紋的大刀。平常睏睏的，掄起兵器就是「裂骨魔」。（活俠傳同人）",
+    "description": "郁竹的戰鬥裝束：鐵網護甲，右臂是扛著紅紋巨劍的機關臂，虎紋背帶連著左手的虎頭盾。平常睏睏的，掄起兵器就是「裂骨魔」。（活俠傳同人）",
     "battle": True,
 }
 
@@ -163,18 +164,12 @@ def draw_frame(cid, pose):
     hx = 24 + dx + pose["tilt"]  # 頭中心
     hy = 19 + dy
     sx_l, sx_r, sy = 19 + dx, 29 + dx, 35 + dy  # 肩膀
+    if c.get("round"):
+        sx_l, sx_r, sy = 16 + dx, 32 + dx, 34 + dy  # 圓身體的肩膀在兩側
     hip_y = 44 + dy
 
     battle = c.get("battle", False)
-    holds_weapon = bool(pose["prop"]) and pose["prop"][0] == "hammer"
-    if battle and not holds_weapon:
-        # 斜背在身後的大刀，刀柄在右腰
-        p.line([(37 + dx, 41 + dy), (9 + dx, 9 + dy)], OUTLINE, 5)
-        p.line([(37 + dx, 41 + dy), (9 + dx, 9 + dy)], (176, 178, 186, 255), 3)
-        p.line([(36 + dx, 41 + dy), (8 + dx, 9 + dy)], (226, 228, 234, 255), 1)
-        for k in range(3):
-            p.px(14 + dx + k * 3, 15 + dy + k * 3, (200, 40, 40, 255))
-        p.line([(37 + dx, 41 + dy), (41 + dx, 45 + dy)], (60, 58, 62, 255), 3)
+    rnd = c.get("round", False)
 
     # 後髮
     sway = pose["hair_sway"]
@@ -198,9 +193,10 @@ def draw_frame(cid, pose):
     shoe, skin = c["shoe"], c["skin"]
 
     def leg(x, top, bottom, lift=0):
-        p.rect(x - 1, top, x + 2, bottom - lift, OUTLINE)
-        p.rect(x, top, x + 1, bottom - lift, c["leg"])
-        p.rect(x - 1, bottom - lift + 1, x + 2, bottom - lift + 2, shoe)
+        w = 3 if rnd else 2
+        p.rect(x - 1, top, x + w, bottom - lift, OUTLINE)
+        p.rect(x, top, x + w - 1, bottom - lift, c["leg"])
+        p.rect(x - 1, bottom - lift + 1, x + w, bottom - lift + 2, shoe)
 
     base_bottom = 47 + dy
     if legs == "stand":
@@ -226,9 +222,12 @@ def draw_frame(cid, pose):
 
     # 身體（裙裝）
     flare = -1 if face_r else 0
-    body = [(20 + dx, 33 + dy), (28 + dx, 33 + dy), (32 + dx + flare, 45 + dy), (16 + dx + flare, 45 + dy)]
-    p.poly(body, c["cloth"], OUTLINE)
-    p.line([(17 + dx + flare, 44 + dy), (31 + dx + flare, 44 + dy)], c["cloth_sh"])
+    if rnd:
+        p.ell(14 + dx + flare, 30 + dy, 34 + dx + flare, 47 + dy, c["cloth"], OUTLINE)
+    else:
+        body = [(20 + dx, 33 + dy), (28 + dx, 33 + dy), (32 + dx + flare, 45 + dy), (16 + dx + flare, 45 + dy)]
+        p.poly(body, c["cloth"], OUTLINE)
+        p.line([(17 + dx + flare, 44 + dy), (31 + dx + flare, 44 + dy)], c["cloth_sh"])
     if cid == "xiaomei":
         # 紅腰帶、紅裙襬、紅領
         p.rect(19 + dx, 38 + dy, 29 + dx, 39 + dy, c["accent"])
@@ -239,32 +238,20 @@ def draw_frame(cid, pose):
         p.px(30 + dx, 41 + dy, c["accent"])
     else:
         # 圍裙吊帶、深色腰帶、卡其長圍裙
-        p.line([(21 + dx, 33 + dy), (21 + dx, 38 + dy)], c["accent"])
-        p.line([(27 + dx, 33 + dy), (27 + dx, 38 + dy)], c["accent"])
-        p.poly([(20 + dx, 39 + dy), (28 + dx, 39 + dy), (30 + dx + flare, 45 + dy), (18 + dx + flare, 45 + dy)],
-               c["accent"], OUTLINE)
-        p.line([(22 + dx, 41 + dy), (21 + dx + flare, 44 + dy)], c["accent_sh"])
-        p.line([(26 + dx, 41 + dy), (27 + dx + flare, 44 + dy)], c["accent_sh"])
-        p.rect(19 + dx, 38 + dy, 29 + dx, 38 + dy, c["belt"])
+        p.line([(20 + dx, 32 + dy), (20 + dx, 38 + dy)], c["accent"], 2)
+        p.line([(27 + dx, 32 + dy), (27 + dx, 38 + dy)], c["accent"], 2)
+        p.d.chord([16 + dx + flare, 31 + dy, 32 + dx + flare, 47 + dy], 0, 180, fill=c["accent"], outline=OUTLINE)
+        p.line([(20 + dx + flare, 42 + dy), (20 + dx + flare, 45 + dy)], c["accent_sh"])
+        p.line([(28 + dx + flare, 42 + dy), (28 + dx + flare, 45 + dy)], c["accent_sh"])
+        p.line([(15 + dx + flare, 39 + dy), (33 + dx + flare, 39 + dy)], c["belt"])
 
     if battle:
         # 鐵網護甲
-        p.rect(20 + dx, 33 + dy, 28 + dx, 38 + dy, (198, 182, 140, 255))
-        for gx in range(20, 29, 2):
-            p.line([(gx + dx, 33 + dy), (gx + dx, 38 + dy)], (96, 86, 70, 255))
-        for gy in range(33, 39, 2):
-            p.line([(20 + dx, gy + dy), (28 + dx, gy + dy)], (96, 86, 70, 255))
-        # 虎紋背帶
-        p.line([(19 + dx, 33 + dy), (29 + dx, 41 + dy)], (232, 160, 40, 255), 2)
-        for k in (1, 4, 7):
-            p.px(19 + dx + k + 1, 33 + dy + k, (30, 24, 20, 255))
-        # 左腰的虎頭面具
-        mx0, my0 = 13 + dx, 39 + dy
-        p.rect(mx0 - 1, my0 - 1, mx0 + 5, my0 + 5, OUTLINE)
-        p.rect(mx0, my0, mx0 + 4, my0 + 4, (214, 132, 60, 255))
-        p.px(mx0 + 1, my0 + 1, (30, 24, 20, 255)); p.px(mx0 + 3, my0 + 1, (30, 24, 20, 255))
-        p.line([(mx0 + 1, my0 + 3), (mx0 + 3, my0 + 3)], (120, 60, 30, 255))
-        p.px(mx0, my0 - 1, (214, 132, 60, 255)); p.px(mx0 + 4, my0 - 1, (214, 132, 60, 255))
+        p.rect(19 + dx, 31 + dy, 29 + dx, 38 + dy, (198, 182, 140, 255))
+        for gx in range(19, 30, 2):
+            p.line([(gx + dx, 31 + dy), (gx + dx, 38 + dy)], (96, 86, 70, 255))
+        for gy in range(31, 39, 2):
+            p.line([(19 + dx, gy + dy), (29 + dx, gy + dy)], (96, 86, 70, 255))
 
     # 手臂
     al, ar = pose["arms"]
@@ -272,24 +259,80 @@ def draw_frame(cid, pose):
     def arm(sx, name, side):
         hdx, hdy = ARM_HANDS[name][side]
         ex, ey = sx + hdx, sy + hdy
-        p.line([(sx, sy), (ex, ey)], OUTLINE, 4)
-        p.line([(sx, sy), (ex, ey)], c["sleeve"], 2)
+        aw = 3 if rnd else 2
+        p.line([(sx, sy), (ex, ey)], OUTLINE, aw + 2)
+        p.line([(sx, sy), (ex, ey)], c["sleeve"], aw)
         p.px(ex, ey, OUTLINE)
         hand = c["skin"]
         if "glove" in c:  # 短袖，前臂到手掌是長手套
             mx, my = (sx * 2 + ex) // 3, (sy * 2 + ey) // 3
-            metal = c.get("battle") and side == 1
-            p.line([(mx, my), (ex, ey)], (128, 124, 116, 255) if metal else c["glove"], 2)
-            hand = (204, 164, 70, 255) if metal else c["glove"]
-        p.rect(ex - 1, ey - 1, ex + 1, ey + 1, OUTLINE)
-        p.rect(ex - 1, ey - 1, ex, ey, hand)
+            p.line([(mx, my), (ex, ey)], c["glove"], aw)
+            hand = c["glove"]
+        if rnd:
+            p.ell(ex - 2, ey - 2, ex + 2, ey + 2, hand, OUTLINE)
+        else:
+            p.rect(ex - 1, ey - 1, ex + 1, ey + 1, OUTLINE)
+            p.rect(ex - 1, ey - 1, ex, ey, hand)
         return ex, ey
+
+    if battle:
+        prop = pose["prop"]
+        if prop and prop[0] == "hammer":
+            blade = "high" if prop[1] == "up" else "low"
+        elif ar in ("up", "wave_up", "fist_up"):
+            blade = "high"
+        elif ar == "droop":
+            blade = "droop"
+        else:
+            blade = "rest"
+        rig_r = {"rest": 0, "high": -2, "low": 2, "droop": 3}[blade]
+        rig_y = dy - 2 + rig_r  # 原點以站姿為準
+        pose = dict(pose, prop=None)  # 戰鬥裝不拿鐵鎚
+        ar = "rig"
+        ARM_HANDS["rig"] = ((0, 0), (5, -1 + rig_r))
+        ARM_HANDS["shield"] = ((-4, 6), (0, 0))
+        al = "shield" if al in ("down", "hip", "front", "droop", "chin", "brow", "face", "ask", "swing_b", "swing_f") else al
 
     hand_l = arm(sx_l, al, 0)
     hand_r = arm(sx_r, ar, 1)
 
+    if battle:
+        # 虎紋背帶：從右邊機關臂斜過胸前，連到左手的虎頭盾
+        p.line([(33 + dx, 30 + rig_y), (16 + dx, hand_l[1])], OUTLINE, 4)
+        p.line([(33 + dx, 30 + rig_y), (16 + dx, hand_l[1])], (232, 160, 40, 255), 2)
+        for k in range(1, 5):
+            t = k / 5
+            px_ = round(33 + dx + (16 - 33) * t)
+            py_ = round(30 + rig_y + (hand_l[1] - 30 - rig_y) * t)
+            p.px(px_, py_, (30, 24, 20, 255))
+        # 虎頭盾
+        sx0, sy0 = hand_l[0] - 7, hand_l[1] - 6
+        orange, dark, stripe = (214, 132, 60, 255), (30, 24, 20, 255), (150, 78, 30, 255)
+        p.rect(sx0 + 1, sy0 - 2, sx0 + 3, sy0, OUTLINE); p.px(sx0 + 2, sy0 - 1, orange)
+        p.rect(sx0 + 8, sy0 - 2, sx0 + 10, sy0, OUTLINE); p.px(sx0 + 9, sy0 - 1, orange)
+        p.ell(sx0, sy0 - 1, sx0 + 11, sy0 + 11, orange, OUTLINE)
+        p.line([(sx0 + 4, sy0 + 1), (sx0 + 7, sy0 + 1)], dark)  # 額頭的「王」
+        p.px(sx0 + 5, sy0 + 2, dark)
+        p.line([(sx0 + 2, sy0 + 4), (sx0 + 4, sy0 + 5)], dark); p.line([(sx0 + 9, sy0 + 4), (sx0 + 7, sy0 + 5)], dark)
+        p.line([(sx0 + 1, sy0 + 7), (sx0 + 3, sy0 + 7)], stripe); p.line([(sx0 + 8, sy0 + 7), (sx0 + 10, sy0 + 7)], stripe)
+        p.rect(sx0 + 5, sy0 + 6, sx0 + 6, sy0 + 7, (240, 196, 140, 255))
+        p.line([(sx0 + 3, sy0 + 9), (sx0 + 8, sy0 + 9)], dark)
+
+    if battle:
+        # 紅紋巨劍：劍柄被機關臂的爪子抓住，劍身越過頭頂伸向左邊
+        grip = (42, 6 + rig_y)
+        tip = {"rest": (2, 3 + rig_y), "high": (3, max(0, rig_y)), "low": (2, 9 + rig_y), "droop": (4, 20 + rig_y)}[blade]
+        p.line([grip, tip], OUTLINE, 6)
+        p.line([grip, tip], (172, 174, 184, 255), 4)
+        p.line([(grip[0], grip[1] - 1), (tip[0], tip[1] - 1)], (228, 230, 236, 255), 1)
+        for t in (0.35, 0.42, 0.5):
+            p.px(round(grip[0] + (tip[0] - grip[0]) * t), round(grip[1] + (tip[1] - grip[1]) * t), (200, 40, 40, 255))
+        p.line([(42, 6 + rig_y), (47, 6 + rig_y)], OUTLINE, 4)
+        p.line([(42, 6 + rig_y), (46, 6 + rig_y)], (70, 68, 74, 255), 2)
+
     # 頭
-    p.ell(hx - 10, hy - 8, hx + 10, hy + 12, c["skin"], OUTLINE)
+    hw = 11 if rnd else 10  # 小竹臉頰比較圓
+    p.ell(hx - hw, hy - 8, hx + hw, hy + 12, c["skin"], OUTLINE)
     # 瀏海
     hair = c["hair"]
     p.d.chord([hx - 11, hy - 12, hx + 11, hy + 8], 180, 360, fill=hair, outline=OUTLINE)
@@ -463,6 +506,19 @@ def draw_frame(cid, pose):
         elif kind == "needle":  # 審視時指間一根銀針（千燈樓的伏筆）
             x, y = hand_r
             p.line([(x, y - 1), (x + 3, y - 4)], (210, 214, 224, 255))
+
+    if battle:
+        # 機關臂：右前臂是一整塊直立的機關板，頂端三隻爪子抓著劍柄
+        brass, steel, deep = (206, 160, 70, 255), (150, 146, 136, 255), (96, 90, 84, 255)
+        px0, py0, py1 = 34 + dx, 9 + rig_y, 38 + rig_y
+        p.rect(px0 - 1, py0 - 1, px0 + 8, py1 + 1, OUTLINE)
+        p.rect(px0, py0, px0 + 7, py1, steel)
+        p.rect(px0 + 1, py0 + 8, px0 + 6, py1 - 3, deep)
+        p.line([(px0 + 2, py0 + 10), (px0 + 5, py0 + 13)], steel); p.line([(px0 + 3, py0 + 16), (px0 + 5, py0 + 18)], steel)
+        p.rect(px0 + 2, py1 - 1, px0 + 5, py1 + 2, OUTLINE)
+        for k in range(3):
+            cx = px0 + 1 + k * 3
+            p.poly([(cx - 1, py0 + 1), (cx + 2, py0 + 1), (cx + 1, py0 - 4)], brass, OUTLINE)
 
     # 附著效果（不脫離角色本體）
     for f in pose["fx"]:
