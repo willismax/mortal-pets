@@ -218,7 +218,7 @@
           ]
         },
         {
-          q: "今天又熬夜了嗎？",
+          q: "（打呵欠）……今天又熬夜了。",
           opts: [
             { t: "快去睡！我幫妳顧爐子。", aff: 2, r: "你會顧爐子？……好，那我睡一刻鐘就好。" },
             { t: "熬夜做出什麼了？", aff: 1, r: "你看！這個機關一拉，盒子就會自己打開。" },
@@ -426,7 +426,33 @@
     { min: 60, name: "結緣" }
   ];
 
-  const DATA = { CHARS, UPCOMING, TIERS };
+  // 把語言檔（locales/<lang>.js）的文字疊到中文資料上；
+  // 好感分數、顏色、表情符號都沿用中文版，語言檔缺的欄位也退回中文。
+  function localize(locale) {
+    if (!locale) return { CHARS, TIERS };
+    const chars = {};
+    for (const [id, c] of Object.entries(CHARS)) {
+      const t = (locale.chars || {})[id] || {};
+      chars[id] = {
+        ...c,
+        name: t.name || c.name,
+        fullName: t.fullName || c.fullName,
+        title: t.title || c.title,
+        tagline: t.tagline || c.tagline,
+        profile: t.profile || c.profile,
+        lines: { ...c.lines, ...(t.lines || {}) },
+        talks: c.talks.map((q, i) => {
+          const tq = (t.talks || [])[i];
+          return tq ? { q: tq.q, opts: q.opts.map((o, j) => ({ ...o, ...((tq.opts || [])[j] || {}) })) } : q;
+        }),
+        outfits: c.outfits && c.outfits.map((o, i) => ({ ...o, name: (t.outfits || [])[i] || o.name }))
+      };
+    }
+    const tiers = TIERS.map((x, i) => ({ ...x, name: (locale.tiers || [])[i] || x.name }));
+    return { CHARS: chars, TIERS: tiers };
+  }
+
+  const DATA = { CHARS, UPCOMING, TIERS, localize };
   if (typeof module !== "undefined" && module.exports) module.exports = DATA;
   else root.MORTAL_CHARS = DATA;
 })(typeof window !== "undefined" ? window : globalThis);

@@ -7,13 +7,84 @@
 //   node buddy.cjs act pet|feed|train|gift
 //   node buddy.cjs talk [選項編號]       # 聊天：不帶編號出題，帶編號回答
 //   node buddy.cjs mute | status
+//   node buddy.cjs lang ja              # 切換語言：zh 中文、ja 日本語、ko 한국어、en English
 //   node buddy.cjs codex-notify '<json>' # Codex 的 notify 設定呼叫
 
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { execFile } = require("child_process");
-const { CHARS, TIERS } = require("./characters.js");
+const DATA = require("./characters.js");
+
+const LANGS = ["zh", "ja", "ko", "en"];
+// 介面文字（角色台詞在 locales/<lang>.js）
+const MSG = {
+  zh: {
+    open: "「", close: "」", lp: "（", rp: "）", colon: "：", sep: "，", comma: "、",
+    acts: "可用的互動：pet（摸頭）、feed（餵食）、train（練功）、gift（送禮）",
+    gain: (n) => `（好感 +${n}）`, noGain: "（剛剛才互動過，好感沒有增加）", delta: (d) => `（好感 ${d}）`,
+    answer: "（回答：/mortal-buddy:talk <編號>）", range: (n) => `請選 1 到 ${n}。`,
+    choices: "可選：", aff: "好感", reactions: (on) => `反應訊息：${on ? "開啟" : "關閉"}`,
+    muted: (on) => `反應訊息已${on ? "開啟" : "關閉"}。`,
+    lang: "語言已切換為中文。", langs: "可選語言：zh 中文、ja 日本語、ko 한국어、en English",
+    usage: "用法：buddy.cjs hook|statusline|pick <id>|act <pet|feed|train|gift>|talk [n]|mute|status|lang <zh|ja|ko|en>|codex-notify <json>"
+  },
+  ja: {
+    open: "「", close: "」", lp: "｜", rp: "", colon: "：", sep: "、", comma: "、",
+    acts: "使えるコマンド：pet（なでる）、feed（ごはん）、train（修行）、gift（贈り物）",
+    gain: (n) => `（好感度 +${n}）`, noGain: "（さっきやったばかり。好感度は上がらなかった）", delta: (d) => `（好感度 ${d}）`,
+    answer: "（答え方：/mortal-buddy:talk <番号>）", range: (n) => `1〜${n} の番号を選んでね。`,
+    choices: "選べるキャラ：", aff: "好感度", reactions: (on) => `リアクション表示：${on ? "オン" : "オフ"}`,
+    muted: (on) => `リアクション表示を${on ? "オン" : "オフ"}にしました。`,
+    lang: "言語を日本語に切り替えました。", langs: "選べる言語：zh 中文、ja 日本語、ko 한국어、en English",
+    usage: "使い方：buddy.cjs hook|statusline|pick <id>|act <pet|feed|train|gift>|talk [n]|mute|status|lang <zh|ja|ko|en>|codex-notify <json>"
+  },
+  ko: {
+    open: "“", close: "”", lp: " (", rp: ")", colon: ": ", sep: ", ", comma: ", ",
+    acts: "사용 가능한 행동: pet(쓰다듬기), feed(먹이기), train(수련), gift(선물)",
+    gain: (n) => ` (호감도 +${n})`, noGain: " (방금 했던 거라 호감도는 오르지 않았어요)", delta: (d) => ` (호감도 ${d})`,
+    answer: "(대답: /mortal-buddy:talk <번호>)", range: (n) => `1부터 ${n} 사이에서 골라 주세요.`,
+    choices: "선택 가능: ", aff: "호감도", reactions: (on) => `반응 메시지: ${on ? "켜짐" : "꺼짐"}`,
+    muted: (on) => `반응 메시지를 ${on ? "켰어요" : "껐어요"}.`,
+    lang: "언어를 한국어로 바꿨어요.", langs: "선택 가능한 언어: zh 中文, ja 日本語, ko 한국어, en English",
+    usage: "사용법: buddy.cjs hook|statusline|pick <id>|act <pet|feed|train|gift>|talk [n]|mute|status|lang <zh|ja|ko|en>|codex-notify <json>"
+  },
+  en: {
+    open: "“", close: "”", lp: " (", rp: ")", colon: ": ", sep: ", ", comma: ", ",
+    acts: "Actions: pet, feed, train, gift",
+    gain: (n) => ` (affection +${n})`, noGain: " (you just did that, no affection gained)", delta: (d) => ` (affection ${d})`,
+    answer: "(answer with /mortal-buddy:talk <number>)", range: (n) => `Pick a number from 1 to ${n}.`,
+    choices: "Available: ", aff: "affection", reactions: (on) => `Reaction messages: ${on ? "on" : "off"}`,
+    muted: (on) => `Reaction messages turned ${on ? "on" : "off"}.`,
+    lang: "Language switched to English.", langs: "Languages: zh 中文, ja 日本語, ko 한국어, en English",
+    usage: "Usage: buddy.cjs hook|statusline|pick <id>|act <pet|feed|train|gift>|talk [n]|mute|status|lang <zh|ja|ko|en>|codex-notify <json>"
+  }
+};
+
+// 第一次執行時依系統語系猜語言，之後以 /mortal-buddy:lang 設定的為準
+function guessLang() {
+  const env = (process.env.LC_ALL || process.env.LC_MESSAGES || process.env.LANG || "").toLowerCase();
+  if (env.startsWith("ja")) return "ja";
+  if (env.startsWith("ko")) return "ko";
+  if (env.startsWith("en")) return "en";
+  return "zh";
+}
+
+let CHARS = DATA.CHARS;
+let TIERS = DATA.TIERS;
+let M = MSG.zh;
+
+function useLang(lang) {
+  const l = LANGS.includes(lang) ? lang : "zh";
+  let locale = null;
+  if (l !== "zh") {
+    try {
+      locale = require(`./locales/${l}.js`);
+    } catch {}
+  }
+  ({ CHARS, TIERS } = DATA.localize(locale));
+  M = MSG[l];
+}
 
 const HOME = process.env.MORTAL_BUDDY_HOME || path.join(os.homedir(), ".mortal-buddy");
 const STATE_FILE = path.join(HOME, "state.json");
@@ -22,11 +93,13 @@ const AFF_MAX = 99;
 
 function load() {
   const def = { current: "xiaomei", aff: {}, mood: "idle", moodAt: 0, line: "", muted: false, talk: null, actedAt: {} };
+  let s = def;
   try {
-    return { ...def, ...JSON.parse(fs.readFileSync(STATE_FILE, "utf8")) };
-  } catch {
-    return def;
-  }
+    s = { ...def, ...JSON.parse(fs.readFileSync(STATE_FILE, "utf8")) };
+  } catch {}
+  if (!s.lang) s.lang = guessLang();
+  useLang(s.lang);
+  return s;
 }
 
 function save(s) {
@@ -63,7 +136,7 @@ function say(s, mood) {
 
 function format(s, line) {
   const c = charOf(s);
-  return `${c.name}${c.face[s.mood] || c.face.idle}「${line}」`;
+  return `${c.name}${c.face[s.mood] || c.face.idle}${M.open}${line}${M.close}`;
 }
 
 function hearts(n) {
@@ -144,7 +217,7 @@ function act(kind) {
   const s = load();
   const c = charOf(s);
   if (!c.lines[kind] || !["pet", "feed", "train", "gift"].includes(kind)) {
-    console.log("可用的互動：pet（摸頭）、feed（餵食）、train（練功）、gift（送禮）");
+    console.log(M.acts);
     return;
   }
   // 同一種互動一分鐘內只加一次好感，避免連點刷好感
@@ -154,7 +227,7 @@ function act(kind) {
   addAff(s, gain);
   const line = say(s, kind);
   save(s);
-  console.log(format(s, line) + (gain ? `（好感 +${gain}）` : "（剛剛才互動過，好感沒有增加）"));
+  console.log(format(s, line) + (gain ? M.gain(gain) : M.noGain));
 }
 
 function talk(choice) {
@@ -165,15 +238,15 @@ function talk(choice) {
     s.talk = { id: s.current, i };
     save(s);
     const t = c.talks[i];
-    console.log(`${c.name}：「${t.q}」`);
+    console.log(`${c.name}${M.colon}${M.open}${t.q}${M.close}`);
     t.opts.forEach((o, k) => console.log(`  ${k + 1}. ${o.t}`));
-    console.log("（回答：/mortal-buddy:talk <編號>）");
+    console.log(M.answer);
     return;
   }
   const t = c.talks[s.talk.i];
   const o = t.opts[Number(choice) - 1];
   if (!o) {
-    console.log(`請選 1 到 ${t.opts.length}。`);
+    console.log(M.range(t.opts.length));
     return;
   }
   addAff(s, o.aff);
@@ -183,13 +256,13 @@ function talk(choice) {
   s.line = o.r;
   save(s);
   const sign = o.aff > 0 ? `+${o.aff}` : `${o.aff}`;
-  console.log(`${format(s, o.r)}（好感 ${sign}）`);
+  console.log(format(s, o.r) + M.delta(sign));
 }
 
 function pickChar(id) {
   const s = load();
   if (!CHARS[id]) {
-    console.log("可選：" + Object.values(CHARS).map((c) => `${c.id}（${c.name}）`).join("、"));
+    console.log(M.choices + Object.values(CHARS).map((c) => `${c.id}${M.lp}${c.name}${M.rp}`).join(M.comma));
     return;
   }
   s.current = id;
@@ -203,10 +276,10 @@ function status() {
   for (const c of Object.values(CHARS)) {
     const n = s.aff[c.id] || 0;
     const mark = c.id === s.current ? "▶" : " ";
-    const who = c.fullName === c.name ? c.title : `${c.fullName}，${c.title}`;
-    console.log(`${mark} ${c.name}（${who}）好感 ${n} ${hearts(n)} ${tierOf(n)}`);
+    const who = c.fullName === c.name ? c.title : `${c.fullName}${M.sep}${c.title}`;
+    console.log(`${mark} ${c.name}${M.lp}${who}${M.rp} ${M.aff} ${n} ${hearts(n)} ${tierOf(n)}`);
   }
-  console.log(`反應訊息：${s.muted ? "關閉" : "開啟"}`);
+  console.log(M.reactions(!s.muted));
 }
 
 // Codex 在每輪結束時呼叫 notify 程式，最後一個參數是事件 JSON。
@@ -243,11 +316,26 @@ switch (cmd) {
     const s = load();
     s.muted = !s.muted;
     save(s);
-    console.log(`反應訊息已${s.muted ? "關閉" : "開啟"}。`);
+    console.log(M.muted(!s.muted));
+    break;
+  }
+  case "lang": {
+    const s = load();
+    if (!LANGS.includes(args[0])) {
+      console.log(M.langs);
+      break;
+    }
+    s.lang = args[0];
+    useLang(s.lang);
+    say(s, "greet");
+    save(s);
+    console.log(M.lang);
+    console.log(format(s, s.line));
     break;
   }
   case "status": status(); break;
   case "codex-notify": codexNotify(args[args.length - 1]); break;
   default:
-    console.log("用法：buddy.cjs hook|statusline|pick <id>|act <pet|feed|train|gift>|talk [n]|mute|status|codex-notify <json>");
+    load();
+    console.log(M.usage);
 }

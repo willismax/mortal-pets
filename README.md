@@ -1,8 +1,10 @@
 # 活俠傳結緣寵物（同人）
 
+**中文** ｜ [日本語](README.ja.md) ｜ [한국어](README.ko.md) ｜ [English](README.en.md)
+
 把《活俠傳》的結緣角色做成 **Codex 寵物**和 **Claude Code 寵物**，並依角色個性寫了互動對話。目前有小梅（虞小梅）、小竹（郁竹）、小師妹（唐默鈴）、龍湘、夏侯蘭五位。
 
-- 線上試玩：<https://willismax.github.io/mortal-pets/>（直接開 `index.html` 也可以）
+- 線上試玩：<https://willismax.github.io/mortal-pets/>（直接開 `index.html` 也可以；右上角可切換中文、日本語、한국어、English，分享時可加 `?lang=ja`、`?lang=ko`、`?lang=en`）
 - Claude Code 安裝：`/plugin install mortal-buddy --marketplace willismax/mortal-pets`
 - 非官方二創：角色設定整理自公開資料；像素圖、台詞都是原創，沒有使用遊戲素材或原文。
 
@@ -21,7 +23,8 @@ mortal-pets/
 │   ├── skills/xiaomei|xiaozhu/   角色卡（Codex 也能用）
 │   └── scripts/
 │       ├── buddy.cjs             hook、status line、互動指令、Codex 通知共用的程式
-│       └── characters.js         角色資料與台詞（網頁、Claude、Codex 共用）
+│       ├── characters.js         角色資料與台詞（網頁、Claude、Codex 共用）
+│       └── locales/              日文、韓文、英文台詞（ja.js、ko.js、en.js）
 └── tools/build_sprites.py        產生像素 spritesheet
 ```
 
@@ -105,6 +108,7 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 | `/mortal-buddy:roleplay 今天好累` | 載入角色卡，讓她用自己的口吻回你 |
 | `/mortal-buddy:status` | 查看兩人的好感與階段 |
 | `/mortal-buddy:mute` | 開關對話中的反應訊息 |
+| `/mortal-buddy:lang ja` | 切換語言：`zh` 中文、`ja` 日本語、`ko` 한국어、`en` English（第一次會依系統語系自動判斷） |
 
 好感分四個階段：初識（0）、熟識（10）、知己（30）、結緣（60）。到了「知己」，深夜（23:00–05:00）她偶爾會說出藏在心底的話。
 

@@ -1,5 +1,5 @@
 ---
-description: 跟寵物聊天；不帶參數會出題，帶編號回答（例如 /mortal-buddy:talk 2）
+description: 跟寵物聊天 / Chat；不帶參數會出題，帶編號回答（例如 /mortal-buddy:talk 2）
 argument-hint: "[選項編號]"
 allowed-tools: Bash(node:*)
 ---

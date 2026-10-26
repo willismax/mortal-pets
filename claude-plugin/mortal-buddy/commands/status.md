@@ -1,5 +1,5 @@
 ---
-description: 查看每位結緣角色的好感與階段
+description: 查看好感與階段 / Show affection
 allowed-tools: Bash(node:*)
 ---
 

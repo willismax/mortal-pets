@@ -4,14 +4,14 @@
     "name": "willismax"
   },
   "metadata": {
-    "description": "活俠傳結緣角色的 Claude Code 寵物（同人二創）"
+    "description": "活俠傳結緣角色的 Claude Code 寵物（同人二創）／Legend of Mortal companion pets (fan-made)"
   },
   "plugins": [
     {
       "name": "mortal-buddy",
       "source": "./claude-plugin/mortal-buddy",
-      "description": "活俠傳結緣角色（小梅、小竹、小師妹、龍湘、夏侯蘭）當 Claude Code 寵物，依工作狀態說話、可摸頭餵食聊天累積好感（同人二創）",
-      "version": "0.2.0"
+      "description": "活俠傳結緣角色當 Claude Code 寵物，支援中文、日本語、한국어、English／Legend of Mortal heroines as Claude Code pets in Chinese, Japanese, Korean and English (fan-made)",
+      "version": "0.3.0"
     }
   ]
 }
