@@ -158,15 +158,16 @@
 
   <section class="card" style="margin-top:16px">
     <h2>帶回家</h2>
-    <p><b>Codex</b>：把 <code id="petPath"></code> 資料夾（<a id="petJson">pet.json</a>、<a id="petSheet">spritesheet.webp</a>）複製到 <code>~/.codex/pets/</code>，再到 Settings → Pets → Refresh。或在 repo 裡執行：</p>
-    <pre>cd mortal-pets && ./install.sh codex</pre>
+    <p><b>Codex</b>：把 <code id="petPath"></code> 資料夾（<a id="petJson">pet.json</a>、<a id="petSheet">spritesheet.webp</a>）複製到 <code>~/.codex/pets/</code>，再到 Settings → Pets → Refresh。或把 repo 抓下來執行：</p>
+    <pre>git clone https://github.com/willismax/mortal-pets.git
+cd mortal-pets && ./install.sh codex</pre>
     <p><b>Claude Code</b>：安裝外掛後，她會依你的工作狀態說話，也能用指令互動。</p>
-    <pre>/plugin install mortal-buddy --marketplace willismax/demo
+    <pre>/plugin install mortal-buddy --marketplace willismax/mortal-pets
 /mortal-buddy:pick xiaozhu     換寵物
 /mortal-buddy:pet feed         摸頭 pet／餵食 feed／練功 train／送禮 gift
 /mortal-buddy:talk             聊天（回答用 /mortal-buddy:talk 2）
 /mortal-buddy:roleplay 今天好累  讓她用自己的口吻回你</pre>
-    <p class="muted">完整說明見 <a href="https://github.com/willismax/demo/tree/main/mortal-pets">mortal-pets/README.md</a>。網頁上的好感只存在這個瀏覽器，和 Codex／Claude Code 的好感是分開的。</p>
+    <p class="muted">完整說明見 <a href="https://github.com/willismax/mortal-pets">GitHub 上的 README</a>。網頁上的好感只存在這個瀏覽器，和 Codex／Claude Code 的好感是分開的。</p>
   </section>
 
   <footer>

@@ -2,13 +2,15 @@
 
 把《活俠傳》的結緣角色做成 **Codex 寵物**和 **Claude Code 寵物**，並依角色個性寫了互動對話。目前有小梅（虞小梅）、小竹（郁竹）、小師妹（唐默鈴）、龍湘、夏侯蘭五位。
 
-- 線上試玩：<https://willismax.github.io/demo/mortal-pets/>（直接開 `index.html` 也可以）
+- 線上試玩：<https://willismax.github.io/mortal-pets/>（直接開 `index.html` 也可以）
+- Claude Code 安裝：`/plugin install mortal-buddy --marketplace willismax/mortal-pets`
 - 非官方二創：角色設定整理自公開資料；像素圖、台詞都是原創，沒有使用遊戲素材或原文。
 
 ## 目錄
 
 ```
 mortal-pets/
+├── .claude-plugin/marketplace.json  Claude Code 外掛市集設定
 ├── index.html                    互動網頁：摸頭、餵食、練功、送禮、聊天、9 種動畫預覽
 ├── install.sh                    安裝 Codex 寵物／skill／通知，以及 Claude Code status line
 ├── codex/pets/<id>/              Codex 寵物：xiaomei、xiaozhu、xiaozhu-battle、xiaoshimei、longxiang、xiahoulan
@@ -26,6 +28,7 @@ mortal-pets/
 ## Codex 寵物
 
 ```bash
+git clone https://github.com/willismax/mortal-pets.git
 cd mortal-pets && ./install.sh codex
 ```
 
@@ -76,10 +79,10 @@ python3 tools/build_sprites.py --preview   # 需要 Pillow；--preview 會更新
 Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所以這裡做成外掛：
 
 ```text
-/plugin install mortal-buddy --marketplace willismax/demo
+/plugin install mortal-buddy --marketplace willismax/mortal-pets
 ```
 
-（舊版 Claude Code 請分兩步：`/plugin marketplace add willismax/demo`，再 `/plugin install mortal-buddy@willismax-demo`。）
+（舊版 Claude Code 請分兩步：`/plugin marketplace add willismax/mortal-pets`，再 `/plugin install mortal-buddy@mortal-pets`。）
 
 裝好後她會跟著你的工作狀態反應：
 

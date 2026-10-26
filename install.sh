@@ -53,7 +53,7 @@ install_statusline() {
   }
 
 外掛本體請在 Claude Code 中安裝：
-  /plugin install mortal-buddy --marketplace willismax/demo
+  /plugin install mortal-buddy --marketplace willismax/mortal-pets
 MSG
 }
 

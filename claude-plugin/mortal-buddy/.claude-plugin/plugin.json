@@ -6,5 +6,12 @@
     "name": "willismax"
   },
   "license": "MIT",
-  "keywords": ["buddy", "pet", "活俠傳", "statusline"]
+  "keywords": [
+    "buddy",
+    "pet",
+    "活俠傳",
+    "statusline"
+  ],
+  "homepage": "https://willismax.github.io/mortal-pets/",
+  "repository": "https://github.com/willismax/mortal-pets"
 }
