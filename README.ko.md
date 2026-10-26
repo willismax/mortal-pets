@@ -2,6 +2,10 @@
 
 [中文](README.md) ｜ [日本語](README.ja.md) ｜ **한국어** ｜ [English](README.en.md)
 
+![활협전 인연 펫: 소매, 소죽, 열골마, 소사매, 용상, 하후란, 엽운상 도트 그림](promo/promo-landscape.png)
+
+![6명의 대표 동작 애니메이션](promo/promo-moves.gif)
+
 대만 무협 RPG **활협전(Legend of Mortal)** 의 인연 캐릭터들을 **Codex 펫**과 **Claude Code 펫**으로 만들었습니다. 캐릭터 성격에 맞춘 대사로 작업 중에 반응해 줍니다.
 
 - 브라우저에서 놀기: <https://willismax.github.io/mortal-pets/?lang=ko>

@@ -2,6 +2,10 @@
 
 **中文** ｜ [日本語](README.ja.md) ｜ [한국어](README.ko.md) ｜ [English](README.en.md)
 
+![活俠傳結緣寵物：小梅、小竹、裂骨魔、小師妹、龍湘、夏侯蘭、葉雲裳的像素寵物](promo/promo-landscape.png)
+
+![六人招牌動作：小梅飛踢、小竹擦汗、小師妹抖抖抖、龍湘雞腿劍、夏侯蘭跟我來、葉雲裳欸嘿](promo/promo-moves.gif)
+
 把《活俠傳》的結緣角色做成 **Codex 寵物**和 **Claude Code 寵物**，並依角色個性寫了互動對話。目前有小梅（虞小梅）、小竹（郁竹）、小師妹（唐默鈴）、龍湘、夏侯蘭、葉雲裳六位。
 
 - 線上試玩：<https://willismax.github.io/mortal-pets/>（直接開 `index.html` 也可以；右上角可切換中文、日本語、한국어、English，分享時可加 `?lang=ja`、`?lang=ko`、`?lang=en`）

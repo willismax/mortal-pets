@@ -2,6 +2,10 @@
 
 [中文](README.md) ｜ **日本語** ｜ [한국어](README.ko.md) ｜ [English](README.en.md)
 
+![活俠傳 縁結びペット：小梅・小竹・裂骨魔・小師妹・龍湘・夏侯蘭・葉雲裳のドット絵](promo/promo-landscape.png)
+
+![6 人の得意技アニメーション](promo/promo-moves.gif)
+
 台湾の武侠 RPG『活俠傳（カッキョウデン）』の縁結びキャラクターを、**Codex のペット**と **Claude Code のペット**にしました。性格に合わせたセリフで、作業中にリアクションしてくれます。
 
 - ブラウザで遊ぶ：<https://willismax.github.io/mortal-pets/?lang=ja>

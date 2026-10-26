@@ -2,6 +2,10 @@
 
 [中文](README.md) ｜ [日本語](README.ja.md) ｜ [한국어](README.ko.md) ｜ **English**
 
+![Legend of Mortal Pets: pixel art of Xiaomei, Xiaozhu, the Bone-Breaker, Junior Sister, Long Xiang, Xiahou Lan and Ye Yunshang](promo/promo-landscape.png)
+
+![Six signature moves, animated](promo/promo-moves.gif)
+
 The romanceable heroines of the Taiwanese wuxia RPG **Legend of Mortal (活俠傳)**, turned into **Codex pets** and **Claude Code pets**. Each one reacts to your work with lines written for her personality.
 
 - Play in the browser: <https://willismax.github.io/mortal-pets/?lang=en>
