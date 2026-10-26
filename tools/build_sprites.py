@@ -196,24 +196,14 @@ CHARACTERS["weiju"] = {
 CHARACTERS["tangbuyi"] = {
     "displayName": "大師兄",
     "description": "唐門大師兄唐布衣，人稱「飛俠」：爽朗不羈、暗器輕功當世一流，指間轉著金錢鏢、哼著小調，夢想是退隱江湖說相聲。（活俠傳同人・番外）",
-    # 依 LoM Wiki 立繪：紫黑長髮帶紅褐髮梢、凌亂瀏海與呆毛、細長鬢髮、頸後草繩紮的低馬尾垂到腰；
-    # 青藍立領長袍配金色盤扣、紅褐護腕與紅羽飾，指間夾著金錢鏢，臉頰一道小疤
-    # Q 版參考：暖深棕的蓬亂頭髮、大呆毛、後腦用金繩紮的一條馬尾辮；白內領、胸前金色十字繡、
-    # 腰間玉珮紅流蘇、金邊長袍前襟開衩、深藍燈籠褲、黑長靴、棕色護腕
-    "hair": (62, 38, 32, 255), "hair_hi": (104, 66, 50, 255), "hair_tip": (88, 52, 40, 255),
-    "skin": (252, 234, 220, 255), "skin_sh": (232, 204, 190, 255),
-    "eye": (70, 40, 30, 255), "lid": (40, 28, 26, 255), "no_lid_open": True,
-    "cloth": (52, 112, 134, 255), "cloth_sh": (36, 84, 104, 255),
-    "accent": (48, 104, 126, 255), "accent_sh": (34, 78, 98, 255),
-    "collar": (236, 226, 200, 255), "x_mark": (210, 172, 84, 255), "trim": (176, 150, 92, 255),
-    "sash": (40, 66, 92, 255), "brows": True, "jade": (120, 200, 150, 255), "jade_tassel": (160, 36, 48, 255),
-    "sleeve": (56, 118, 140, 255), "wide_sleeves": True, "boots": True, "long_bracer": True,
-    "bracer": (112, 66, 44, 255),
-    "rope": (190, 168, 90, 255),
-    "shoe": (32, 30, 34, 255), "leg": (48, 64, 100, 255),
-    "blush": (244, 206, 196, 255),
-    "outfit": "dress", "male": True, "head": "swept", "scar": True,
-    "long_hair": False, "height_drop": -2, "tall": 4, "default_eyes": "open",
+    # 依使用者提供的像素參考圖逐格描成底圖（tools/ref/tangbuyi_base.png）：
+    # 蓬亂深棕髮、大呆毛、後腦金繩低綁的馬尾、劍眉；青藍交領長袍、白內領、胸前金十字、
+    # 玉珮紅流蘇、金邊下襬、棕色袖套、黑長靴。表情與手臂依動作在底圖上重畫。
+    "bitmap": "tools/ref/tangbuyi_base.png",
+    "skin": (246, 214, 192, 255), "outline": (26, 32, 56, 255),
+    "sleeve": (84, 106, 152, 255), "bracer": (104, 64, 44, 255), "gold": (206, 170, 90, 255),
+    "eye": (34, 20, 26, 255), "iris": (150, 50, 40, 255), "mouth": (130, 30, 34, 255),
+    "default_eyes": "open", "height_drop": 0,
 }
 
 # 小竹・裂骨魔：同一個人，換上鐵網護甲、虎紋背帶、虎頭面具與機關臂，背著刻紅紋的大刀
@@ -305,6 +295,8 @@ ARM_HANDS = {
 
 def draw_frame(cid, pose):
     c = CHARACTERS[cid]
+    if "bitmap" in c:
+        return draw_bitmap_frame(c, pose).resize((CELL_W, CELL_H), Image.NEAREST)
     p = Painter(c)
     dy = pose["dy"] + c["height_drop"]
     dx = pose["dx"]
@@ -338,19 +330,6 @@ def draw_frame(cid, pose):
                (bx0 + 9 * k + sway * k, hy - 4), (bx0 + 3 * k, hy - 10)]
         p.poly(pts, c["hair"], OUTLINE)
         p.line([(bx0 + 5 * k, hy - 12), (bx0 + 10 * k + sway * k, hy - 5)], c["hair_hi"])
-    elif c.get("head") == "swept":
-        # 大師兄：蓬亂的頭髮在後腦用金繩紮成一條馬尾辮，往後側垂過肩膀
-        k = -1 if face_r else 1
-        P_ = lambda u, v: (hx + u * k, hy + v)
-        w = sway
-        p.ell(hx - 13, hy - 14, hx + 13, hy + 7, c["hair"], OUTLINE)
-        for tuft in ([(-12, -6), (-16, -5), (-13, -2)], [(-13, 0), (-15, 3), (-12, 4)], [(11, -9), (15, -8), (12, -5)]):
-            p.poly([P_(u, v) for u, v in tuft], c["hair"], OUTLINE)  # 蓬亂的髮尖
-        tail = [(9, -3), (13, -3), (15, 3), (16 + w, 11), (16 + 2 * w, 20), (13 + 2 * w, 27), (12 + w, 18), (11, 8), (9, 2)]
-        p.poly([P_(u, v) for u, v in tail], c["hair"], OUTLINE)
-        p.line([P_(13, 2), P_(14 + w, 11)], c["hair_hi"])
-        p.line([P_(14 + w, 13), P_(14 + 2 * w, 21)], c["hair_hi"])
-        p.poly([P_(u, v) for u, v in [(9, -4), (13, -4), (13, -1), (9, -1)]], c["rope"], OUTLINE)  # 後腦的金色髮繩
     elif c.get("head") == "twin":
         # 葉雲裳：頭頂兩側的小髻
         p.ell(hx - 12, hy - 12, hx + 12, hy + 9, c["hair"], OUTLINE)
@@ -385,10 +364,6 @@ def draw_frame(cid, pose):
         p.rect(x - 1, top, x + w, bottom - lift, OUTLINE)
         p.rect(x, top, x + w - 1, bottom - lift, c["leg"])
         p.rect(x - 1, bottom - lift + 1, x + w, bottom - lift + 2, shoe)
-        if c.get("boots") and bottom - lift - top > 3:  # 黑色長靴包到小腿，靴口一道亮邊
-            p.rect(x - 1, bottom - lift - 3, x + w, bottom - lift, OUTLINE)
-            p.rect(x, bottom - lift - 3, x + w - 1, bottom - lift, shoe)
-            p.line([(x, bottom - lift - 3), (x + w - 1, bottom - lift - 3)], (70, 70, 78, 255))
 
     base_bottom = 47 + dy + c.get("tall", 0)
     if legs == "stand":
@@ -463,26 +438,15 @@ def draw_frame(cid, pose):
         # 上衣、交領、腰帶與長裙（長裙蓋住大半雙腿，身高高的角色裙子較長）
         hem = 46 + dy + c.get("tall", 0)
         kick = legs == "kick"
-        if c.get("male"):  # 大師兄：直筒長袍下襬到膝，兩側開衩露出褲管
-            hem = 42 + dy + c.get("tall", 0)
-            skirt = [(18 + dx, 40 + dy), (30 + dx, 40 + dy), (31 + dx + flare, hem), (17 + dx + flare, hem)]
-        elif c.get("waist"):  # 小師妹：裙子從細腰順順往下垂，只微微變寬
+        if c.get("waist"):  # 小師妹：裙子從細腰順順往下垂，只微微變寬
             skirt = [(19 + dx, 40 + dy), (29 + dx, 40 + dy), (31 + dx + flare, hem), (17 + dx + flare, hem)]
         else:
             skirt = [(18 + dx, 40 + dy), (30 + dx, 40 + dy), (33 + dx + flare, hem), (15 + dx + flare, hem)]
         p.poly(skirt, c["accent"], OUTLINE)
-        if c.get("male"):  # 長袍前襟開衩露出燈籠褲，下襬滾金邊
-            p.line([(17 + dx + flare, hem - 1), (31 + dx + flare, hem - 1)], c["trim"])
-            p.poly([(24 + dx, 41 + dy), (28 + dx + flare, hem), (21 + dx + flare, hem)], c["leg"], OUTLINE)
-            p.line([(24 + dx, 41 + dy), (21 + dx + flare, hem - 1)], c["trim"])
-        else:
-            for k_ in (21, 24, 27):
-                p.line([(k_ + dx, 42 + dy), (k_ + dx + flare, hem - 1)], c["accent_sh"])
+        for k_ in (21, 24, 27):
+            p.line([(k_ + dx, 42 + dy), (k_ + dx + flare, hem - 1)], c["accent_sh"])
         if "skirt_band" in c:  # 白裙正中的青色長帶
             p.line([(24 + dx, 41 + dy), (24 + dx + flare, hem - 1)], c["skirt_band"], 2)
-        if "x_mark" in c:  # 胸前的金色十字繡
-            p.line([(20 + dx, 34 + dy), (22 + dx, 36 + dy)], c["x_mark"])
-            p.line([(22 + dx, 34 + dy), (20 + dx, 36 + dy)], c["x_mark"])
         if "robe" in c:
             for side in (-1, 1):
                 x_in, x_out = 24 + dx + 3 * side, 24 + dx + 9 * side
@@ -503,11 +467,6 @@ def draw_frame(cid, pose):
             for k_ in (20, 24, 28):
                 p.px(k_ + dx, 38 + dy, c["sash_pattern"]); p.px(k_ + 1 + dx, 39 + dy, c["sash_pattern"])
         p.line([(29 + dx, 41 + dy), (30 + dx + flare, 44 + dy)], c["sash"])  # 腰帶垂下的帶子
-        if "jade" in c:  # 大師兄腰間的玉珮與紅流蘇
-            p.px(24 + dx, 40 + dy, c["rope"])
-            p.ell(22 + dx, 41 + dy, 26 + dx, 45 + dy, c["jade"], OUTLINE)
-            p.px(24 + dx, 43 + dy, (60, 120, 90, 255))
-            p.line([(24 + dx, 46 + dy), (24 + dx + flare, 48 + dy)], c["jade_tassel"], 2)
         if c.get("tassel"):  # 小師妹腰間的小荷包與流蘇
             p.ell(25 + dx, 40 + dy, 28 + dx, 43 + dy, (176, 140, 90, 255), OUTLINE)
             p.line([(21 + dx, 41 + dy), (21 + dx + flare, 46 + dy)], (200, 160, 80, 255))
@@ -553,15 +512,7 @@ def draw_frame(cid, pose):
             p.rect(mx - 1, my - 1, mx + 1, my + 1, c["cuff"])
             if c.get("bells"):
                 p.px(mx + (1 if side else -1), my - 2, (226, 190, 80, 255))
-        if c.get("long_bracer"):  # 大師兄：寬袖蓋住上臂，前臂一大截棕色袖套、手腕一圈金環
-            mx, my = (sx + ex) // 2, (sy + ey) // 2
-            p.line([(sx, sy + 1), (mx, my + 1)], OUTLINE, aw + 3)
-            p.line([(sx, sy + 1), (mx, my + 1)], c["sleeve"], aw + 1)
-            p.line([(mx, my), (ex, ey)], OUTLINE, aw + 2)
-            p.line([(mx, my), (ex, ey)], c["bracer"], aw)
-            gx, gy = (mx + ex * 3) // 4, (my + ey * 3) // 4
-            p.px(gx, gy, c["x_mark"])
-        elif "bracer" in c:  # 前臂的護腕
+        if "bracer" in c:  # 前臂的護腕
             mx, my = (sx + ex * 2) // 3, (sy + ey * 2) // 3
             p.line([(mx, my), (ex, ey)], c["bracer"], aw)
         if name in ("crane", "crane_mid"):
@@ -653,8 +604,8 @@ def draw_frame(cid, pose):
     chin = 13 if c.get("mature") else 12  # 夏侯蘭下巴稍長、臉型成熟
     p.ell(hx - hw, hy - 8, hx + hw, hy + chin, c["skin"], OUTLINE)
     hair = c["hair"]
-    if c.get("head") in ("locks", "swept"):
-        # 小師妹、大師兄：側分，不畫整排瀏海
+    if c.get("head") == "locks":
+        # 小師妹：側分、露出額頭，不畫整排瀏海
         p.d.chord([hx - 11, hy - 13, hx + 11, hy - 1], 180, 360, fill=hair, outline=OUTLINE)
     else:
         # 瀏海
@@ -708,24 +659,6 @@ def draw_frame(cid, pose):
         p.line([(hx + 5 * k, hy - 12), (hx + 8 * k, hy - 6)], c["ribbon"])
         p.rect(hx - 11, hy - 2, hx - 9, hy + 10, hair)
         p.rect(hx + 9, hy - 2, hx + 11, hy + 10, hair)
-    elif c.get("head") == "swept":
-        # 大師兄：蓬亂的長瀏海，一綹垂在兩眼之間；頭頂一根捲起的大呆毛；鬢髮垂過肩
-        k = -1 if face_r else 1
-        P_ = lambda u, v: (hx + u * k, hy + v)
-        # 瀏海只描下緣的髮尖，不在額頭上畫橫線（不然會像戴了斗笠）
-        edge = [(12, -1), (9, -4), (7, -1), (4, -5), (2, 0), (0, -3), (-1, 2), (-3, -4), (-6, -1),
-                (-8, -5), (-10, -1), (-12, -3)]
-        p.poly([P_(u, v) for u, v in [(-12, -9), (12, -9)] + edge[::-1][::-1]], hair)
-        p.poly([P_(u, v) for u, v in [(12, -9)] + edge + [(-12, -9)]], hair)
-        p.line([P_(u, v) for u, v in edge], OUTLINE)
-        p.line([P_(-6, -10), P_(2, -9)], c["hair_hi"])
-        p.line([P_(4, -7), P_(8, -4)], c["hair_hi"])
-        p.line([P_(0, -14), P_(-1, -16), P_(1, -18), P_(4, -17), P_(4, -15)], OUTLINE, 2)  # 呆毛
-        p.line([P_(0, -14), P_(-1, -16), P_(1, -18), P_(4, -17)], hair)
-        for side, end in ((-k, 8),):  # 臉前方那側的鬢髮垂到臉頰
-            x0 = hx + 10 * side
-            p.poly([(x0, hy - 4), (x0 + side * 2, hy - 3), (x0 + side * 2, hy + 6),
-                    (x0 + side, hy + end), (x0, hy + end - 3), (x0, hy + 4)], hair, OUTLINE)
     elif c.get("head") == "updo":
         # 長髮往後梳、額頭露出來：只留髮際線，兩側長髮順著臉頰垂下
         p.ell(hx - 7, hy - 5, hx + 7, hy + 3, c["skin"])
@@ -782,14 +715,10 @@ def draw_frame(cid, pose):
     eye = c["eye"]
     white = (255, 255, 255, 255)
 
-    if c.get("brows"):  # 大師兄的劍眉：內低外高
-        p.line([(lx - 1, ey - 2), (lx + 2, ey - 1)], OUTLINE)
-        p.line([(rx - 1, ey - 1), (rx + 2, ey - 2)], OUTLINE)
-
     def eye_open(x, big=False):
         top = ey - (1 if big else 0)
         p.rect(x, top, x + 1, ey + 2, eye)
-        if "lid" in c and not c.get("no_lid_open"):  # 有劍眉的角色睜眼時不再畫眼線，免得糊成一團
+        if "lid" in c:
             p.line([(x - 1, top - 1), (x + 2, top - 1)], c["lid"])
         p.px(x, top, white)
 
@@ -891,8 +820,6 @@ def draw_frame(cid, pose):
     elif m == "smirk":
         p.px(mx, my, mouth); p.px(mx + 1, my, mouth); p.px(mx + 2, my - 1, mouth)
 
-    if c.get("scar"):
-        p.line([(hx - 7 + look, hy + 5), (hx - 6 + look, hy + 7)], (196, 150, 150, 255))
     if "fur" in c:
         # 白色毛領圍住脖子，中間繫著粉紅領結
         p.ell(hx - 8, hy + 11, hx + 8, hy + 15, c["fur"], OUTLINE)
@@ -996,18 +923,6 @@ def draw_frame(cid, pose):
             p.line([(x, y), tip], OUTLINE, 3)
             p.line([(x, y), tip], (214, 222, 236, 255), 1)
             p.line([(x - 1, y + 1), (x + 1, y - 1)], (200, 170, 90, 255), 2)
-        elif kind == "coins":  # 指間夾著的金錢鏢；prop[1] = 0/1 轉動、"throw" 擲出
-            x, y = hand_r
-            gold, shine = (226, 182, 70, 255), (255, 232, 150, 255)
-            if prop[1] == "throw":
-                for i_, (ox, oy) in enumerate(((6, -2), (11, -4), (16, -1))):
-                    cx_, cy_ = min(46, x + ox), y + oy
-                    p.ell(cx_ - 1, cy_ - 1, cx_ + 1, cy_ + 1, gold, OUTLINE)
-            else:
-                spots = ((2, -2), (3, 0), (1, -4)) if prop[1] == 0 else ((3, -1), (2, -3), (0, -4))
-                for ox, oy in spots:
-                    p.ell(x + ox - 1, y + oy - 1, x + ox + 1, y + oy + 1, gold, OUTLINE)
-                    p.px(x + ox, y + oy, shine)
         elif kind == "warmer":  # 郁竹打造的深綠手爐，雙手捧在身前
             x, y = (hand_l[0] + hand_r[0]) // 2, max(hand_l[1], hand_r[1]) - 1
             green, lid = (46, 76, 72, 255), (70, 104, 98, 255)
@@ -1127,19 +1042,6 @@ def draw_frame(cid, pose):
                 for ox, oy in ((0, -1), (-1, 0), (1, 0), (0, 1)):
                     p.px(fx0 + ox, fy0 + oy, (240, 170, 200, 255))
                 p.px(fx0, fy0, (255, 230, 150, 255))
-        elif f == "idea":  # 豎起手指時旁邊的兩三道閃線
-            x, y = hx - 15, hy - 9
-            col = (176, 130, 70, 255)
-            p.line([(x, y), (x + 1, y + 2)], col); p.line([(x + 3, y - 2), (x + 3, y + 1)], col)
-            p.line([(x - 2, y + 3), (x, y + 4)], col)
-        elif f == "note":  # 哼小調的音符，浮在頭旁
-            x, y = hx + 12, hy - 13
-            col = (214, 168, 60, 255)
-            p.line([(x + 2, y), (x + 2, y + 5)], col); p.line([(x + 2, y), (x + 4, y + 1)], col)
-            p.rect(x, y + 4, x + 2, y + 6, col)
-        elif f == "speechless":  # 無言：頭旁一個小小的「…」
-            for ox in (0, 2, 4):
-                p.px(hx - 15 + ox, hy - 8, OUTLINE)
         elif f == "head_steam":  # 害羞得頭頂冒熱氣
             for ox, oy in ((-6, -16), (-4, -18), (5, -17), (7, -19), (0, -19)):
                 p.px(hx + ox, hy + oy, (236, 236, 244, 255))
@@ -1176,6 +1078,149 @@ def img_px(p, x, y):
 
 def mirror_row(frames):
     return [f.transpose(Image.FLIP_LEFT_RIGHT) for f in frames]
+
+
+# 點陣底圖角色（大師兄）：底圖的眉毛位置，重畫表情前先抹成膚色（眼口在底圖上已抹掉）
+BM_FACE = [(19, 20), (20, 20), (26, 20), (27, 20)]
+
+
+def draw_bitmap_frame(c, pose):
+    base = Image.open(ROOT / c["bitmap"]).convert("RGBA")
+    img = base.copy()
+    put = lambda x, y, col: 0 <= x < W and 0 <= y < H and img.putpixel((x, y), col)
+    O, skin, eye = c["outline"], c["skin"], c["eye"]
+    legs = pose["legs"]
+
+    # 腳：跑步時輪流抬腳、跳躍時收腿
+    def lift(x0, x1, n):
+        for y in range(46, 52):
+            for x in range(x0, x1 + 1):
+                img.putpixel((x, y), (0, 0, 0, 0))
+        for y in range(47, 51):
+            for x in range(x0, x1 + 1):
+                px = base.getpixel((x, y))
+                if px[3]:
+                    img.putpixel((x, y - n), px)
+        for x in range(x0, x1 + 1):  # 抬起時補回下襬
+            if base.getpixel((x, 46))[3] and not img.getpixel((x, 46))[3]:
+                img.putpixel((x, 46), base.getpixel((x, 46)))
+    if legs in ("stepA",):
+        lift(19, 23, 1)
+    elif legs in ("stepB",):
+        lift(26, 30, 1)
+    elif legs == "tuck":
+        lift(19, 23, 2); lift(26, 30, 2)
+
+    # 手臂：不是垂手就把底圖的手抹掉，從肩膀重畫袖子、棕色袖套與手
+    hands = [(19, 38), (29, 38)]
+    for side, name in enumerate(pose["arms"]):
+        if name == "down":
+            continue
+        xs = range(16, 20) if side == 0 else range(29, 33)
+        edge = 20 if side == 0 else 28
+        for y in range(32, 40):
+            for x in xs:
+                put(x, y, (0, 0, 0, 0))
+            if img.getpixel((edge, y))[3]:
+                put(edge, y, O)
+        sx, sy = (20, 34) if side == 0 else (28, 34)
+        hdx, hdy = ARM_HANDS[name][side]
+        ex, ey = sx + hdx, sy + hdy
+        d = ImageDraw.Draw(img)
+        d.line([(sx, sy), (ex, ey)], fill=O, width=4)
+        d.line([(sx, sy), (ex, ey)], fill=c["sleeve"], width=2)
+        mx, my = (sx + ex) // 2, (sy + ey) // 2
+        d.line([(mx, my), (ex, ey)], fill=c["bracer"], width=2)
+        put((mx + ex * 3) // 4, (my + ey * 3) // 4, c["gold"])
+        d.rectangle([ex - 1, ey - 1, ex + 1, ey + 1], fill=O)
+        d.rectangle([ex - 1, ey - 1, ex, ey], fill=skin)
+        hands[side] = (ex, ey)
+
+    # 五官
+    for x, y in BM_FACE:
+        put(x, y, skin)
+    eyes = pose["eyes"] or c["default_eyes"]
+    mouth = pose["mouth"]
+    sharp = eyes in ("open", "wide", "side", "look_up", "drowsy", "wink")
+    for x, y in ((19, 20), (20, 20), (27, 20), (28, 20)):  # 劍眉
+        put(x, y, eye)
+    if sharp:  # 睜眼時眉頭壓低，閉眼笑時不壓，免得看起來像打叉
+        put(21, 21, eye); put(26, 21, eye)
+    L, R = 20, 27
+    if eyes in ("open", "wide", "side", "look_up"):
+        o = 1 if eyes == "side" else 0
+        for x in (L + o, R + o):
+            put(x, 22, eye); put(x, 23, c["iris"])
+            if eyes == "wide":
+                put(x, 24, eye)
+    elif eyes == "drowsy":  # 半睜、瞇著眼的痞樣
+        for x in (L, R):
+            put(x - 1, 22, eye); put(x, 22, eye); put(x + 1, 22, eye); put(x, 23, c["iris"])
+    elif eyes in ("happy", "closed", "blink"):
+        for x in (L, R):
+            if eyes == "happy":
+                put(x - 1, 23, eye); put(x, 22, eye); put(x + 1, 23, eye)
+            else:
+                put(x - 1, 23, eye); put(x, 23, eye); put(x + 1, 23, eye)
+    elif eyes == "wink":
+        put(L, 22, eye); put(L, 23, c["iris"])
+        put(R - 1, 23, eye); put(R, 22, eye); put(R + 1, 23, eye)
+    m = c["mouth"]
+    if mouth in ("smirk", "smile"):
+        put(23, 26, m); put(24, 26, m); put(25, 25, m)
+    elif mouth == "flat":
+        put(23, 26, m); put(24, 26, m); put(25, 26, m)
+    elif mouth == "grin":
+        put(22, 25, m); put(23, 26, m); put(24, 26, m); put(25, 26, m); put(26, 25, m)
+    elif mouth in ("fang", "laugh", "open"):
+        for x in (23, 24, 25):
+            put(x, 26, eye); put(x, 27, m)
+        if mouth == "fang":
+            put(23, 27, (255, 255, 255, 255))
+    elif mouth == "o":
+        put(24, 26, eye); put(24, 27, m)
+
+    # 道具：金錢鏢
+    prop = pose["prop"]
+    if prop and prop[0] == "coins":
+        gold, shine = (226, 182, 70, 255), (255, 232, 150, 255)
+        x, y = hands[1]
+        if prop[1] == "throw":
+            spots = ((5, -2), (9, -4), (13, -1))
+        else:
+            spots = ((2, -2), (3, 0)) if prop[1] == 0 else ((3, -1), (1, -3))
+        for ox, oy in spots:
+            put(x + ox, y + oy, gold); put(x + ox + 1, y + oy, shine); put(x + ox, y + oy + 1, shine)
+
+    # 效果
+    for f in pose["fx"]:
+        if f == "note":
+            col = (214, 168, 60, 255)
+            for y in range(4, 9):
+                put(38, y, col)
+            put(39, 4, col); put(40, 5, col); put(37, 8, col); put(36, 8, col); put(37, 9, col)
+        elif f == "q":
+            col = (90, 130, 200, 255)
+            for x, y in ((37, 6), (38, 5), (39, 5), (40, 6), (40, 7), (39, 8), (38, 9), (38, 11)):
+                put(x, y, col)
+        elif f == "sweat":
+            col = (120, 180, 230, 255)
+            put(31, 16, col); put(31, 17, col); put(30, 18, col); put(31, 18, col); put(32, 18, col)
+        elif f == "idea":
+            col = (176, 130, 70, 255)
+            for pts in (((10, 10), (11, 12)), ((13, 7), (13, 9)), ((8, 14), (10, 15))):
+                ImageDraw.Draw(img).line(pts, fill=col)
+        elif f == "speechless":
+            for x in (8, 10, 12):
+                put(x, 14, O)
+
+    # 身體上下移動（輕功、彈跳）
+    shift = pose["dy"] + (1 if legs == "crouch" else 0)
+    if shift or pose["dx"]:
+        moved = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        moved.alpha_composite(img, (pose["dx"], shift))
+        img = moved
+    return img
 
 
 def run_row(**kw):
