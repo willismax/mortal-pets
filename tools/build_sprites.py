@@ -85,6 +85,14 @@ CHARACTERS = {
     },
 }
 
+# 小竹・裂骨魔：同一個人，換上鐵網護甲、虎紋背帶、虎頭面具與機關臂，背著刻紅紋的大刀
+CHARACTERS["xiaozhu-battle"] = {
+    **CHARACTERS["xiaozhu"],
+    "displayName": "小竹・裂骨魔",
+    "description": "郁竹的戰鬥裝束：鐵網護甲、虎紋背帶、腰掛虎頭面具，機關臂扛著刻了紅紋的大刀。平常睏睏的，掄起兵器就是「裂骨魔」。（活俠傳同人）",
+    "battle": True,
+}
+
 
 def P(**kw):
     base = dict(dy=0, dx=0, eyes=None, mouth="smile", arms=("down", "down"),
@@ -131,6 +139,7 @@ ARM_HANDS = {
     "brow": ((4, -9), (-4, -9)),
     "hold": ((5, 2), (5, 2)),
     "hammer_up": ((7, -7), (7, -7)),
+    "fist_up": ((-5, -10), (5, -10)),
     "hammer_down": ((7, 3), (7, 3)),
     "stir_a": ((5, 5), (3, 6)),
     "stir_b": ((7, 4), (5, 7)),
@@ -155,6 +164,17 @@ def draw_frame(cid, pose):
     hy = 19 + dy
     sx_l, sx_r, sy = 19 + dx, 29 + dx, 35 + dy  # 肩膀
     hip_y = 44 + dy
+
+    battle = c.get("battle", False)
+    holds_weapon = bool(pose["prop"]) and pose["prop"][0] == "hammer"
+    if battle and not holds_weapon:
+        # 斜背在身後的大刀，刀柄在右腰
+        p.line([(37 + dx, 41 + dy), (9 + dx, 9 + dy)], OUTLINE, 5)
+        p.line([(37 + dx, 41 + dy), (9 + dx, 9 + dy)], (176, 178, 186, 255), 3)
+        p.line([(36 + dx, 41 + dy), (8 + dx, 9 + dy)], (226, 228, 234, 255), 1)
+        for k in range(3):
+            p.px(14 + dx + k * 3, 15 + dy + k * 3, (200, 40, 40, 255))
+        p.line([(37 + dx, 41 + dy), (41 + dx, 45 + dy)], (60, 58, 62, 255), 3)
 
     # 後髮
     sway = pose["hair_sway"]
@@ -227,6 +247,25 @@ def draw_frame(cid, pose):
         p.line([(26 + dx, 41 + dy), (27 + dx + flare, 44 + dy)], c["accent_sh"])
         p.rect(19 + dx, 38 + dy, 29 + dx, 38 + dy, c["belt"])
 
+    if battle:
+        # 鐵網護甲
+        p.rect(20 + dx, 33 + dy, 28 + dx, 38 + dy, (198, 182, 140, 255))
+        for gx in range(20, 29, 2):
+            p.line([(gx + dx, 33 + dy), (gx + dx, 38 + dy)], (96, 86, 70, 255))
+        for gy in range(33, 39, 2):
+            p.line([(20 + dx, gy + dy), (28 + dx, gy + dy)], (96, 86, 70, 255))
+        # 虎紋背帶
+        p.line([(19 + dx, 33 + dy), (29 + dx, 41 + dy)], (232, 160, 40, 255), 2)
+        for k in (1, 4, 7):
+            p.px(19 + dx + k + 1, 33 + dy + k, (30, 24, 20, 255))
+        # 左腰的虎頭面具
+        mx0, my0 = 13 + dx, 39 + dy
+        p.rect(mx0 - 1, my0 - 1, mx0 + 5, my0 + 5, OUTLINE)
+        p.rect(mx0, my0, mx0 + 4, my0 + 4, (214, 132, 60, 255))
+        p.px(mx0 + 1, my0 + 1, (30, 24, 20, 255)); p.px(mx0 + 3, my0 + 1, (30, 24, 20, 255))
+        p.line([(mx0 + 1, my0 + 3), (mx0 + 3, my0 + 3)], (120, 60, 30, 255))
+        p.px(mx0, my0 - 1, (214, 132, 60, 255)); p.px(mx0 + 4, my0 - 1, (214, 132, 60, 255))
+
     # 手臂
     al, ar = pose["arms"]
 
@@ -239,8 +278,9 @@ def draw_frame(cid, pose):
         hand = c["skin"]
         if "glove" in c:  # 短袖，前臂到手掌是長手套
             mx, my = (sx * 2 + ex) // 3, (sy * 2 + ey) // 3
-            p.line([(mx, my), (ex, ey)], c["glove"], 2)
-            hand = c["glove"]
+            metal = c.get("battle") and side == 1
+            p.line([(mx, my), (ex, ey)], (128, 124, 116, 255) if metal else c["glove"], 2)
+            hand = (204, 164, 70, 255) if metal else c["glove"]
         p.rect(ex - 1, ey - 1, ex + 1, ey + 1, OUTLINE)
         p.rect(ex - 1, ey - 1, ex, ey, hand)
         return ex, ey
@@ -370,19 +410,32 @@ def draw_frame(cid, pose):
     prop = pose["prop"]
     if prop:
         kind = prop[0]
-        if kind == "hammer":
+        if kind == "hammer" and battle:
+            # 大刀：舉起時刀尖朝上，劈下時朝右下
+            x, y = hand_r
+            tip = (x + 3, max(1, y - 17)) if prop[1] == "up" else (min(46, x + 10), y + 7)
+            p.line([(x, y), tip], OUTLINE, 5)
+            p.line([(x, y), tip], (176, 178, 186, 255), 3)
+            p.line([(x + 1, y), (tip[0] + 1, tip[1])], (226, 228, 234, 255), 1)
+            mx_, my_ = (x + tip[0]) // 2, (y + tip[1]) // 2
+            p.px(mx_, my_, (200, 40, 40, 255)); p.px(mx_ + (1 if prop[1] == "up" else -1), my_ + 2, (200, 40, 40, 255))
+            p.rect(x - 1, y - 1, x + 1, y + 1, (204, 164, 70, 255))
+        elif kind == "hammer":
             # prop[1] = 'up' / 'down'
+            wood, iron, shine = (128, 84, 50, 255), (128, 132, 144, 255), (196, 200, 210, 255)
             x, y = hand_r
             if prop[1] == "up":
-                p.line([(x, y), (x + 2, y - 5)], (120, 80, 50, 255), 1)
-                p.rect(x - 1, y - 9, x + 5, y - 5, OUTLINE)
-                p.rect(x, y - 8, x + 4, y - 6, (140, 144, 156, 255))
-                p.line([(x, y - 8), (x + 4, y - 8)], (200, 204, 214, 255))
+                p.line([(x, y + 1), (x + 1, y - 7)], OUTLINE, 3)
+                p.line([(x, y + 1), (x + 1, y - 7)], wood, 1)
+                p.rect(x - 3, y - 13, x + 5, y - 7, OUTLINE)
+                p.rect(x - 2, y - 12, x + 4, y - 8, iron)
+                p.line([(x - 2, y - 12), (x + 4, y - 12)], shine)
             else:
-                p.line([(x, y), (x + 5, y + 1)], (120, 80, 50, 255), 1)
-                p.rect(x + 4, y - 3, x + 9, y + 3, OUTLINE)
-                p.rect(x + 5, y - 2, x + 8, y + 2, (140, 144, 156, 255))
-                p.line([(x + 5, y - 2), (x + 8, y - 2)], (200, 204, 214, 255))
+                p.line([(x - 1, y), (x + 6, y + 1)], OUTLINE, 3)
+                p.line([(x - 1, y), (x + 6, y + 1)], wood, 1)
+                p.rect(x + 5, y - 4, x + 10, y + 4, OUTLINE)
+                p.rect(x + 6, y - 3, x + 9, y + 3, iron)
+                p.line([(x + 6, y - 3), (x + 9, y - 3)], shine)
         elif kind == "pot":
             ax, y0 = 36 + dx, 41 + dy
             p.rect(ax - 5, y0, ax + 4, y0 + 5, (70, 60, 60, 255))
@@ -434,6 +487,11 @@ def draw_frame(cid, pose):
             col = (240, 80, 110, 255)
             for ox, oy in ((0, 0), (2, 0), (-1, 1), (0, 1), (1, 1), (2, 1), (3, 1), (0, 2), (1, 2), (2, 2), (1, 3)):
                 p.px(x + ox, y + oy, col)
+        elif f == "anger":  # 生氣記號，貼在頭的左上
+            x, y = hx - 13, hy - 9
+            col = (220, 40, 50, 255)
+            for ox, oy in ((0, 1), (1, 0), (3, 0), (4, 1), (0, 3), (1, 4), (3, 4), (4, 3)):
+                p.px(x + ox, y + oy, col)
         elif f == "q":  # 等待：頭上小問號（貼著頭頂）
             x, y = hx + 8, hy - 15
             col = (250, 200, 80, 255)
@@ -475,13 +533,23 @@ def poses_for(cid):
         P(arms=("down", "wave_up"), mouth="smile", eyes="wink" if mei else "open", blush=not mei),
     ]
     # 4 jumping：預備、起跳、頂點、落下、站穩
-    rows["jumping"] = [
-        P(dy=2, legs="crouch", arms=("hip", "hip"), eyes="closed"),
-        P(dy=-4, legs="tuck", arms=("up", "up"), mouth="open", eyes="happy"),
-        P(dy=-7, legs="tuck", arms=("up", "up"), mouth="grin", eyes="happy", fx=("heart",) if mei else ()),
-        P(dy=-3, legs="stand", arms=("hip", "hip"), mouth="open"),
-        P(dy=1, legs="crouch", arms=("down", "down"), mouth="smile"),
-    ]
+    if mei:
+        rows["jumping"] = [
+            P(dy=2, legs="crouch", arms=("hip", "hip"), eyes="closed"),
+            P(dy=-4, legs="tuck", arms=("up", "up"), mouth="open", eyes="happy"),
+            P(dy=-7, legs="tuck", arms=("up", "up"), mouth="grin", eyes="happy", fx=("heart",)),
+            P(dy=-3, legs="stand", arms=("hip", "hip"), mouth="open"),
+            P(dy=1, legs="crouch", arms=("down", "down"), mouth="smile"),
+        ]
+    else:
+        # 依官方圖：一手握拳、一手高舉大鐵鎚，張嘴大喊
+        rows["jumping"] = [
+            P(dy=2, legs="crouch", arms=("hip", "hammer_down"), prop=("hammer", "down"), eyes="closed", mouth="flat"),
+            P(dy=-3, legs="tuck", arms=("up", "fist_up"), prop=("hammer", "up"), eyes="wide", mouth="open"),
+            P(dy=-6, legs="tuck", arms=("up", "fist_up"), prop=("hammer", "up"), eyes="wide", mouth="open", fx=("anger",)),
+            P(dy=-2, legs="stand", arms=("up", "fist_up"), prop=("hammer", "up"), eyes="wide", mouth="open", fx=("anger",)),
+            P(dy=1, legs="crouch", arms=("hip", "hammer_down"), prop=("hammer", "down"), eyes="drowsy", mouth="small"),
+        ]
     # 5 failed
     if mei:
         rows["failed"] = [
@@ -578,7 +646,7 @@ def render_rows(cid):
         frames = []
         for pose in rows[state]:
             img = draw_frame(cid, pose)
-            if pose.get("anvil"):
+            if pose.get("anvil") and not CHARACTERS[cid].get("battle"):
                 # 鐵砧墊在角色後方：另畫一張再疊上
                 anvil = draw_anvil(cid, glowing="spark" in pose["fx"])
                 base = Image.new("RGBA", img.size, (0, 0, 0, 0))

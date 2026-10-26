@@ -11,7 +11,7 @@
 mortal-pets/
 ├── index.html                    互動網頁：摸頭、餵食、練功、送禮、聊天、9 種動畫預覽
 ├── install.sh                    安裝 Codex 寵物／skill／通知，以及 Claude Code status line
-├── codex/pets/<id>/              Codex 寵物（pet.json + spritesheet.webp）
+├── codex/pets/<id>/              Codex 寵物：xiaomei、xiaozhu、xiaozhu-battle（pet.json + spritesheet.webp）
 ├── codex/qa/                     總覽圖與各狀態 GIF，方便檢查動畫
 ├── claude-plugin/mortal-buddy/   Claude Code 外掛
 │   ├── hooks/hooks.json          依工作狀態切換心情與台詞
@@ -29,7 +29,7 @@ mortal-pets/
 cd mortal-pets && ./install.sh codex
 ```
 
-會把兩隻寵物複製到 `~/.codex/pets/`，角色卡複製到 `~/.codex/skills/`。接著到 Codex 的 Settings → Pets → Refresh，選「小梅」或「小竹」；對話中可用 `/pet` 叫出或收起寵物。
+會把三隻寵物（小梅、小竹、小竹・裂骨魔）複製到 `~/.codex/pets/`，角色卡複製到 `~/.codex/skills/`。接著到 Codex 的 Settings → Pets → Refresh，選「小梅」或「小竹」；對話中可用 `/pet` 叫出或收起寵物。
 
 想在每輪完成時收到角色的系統通知，在 `~/.codex/config.toml` 加上（安裝腳本會印出實際路徑）：
 
@@ -41,10 +41,10 @@ spritesheet 照 Codex 的固定格式：8 欄 × 9 列、每格 192×208、未�
 
 | 列 | 狀態 | 小梅 | 小竹 |
 | --- | --- | --- | --- |
-| 0 | idle | 呼吸、眨眼、髮絲輕晃 | 瞇眼發呆 |
+| 0 | idle | 呼吸、眨眼、髮絲輕晃 | 半垂著眼睏睏地發呆 |
 | 1–2 | running-right / left | 輕功小跑 | 小碎步 |
 | 3 | waving | 笑著揮手、眨眼 | 害羞揮手、臉紅 |
-| 4 | jumping | 蹲下、起跳、冒愛心 | 舉雙手跳 |
+| 4 | jumping | 蹲下、起跳、冒愛心 | 一手握拳、一手高舉大鐵鎚大喊 💢 |
 | 5 | failed | 摀臉、掉淚 | 錘子掉了、淚眼汪汪 |
 | 6 | waiting | 雙手合十等你點頭 | 捧著木頭青蛙問你要不要 |
 | 7 | running（工作中） | 攪鍋煮菜、冒熱氣 | 掄錘打鐵、火星四濺 |
@@ -120,6 +120,8 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 - 結緣線重點在留學期間跑鐵拳巷；會請趙活陪她返鄉「演一場戲」。
 
 設計對應（參考官方立繪）：卡其頭巾與領巾、淺綠短袖上衣、長工作手套、卡其長圍裙、腦後一小撮頭髮、臉頰常帶紅暈、眼皮半垂的琥珀色睏眼；工作時打鐵；等待時捧著自己做的木頭青蛙；審視時湊近看齒輪；說話直、短、常停頓。
+
+另有戰鬥造型 **小竹・裂骨魔**（`codex/pets/xiaozhu-battle/`）：鐵網護甲、虎紋背帶、腰掛虎頭面具、金屬機關臂，背著刻紅紋的大刀；工作時改成揮刀。日常版開心時會像官方圖那樣一手握拳、一手高舉大鐵鎚大喊。網頁上可以切換兩種造型。
 
 ### 其他結緣角色
 

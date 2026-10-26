@@ -120,6 +120,7 @@
         <strong id="name"></strong>
         <span id="title"></span>
       </div>
+      <div class="chips" id="outfits" style="margin-top:8px"></div>
       <div class="aff">
         <div class="aff-bar"><div class="aff-fill" id="affFill"></div></div>
         <div class="aff-text"><span id="tier"></span><span id="affNum"></span></div>
@@ -201,7 +202,8 @@
   function loadSave() {
     try { return JSON.parse(localStorage.getItem("mortal-pets") || "{}"); } catch { return {}; }
   }
-  const store = Object.assign({ current: "xiaomei", aff: {} }, loadSave());
+  const store = Object.assign({ current: "xiaomei", aff: {}, outfit: {} }, loadSave());
+  store.outfit = store.outfit || {};
   function persist() {
     try { localStorage.setItem("mortal-pets", JSON.stringify(store)); } catch {}
   }
@@ -328,16 +330,29 @@
     document.documentElement.style.setProperty("--char", c.color);
     document.documentElement.style.setProperty("--char-soft", c.color + "22");
     document.querySelectorAll("#tabs .tab").forEach((t) => t.setAttribute("aria-selected", t.dataset.id === id));
-    sprite.style.backgroundImage = `url(codex/pets/${id}/spritesheet.webp)`;
+    const outfits = c.outfits || [{ id, name: "" }];
+    const petId = outfits.some((o) => o.id === store.outfit[id]) ? store.outfit[id] : outfits[0].id;
+    sprite.style.backgroundImage = `url(codex/pets/${petId}/spritesheet.webp)`;
+    const ob = $("outfits");
+    ob.innerHTML = "";
+    ob.hidden = outfits.length < 2;
+    outfits.forEach((o) => {
+      const b = document.createElement("button");
+      b.className = "chip";
+      b.textContent = o.name;
+      b.setAttribute("aria-pressed", o.id === petId);
+      b.onclick = () => { store.outfit[id] = o.id; persist(); select(id); };
+      ob.append(b);
+    });
     sprite.style.transition = "none";
     sprite.style.left = "50%";
     requestAnimationFrame(() => { sprite.style.transition = ""; });
     $("name").textContent = `${c.name}（${c.fullName}）`;
     $("title").textContent = c.title;
     $("tagline").textContent = c.tagline;
-    $("petPath").textContent = `mortal-pets/codex/pets/${id}/`;
-    $("petJson").href = `codex/pets/${id}/pet.json`;
-    $("petSheet").href = `codex/pets/${id}/spritesheet.webp`;
+    $("petPath").textContent = `mortal-pets/codex/pets/${petId}/`;
+    $("petJson").href = `codex/pets/${petId}/pet.json`;
+    $("petSheet").href = `codex/pets/${petId}/spritesheet.webp`;
     const ul = $("profile");
     ul.innerHTML = "";
     c.profile.forEach((p) => {

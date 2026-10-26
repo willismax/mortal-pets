@@ -119,6 +119,10 @@
       fullName: "郁竹",
       title: "崆峒鐵拳門嫡傳女弟子・人稱「裂骨魔」",
       tagline: "身形嬌小、力大無窮；眼神兇是因為近視又沒睡。",
+      outfits: [
+        { id: "xiaozhu", name: "日常・鐵匠" },
+        { id: "xiaozhu-battle", name: "裂骨魔" }
+      ],
       color: "#3e6b47",
       accent: "#8c5c3a",
       profile: [
