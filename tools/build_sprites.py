@@ -136,9 +136,8 @@ CHARACTERS["xiahoulan"] = {
     # 齊瀏海長直髮、側邊藍色髮繩與翠綠耳墜、藍色寬袖長衣、淺藍內領、油紙傘
     "hair": (24, 22, 28, 255), "hair_hi": (64, 62, 74, 255),
     "skin": (252, 238, 234, 255), "skin_sh": (228, 204, 200, 255),
-    "eye": (112, 108, 118, 255), "lid": (24, 20, 28, 255),  # 灰色無神的眼睛
-    "pupil": (46, 42, 52, 255), "shadow": (214, 186, 196, 255),
-    "mature": True,
+    "eye": (58, 46, 80, 255), "lid": (24, 20, 28, 255),  # 深紫黑的眼珠
+    "glint": (128, 112, 156, 255),
     "cloth": (58, 92, 196, 255), "cloth_sh": (38, 62, 150, 255),
     "accent": (52, 82, 182, 255), "accent_sh": (34, 54, 136, 255),
     "collar": (150, 196, 246, 255),
@@ -146,7 +145,7 @@ CHARACTERS["xiahoulan"] = {
     "band": (70, 120, 220, 255), "earring": (80, 180, 120, 255),
     "sleeve": (70, 108, 212, 255), "wide_sleeves": True,
     "shoe": (30, 30, 50, 255), "leg": (52, 82, 182, 255),
-    "blush": (240, 150, 160, 255), "lips": (196, 54, 70, 255), "lips_sh": (150, 40, 56, 255),
+    "blush": (240, 150, 160, 255), "lips": (206, 70, 86, 255),
     "outfit": "dress", "head": "hime",
     "long_hair": True, "height_drop": -1, "tall": 1, "default_eyes": "dull",
 }
@@ -631,13 +630,15 @@ def draw_frame(cid, pose):
     elif eyes in ("dull", "dull_side"):  # 夏侯蘭：大而無神的眼睛，眼皮半垂、濃密睫毛往外挑，沒有光
         lid = c.get("lid", eye)
         po = 1 if eyes == "dull_side" else 0  # 斜眼時瞳孔偏向一側
-        for x, out in ((lx - 1, -1), (rx, 1)):
-            p.line([(x - 1, ey), (x + 3, ey)], lid)  # 粗重的上睫毛
-            p.line([(x - 1, ey - 1), (x + 3, ey - 1)], lid)
-            p.px(x + (4 if out > 0 else -2), ey - 1, lid)  # 眼尾上挑
-            p.rect(x, ey + 1, x + 2, ey + 2, eye)  # 灰色瞳孔，沒有反光
-            p.px(x + 1 + po, ey + 1, c.get("pupil", lid))
-            p.line([(x, ey + 3), (x + 2, ey + 3)], c.get("shadow", eye))  # 眼下陰影
+        for x, out in ((lx, -1), (rx, 1)):
+            # 清秀的鳳眼：細長眼線、眼尾輕輕上挑，眼皮微垂蓋住瞳孔上緣
+            p.line([(x - 1, ey), (x + 2, ey)], lid)
+            p.px(x + (3 if out > 0 else -2), ey - 1, lid)
+            p.rect(x, ey + 1, x + 1, ey + 2, eye)  # 深色瞳孔
+            gx = x + (1 if out < 0 else 0)  # 微光靠眼頭
+            if po:
+                gx = x + 1
+            p.px(gx, ey + 1, c.get("glint", eye))
     elif eyes == "side":  # 害羞地往旁邊看
         for x in (lx, rx):
             p.rect(x + 1, ey, x + 2, ey + 2, eye)
@@ -657,7 +658,6 @@ def draw_frame(cid, pose):
         m = "lips"
     if m == "lips":  # 小巧的紅唇
         p.line([(mx, my), (mx + 1, my)], c["lips"])
-        p.px(mx, my + 1, c.get("lips_sh", c["lips"]))
     elif m == "smile":
         p.px(mx - 1, my - 1, mouth); p.px(mx, my, mouth); p.px(mx + 1, my, mouth); p.px(mx + 2, my - 1, mouth)
     elif m == "grin":
