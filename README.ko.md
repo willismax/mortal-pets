@@ -2,9 +2,9 @@
 
 [中文](README.md) ｜ [日本語](README.ja.md) ｜ **한국어** ｜ [English](README.en.md)
 
-![활협전 인연 펫: 소매, 소죽, 열골마, 소사매, 용상, 하후란, 엽운상 도트 그림](promo/promo-landscape.png)
+![활협전 인연 펫: 소매, 소죽, 열골마, 소사매, 용상, 하후란, 엽운상, 위국, 대사형 도트 그림](promo/promo-landscape.png)
 
-![6명의 대표 동작 애니메이션](promo/promo-moves.gif)
+![대표 동작 애니메이션](promo/promo-moves.gif)
 
 대만 무협 RPG **활협전(Legend of Mortal)** 의 인연 캐릭터들을 **Codex 펫**과 **Claude Code 펫**으로 만들었습니다. 캐릭터 성격에 맞춘 대사로 작업 중에 반응해 줍니다.
 
@@ -24,6 +24,7 @@
 | `xiahoulan` | 하후란 | 탈백문의 '탈백유란'. 지우산을 든 차가운 젊은 사부. 말은 날카롭지만 제자를 끔찍이 챙긴다. |
 | `yeyunshang` | 엽운상 | '점창명주', 엽운주의 친여동생. 장난과 단것을 좋아하는 꼬마 악동. 한여름에도 담비 털옷을 벗지 않고, 반나절만 놀아도 열이 나서 쓰러진다. 대표 동작은 "에헤" 윙크, 뾰로통한 얼굴, 기도하는 손. |
 | `weiju` | 위국 | 공동파 현공문의 직전 여제자이자 당대 장문인. 단정하고 학식 있는, 무예를 숭상하는 공동파와는 어울리지 않는 독특한 여인. 욱죽이 만든 손난로를 늘 들고 다닌다. 부끄러우면 머리에서 김이 난다. |
+| `tangbuyi` | 대사형(당포의) | 번외편(인연 대상 아님). 당문 장문인의 첫째 제자, '비협'. 호탕하고 자유분방하며 진짜 금으로 만든 금전표를 손가락으로 돌린다. 경공은 '천하 5위 안'이라고 우긴다. 꿈은 은퇴해서 사제와 만담을 하는 것. |
 
 ## Claude Code
 
@@ -49,7 +50,7 @@
 
 | 명령어 | 설명 |
 | --- | --- |
-| `/mortal-buddy:pick xiaozhu` | 펫 바꾸기 (`xiaomei`, `xiaozhu`, `xiaoshimei`, `longxiang`, `xiahoulan`, `yeyunshang`, `weiju`) |
+| `/mortal-buddy:pick xiaozhu` | 펫 바꾸기 (`xiaomei`, `xiaozhu`, `xiaoshimei`, `longxiang`, `xiahoulan`, `yeyunshang`, `weiju`, `tangbuyi`) |
 | `/mortal-buddy:pet feed` | `pet` 쓰다듬기, `feed` 먹이기, `train` 수련(각 +1), `gift` 선물(+3). 같은 행동은 1분에 한 번만 오른다 |
 | `/mortal-buddy:talk` | 캐릭터가 질문합니다. `/mortal-buddy:talk 2`처럼 번호로 대답하면 호감도가 바뀝니다 |
 | `/mortal-buddy:roleplay 오늘 너무 피곤해` | 캐릭터 말투로 대답 (한국어로 말하면 한국어로 대답) |

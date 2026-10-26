@@ -2,11 +2,11 @@
 
 **中文** ｜ [日本語](README.ja.md) ｜ [한국어](README.ko.md) ｜ [English](README.en.md)
 
-![活俠傳結緣寵物：小梅、小竹、裂骨魔、小師妹、龍湘、夏侯蘭、葉雲裳的像素寵物](promo/promo-landscape.png)
+![活俠傳結緣寵物：小梅、小竹、裂骨魔、小師妹、龍湘、夏侯蘭、葉雲裳、魏菊、大師兄的像素寵物](promo/promo-landscape.png)
 
-![六人招牌動作：小梅飛踢、小竹擦汗、小師妹抖抖抖、龍湘雞腿劍、夏侯蘭跟我來、葉雲裳欸嘿](promo/promo-moves.gif)
+![招牌動作：小梅飛踢、小竹擦汗、小師妹抖抖抖、龍湘雞腿劍、夏侯蘭跟我來、葉雲裳欸嘿、魏菊嚇到、大師兄擲鏢](promo/promo-moves.gif)
 
-把《活俠傳》的結緣角色做成 **Codex 寵物**和 **Claude Code 寵物**，並依角色個性寫了互動對話。目前有小梅（虞小梅）、小竹（郁竹）、小師妹（唐默鈴）、龍湘、夏侯蘭、葉雲裳、魏菊七位。
+把《活俠傳》的結緣角色做成 **Codex 寵物**和 **Claude Code 寵物**，並依角色個性寫了互動對話。目前有小梅（虞小梅）、小竹（郁竹）、小師妹（唐默鈴）、龍湘、夏侯蘭、葉雲裳、魏菊七位，另有番外的大師兄唐布衣（非結緣對象，應網友許願加入）。
 
 - 線上試玩：<https://willismax.github.io/mortal-pets/>（直接開 `index.html` 也可以；右上角可切換中文、日本語、한국어、English，分享時可加 `?lang=ja`、`?lang=ko`、`?lang=en`）
 - Claude Code 安裝：`/plugin install mortal-buddy --marketplace willismax/mortal-pets`
@@ -19,7 +19,7 @@ mortal-pets/
 ├── .claude-plugin/marketplace.json  Claude Code 外掛市集設定
 ├── index.html                    互動網頁：摸頭、餵食、練功、送禮、聊天、9 種動畫預覽
 ├── install.sh                    安裝 Codex 寵物／skill／通知，以及 Claude Code status line
-├── codex/pets/<id>/              Codex 寵物：xiaomei、xiaozhu、xiaozhu-battle、xiaoshimei、longxiang、xiahoulan、yeyunshang、weiju
+├── codex/pets/<id>/              Codex 寵物：xiaomei、xiaozhu、xiaozhu-battle、xiaoshimei、longxiang、xiahoulan、yeyunshang、weiju、tangbuyi
 ├── codex/qa/                     總覽圖與各狀態 GIF，方便檢查動畫
 ├── claude-plugin/mortal-buddy/   Claude Code 外掛
 │   ├── hooks/hooks.json          依工作狀態切換心情與台詞
@@ -43,7 +43,7 @@ git clone https://github.com/willismax/mortal-pets.git
 cd mortal-pets && ./install.sh codex
 ```
 
-會把八隻寵物（小梅、小竹、小竹・裂骨魔、小師妹、龍湘、夏侯蘭、葉雲裳、魏菊）複製到 `~/.codex/pets/`，角色卡複製到 `~/.codex/skills/`。接著到 Codex 的 Settings → Pets → Refresh 選一隻；對話中可用 `/pet` 叫出或收起寵物。
+會把九隻寵物（小梅、小竹、小竹・裂骨魔、小師妹、龍湘、夏侯蘭、葉雲裳、魏菊、大師兄）複製到 `~/.codex/pets/`，角色卡複製到 `~/.codex/skills/`。接著到 Codex 的 Settings → Pets → Refresh 選一隻；對話中可用 `/pet` 叫出或收起寵物。
 
 想在每輪完成時收到角色的系統通知，在 `~/.codex/config.toml` 加上（安裝腳本會印出實際路徑）：
 
@@ -110,7 +110,7 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 
 | 指令 | 說明 |
 | --- | --- |
-| `/mortal-buddy:pick xiaozhu` | 換寵物（`xiaomei`、`xiaozhu`、`xiaoshimei`、`longxiang`、`xiahoulan`、`yeyunshang`、`weiju`） |
+| `/mortal-buddy:pick xiaozhu` | 換寵物（`xiaomei`、`xiaozhu`、`xiaoshimei`、`longxiang`、`xiahoulan`、`yeyunshang`、`weiju`、`tangbuyi`） |
 | `/mortal-buddy:pet feed` | `pet` 摸頭、`feed` 餵食、`train` 練功（各 +1）、`gift` 送禮（+3），同一種互動一分鐘內只算一次 |
 | `/mortal-buddy:talk` | 她出題，用 `/mortal-buddy:talk 2` 回答，答案會加減好感 |
 | `/mortal-buddy:roleplay 今天好累` | 載入角色卡，讓她用自己的口吻回你 |
@@ -220,6 +220,26 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 | 7 | running（工作中） | 捧著書安靜地讀、翻頁 |
 | 8 | review | 臉上一片**陰影**，意味深長地微笑 |
 
+### 大師兄 唐布衣（番外）
+
+- 唐門掌門座下第一大弟子，人稱「飛俠」，暗器與輕功當世一流。不是結緣對象，應網友許願加入。
+- 爽朗不羈，常帶師弟妹翹課、惡作劇；嘴上沒正經，心裡最照顧師弟妹。
+- 暗器是真金打的金錢鏢，遇到愛錢的人改用腳踢；自誇輕功「天下前五」，不肯只說前十。
+- 夢想退隱江湖，跟師弟搭檔說相聲。
+- 劇透：與小師妹有婚約；第三年身故，早在杏花林就預感到了。
+
+設計對應（參考 LoM Wiki 立繪）：紫黑長髮帶紅褐髮梢、亂翹瀏海與呆毛、草繩紮的低馬尾、臉頰小疤；青藍立領長袍配金色盤扣、深色褲管、紅褐護腕，指間夾著金錢鏢。
+
+| 列 | 狀態 | 大師兄 |
+| --- | --- | --- |
+| 0 | idle | 一手叉腰，指間**轉著金錢鏢**哼小調 ♪ |
+| 3 | waving | 大力揮手、張嘴大笑：「師弟！」 |
+| 4 | jumping | **飛俠**：輕功一躍，空中擲出金錢鏢 |
+| 5 | failed | 無言冒汗，再尷尬地**抓頭傻笑** |
+| 6 | waiting | 伸手在你眼前晃：「回神了沒？」 |
+| 7 | running（工作中） | 練擲金錢鏢 |
+| 8 | review | 托著下巴**瞇眼賊笑** |
+
 ### 新增角色
 
 步驟：
@@ -248,6 +268,7 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 - [4Gamers：活俠傳女角人氣投票](https://www.4gamers.com.tw/news/detail/66059/legend-of-mortal-female-characters-popularity-charts)
 - [聯合新聞網：葉雲裳結緣攻略](https://game.udn.com/game/story/122090/8970592)、[LoM Wiki：葉雲裳](https://smilin.net/LoM-wiki/people/characters/girl2.html)、[GAMEX JP：葉雲裳ルート解説](https://gamexjp.com/games/1538/)
 - [LoM Wiki：魏菊](https://smilin.net/LoM-wiki/people/characters/girl7.html)、[巴哈姆特：魏菊系列劇情影片](https://forum.gamer.com.tw/C.php?bsn=73317&snA=1670)、[遊戲狂：魏菊隱藏劇情攻略](https://gamemad.com/guide/336609)
+- [LoM Wiki：唐布衣](https://smilin.net/LoM-wiki/people/characters/brother1.html)
 - Codex 寵物格式：[openai/skills hatch-pet](https://github.com/openai/skills/tree/main/skills/.curated/hatch-pet)（`references/animation-rows.md`）
 
 ## 版權

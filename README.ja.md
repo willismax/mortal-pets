@@ -2,9 +2,9 @@
 
 [中文](README.md) ｜ **日本語** ｜ [한국어](README.ko.md) ｜ [English](README.en.md)
 
-![活俠傳 縁結びペット：小梅・小竹・裂骨魔・小師妹・龍湘・夏侯蘭・葉雲裳のドット絵](promo/promo-landscape.png)
+![活俠傳 縁結びペット：小梅・小竹・裂骨魔・小師妹・龍湘・夏侯蘭・葉雲裳・魏菊・大師兄のドット絵](promo/promo-landscape.png)
 
-![6 人の得意技アニメーション](promo/promo-moves.gif)
+![得意技アニメーション](promo/promo-moves.gif)
 
 台湾の武侠 RPG『活俠傳（カッキョウデン）』の縁結びキャラクターを、**Codex のペット**と **Claude Code のペット**にしました。性格に合わせたセリフで、作業中にリアクションしてくれます。
 
@@ -24,6 +24,7 @@
 | `xiahoulan` | 夏侯蘭 | 奪魄門の「奪魄幽蘭」。番傘を差したクールな若き師匠。口は悪いが面倒見がいい。 |
 | `yeyunshang` | 葉雲裳 | 「點蒼の明珠」、葉雲舟の妹。いたずら好きでお菓子が大好きな小悪魔。真夏でも毛皮の外套を手放さず、半日はしゃぐと熱を出して倒れてしまう。得意技は「えへへ」のウインク、ふくれっ面、お祈りポーズ。 |
 | `weiju` | 魏菊 | 崆峒派・玄功門の嫡伝女弟子にして当代掌門。端正で教養があり、武張った崆峒派では異色の才女。郁竹が作った手炉をいつも抱えている。照れると頭から湯気が出る。 |
+| `tangbuyi` | 大師兄（唐布衣） | 番外編（縁結び対象ではありません）。唐門掌門の一番弟子、人呼んで「飛俠」。豪快で自由気まま、本物の金でできた金銭鏢を指先で回し、軽功は「天下五指」と言い張る。夢は引退して師弟と漫才をすること。 |
 
 ## Claude Code
 
@@ -49,7 +50,7 @@
 
 | コマンド | 説明 |
 | --- | --- |
-| `/mortal-buddy:pick xiaozhu` | ペットを切り替え（`xiaomei`、`xiaozhu`、`xiaoshimei`、`longxiang`、`xiahoulan`、`yeyunshang`、`weiju`） |
+| `/mortal-buddy:pick xiaozhu` | ペットを切り替え（`xiaomei`、`xiaozhu`、`xiaoshimei`、`longxiang`、`xiahoulan`、`yeyunshang`、`weiju`、`tangbuyi`） |
 | `/mortal-buddy:pet feed` | `pet` なでる・`feed` ごはん・`train` 修行（各 +1）・`gift` 贈り物（+3）。同じ行動は 1 分に 1 回だけ加算 |
 | `/mortal-buddy:talk` | 彼女が質問してきます。`/mortal-buddy:talk 2` のように番号で答えると好感度が変わります |
 | `/mortal-buddy:roleplay 今日は疲れた` | キャラクターの口調で返事してもらう（日本語で話しかければ日本語で返事） |

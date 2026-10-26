@@ -193,6 +193,27 @@ CHARACTERS["weiju"] = {
     "long_hair": True, "height_drop": -1, "tall": 1, "default_eyes": "open",
 }
 
+CHARACTERS["tangbuyi"] = {
+    "displayName": "大師兄",
+    "description": "唐門大師兄唐布衣，人稱「飛俠」：爽朗不羈、暗器輕功當世一流，指間轉著金錢鏢、哼著小調，夢想是退隱江湖說相聲。（活俠傳同人・番外）",
+    # 依 LoM Wiki 立繪：紫黑長髮帶紅褐髮梢、亂翹的瀏海與呆毛、草繩紮的低馬尾；
+    # 青藍立領長袍配金色盤扣、紅褐護腕與紅羽飾，指間夾著金錢鏢，臉頰一道小疤
+    "hair": (42, 32, 50, 255), "hair_hi": (128, 66, 62, 255),
+    "skin": (252, 236, 228, 255), "skin_sh": (232, 204, 194, 255),
+    "eye": (78, 52, 52, 255), "lid": (30, 22, 30, 255),
+    "cloth": (66, 106, 132, 255), "cloth_sh": (46, 80, 104, 255),
+    "accent": (62, 100, 126, 255), "accent_sh": (44, 76, 98, 255),
+    "collar": (84, 128, 156, 255),
+    "sash": (38, 54, 70, 255),
+    "sleeve": (70, 112, 140, 255), "wide_sleeves": True,
+    "bracer": (138, 74, 60, 255),
+    "rope": (206, 184, 140, 255), "button": (214, 176, 80, 255),
+    "shoe": (36, 34, 42, 255), "leg": (40, 44, 58, 255),
+    "blush": (244, 206, 196, 255), "lips": (150, 80, 74, 255),
+    "outfit": "dress", "male": True, "head": "messy", "scar": True,
+    "long_hair": False, "height_drop": -2, "tall": 2, "default_eyes": "drowsy",
+}
+
 # 小竹・裂骨魔：同一個人，換上鐵網護甲、虎紋背帶、虎頭面具與機關臂，背著刻紅紋的大刀
 CHARACTERS["xiaozhu-battle"] = {
     **CHARACTERS["xiaozhu"],
@@ -315,6 +336,16 @@ def draw_frame(cid, pose):
                (bx0 + 9 * k + sway * k, hy - 4), (bx0 + 3 * k, hy - 10)]
         p.poly(pts, c["hair"], OUTLINE)
         p.line([(bx0 + 5 * k, hy - 12), (bx0 + 10 * k + sway * k, hy - 5)], c["hair_hi"])
+    elif c.get("head") == "messy":
+        # 大師兄：亂翹的頭髮，草繩紮成低馬尾往後甩
+        p.ell(hx - 12, hy - 12, hx + 12, hy + 10, c["hair"], OUTLINE)
+        k = -1 if face_r else 1
+        bx0 = hx + 8 * k
+        pts = [(bx0, hy + 2), (bx0 + 4 * k, hy + 1), (bx0 + 9 * k + sway * k, hy + 12),
+               (bx0 + 7 * k + sway * 2 * k, hy + 24), (bx0 + 3 * k + sway * k, hy + 20), (bx0, hy + 8)]
+        p.poly(pts, c["hair"], OUTLINE)
+        p.line([(bx0 + 4 * k, hy + 8), (bx0 + 6 * k + sway * k, hy + 19)], c["hair_hi"])  # 紅褐髮梢
+        p.line([(bx0, hy + 4), (bx0 + 4 * k, hy + 3)], c["rope"], 2)  # 草繩
     elif c.get("head") == "twin":
         # 葉雲裳：頭頂兩側的小髻
         p.ell(hx - 12, hy - 12, hx + 12, hy + 9, c["hair"], OUTLINE)
@@ -423,15 +454,24 @@ def draw_frame(cid, pose):
         # 上衣、交領、腰帶與長裙（長裙蓋住大半雙腿，身高高的角色裙子較長）
         hem = 46 + dy + c.get("tall", 0)
         kick = legs == "kick"
-        if c.get("waist"):  # 小師妹：裙子從細腰順順往下垂，只微微變寬
+        if c.get("male"):  # 大師兄：直筒長袍下襬到膝，兩側開衩露出褲管
+            hem = 44 + dy
+            skirt = [(18 + dx, 40 + dy), (30 + dx, 40 + dy), (31 + dx + flare, hem), (17 + dx + flare, hem)]
+        elif c.get("waist"):  # 小師妹：裙子從細腰順順往下垂，只微微變寬
             skirt = [(19 + dx, 40 + dy), (29 + dx, 40 + dy), (31 + dx + flare, hem), (17 + dx + flare, hem)]
         else:
             skirt = [(18 + dx, 40 + dy), (30 + dx, 40 + dy), (33 + dx + flare, hem), (15 + dx + flare, hem)]
         p.poly(skirt, c["accent"], OUTLINE)
-        for k_ in (21, 24, 27):
-            p.line([(k_ + dx, 42 + dy), (k_ + dx + flare, hem - 1)], c["accent_sh"])
+        if c.get("male"):
+            p.line([(24 + dx, 41 + dy), (24 + dx + flare, hem - 1)], c["accent_sh"])  # 前襟開衩
+        else:
+            for k_ in (21, 24, 27):
+                p.line([(k_ + dx, 42 + dy), (k_ + dx + flare, hem - 1)], c["accent_sh"])
         if "skirt_band" in c:  # 白裙正中的青色長帶
             p.line([(24 + dx, 41 + dy), (24 + dx + flare, hem - 1)], c["skirt_band"], 2)
+        if "button" in c:  # 長袍胸前的金色盤扣
+            for yy in (35, 37):
+                p.line([(23 + dx, yy + dy), (25 + dx, yy + dy)], c["button"])
         if "robe" in c:
             for side in (-1, 1):
                 x_in, x_out = 24 + dx + 3 * side, 24 + dx + 9 * side
@@ -644,6 +684,18 @@ def draw_frame(cid, pose):
         p.line([(hx + 5 * k, hy - 12), (hx + 8 * k, hy - 6)], c["ribbon"])
         p.rect(hx - 11, hy - 2, hx - 9, hy + 10, hair)
         p.rect(hx + 9, hy - 2, hx + 11, hy + 10, hair)
+    elif c.get("head") == "messy":
+        k = -1 if face_r else 1
+        # 一綹長瀏海斜斜蓋到眼角
+        p.poly([(hx + 1 * k, hy - 4), (hx + 7 * k, hy - 4), (hx + 5 * k, hy + 4), (hx + 3 * k, hy + 1)], hair)
+        p.line([(hx + 5 * k, hy - 3), (hx + 5 * k, hy + 2)], c["hair_hi"])
+        # 頭頂亂翹的呆毛與髮尾
+        p.line([(hx - 1, hy - 12), (hx + 1, hy - 16), (hx + 4, hy - 15)], OUTLINE, 2)
+        p.line([(hx - 9, hy - 8), (hx - 13, hy - 9)], hair, 2)
+        p.line([(hx + 9, hy - 8), (hx + 13, hy - 10)], hair, 2)
+        p.rect(hx - 11, hy - 2, hx - 9, hy + 9, hair)
+        p.rect(hx + 9, hy - 2, hx + 11, hy + 9, hair)
+        p.line([(hx - 10, hy + 2), (hx - 10, hy + 8)], c["hair_hi"])
     elif c.get("head") == "updo":
         # 長髮往後梳、額頭露出來：只留髮際線，兩側長髮順著臉頰垂下
         p.ell(hx - 7, hy - 5, hx + 7, hy + 3, c["skin"])
@@ -805,6 +857,8 @@ def draw_frame(cid, pose):
     elif m == "smirk":
         p.px(mx, my, mouth); p.px(mx + 1, my, mouth); p.px(mx + 2, my - 1, mouth)
 
+    if c.get("scar"):
+        p.line([(hx - 7 + look, hy + 5), (hx - 6 + look, hy + 7)], (196, 150, 150, 255))
     if "fur" in c:
         # 白色毛領圍住脖子，中間繫著粉紅領結
         p.ell(hx - 8, hy + 11, hx + 8, hy + 15, c["fur"], OUTLINE)
@@ -908,6 +962,18 @@ def draw_frame(cid, pose):
             p.line([(x, y), tip], OUTLINE, 3)
             p.line([(x, y), tip], (214, 222, 236, 255), 1)
             p.line([(x - 1, y + 1), (x + 1, y - 1)], (200, 170, 90, 255), 2)
+        elif kind == "coins":  # 指間夾著的金錢鏢；prop[1] = 0/1 轉動、"throw" 擲出
+            x, y = hand_r
+            gold, shine = (226, 182, 70, 255), (255, 232, 150, 255)
+            if prop[1] == "throw":
+                for i_, (ox, oy) in enumerate(((6, -2), (11, -4), (16, -1))):
+                    cx_, cy_ = min(46, x + ox), y + oy
+                    p.ell(cx_ - 1, cy_ - 1, cx_ + 1, cy_ + 1, gold, OUTLINE)
+            else:
+                spots = ((2, -2), (3, 0), (1, -4)) if prop[1] == 0 else ((3, -1), (2, -3), (0, -4))
+                for ox, oy in spots:
+                    p.ell(x + ox - 1, y + oy - 1, x + ox + 1, y + oy + 1, gold, OUTLINE)
+                    p.px(x + ox, y + oy, shine)
         elif kind == "warmer":  # 郁竹打造的深綠手爐，雙手捧在身前
             x, y = (hand_l[0] + hand_r[0]) // 2, max(hand_l[1], hand_r[1]) - 1
             green, lid = (46, 76, 72, 255), (70, 104, 98, 255)
@@ -1027,6 +1093,14 @@ def draw_frame(cid, pose):
                 for ox, oy in ((0, -1), (-1, 0), (1, 0), (0, 1)):
                     p.px(fx0 + ox, fy0 + oy, (240, 170, 200, 255))
                 p.px(fx0, fy0, (255, 230, 150, 255))
+        elif f == "note":  # 哼小調的音符，浮在頭旁
+            x, y = hx + 12, hy - 13
+            col = (214, 168, 60, 255)
+            p.line([(x + 2, y), (x + 2, y + 5)], col); p.line([(x + 2, y), (x + 4, y + 1)], col)
+            p.rect(x, y + 4, x + 2, y + 6, col)
+        elif f == "speechless":  # 無言：頭旁一個小小的「…」
+            for ox in (0, 2, 4):
+                p.px(hx - 15 + ox, hy - 8, OUTLINE)
         elif f == "head_steam":  # 害羞得頭頂冒熱氣
             for ox, oy in ((-6, -16), (-4, -18), (5, -17), (7, -19), (0, -19)):
                 p.px(hx + ox, hy + oy, (236, 236, 244, 255))
@@ -1346,7 +1420,62 @@ def poses_weiju():
     }
 
 
-CUSTOM_POSES = {"weiju": poses_weiju, "xiaoshimei": poses_shimei, "longxiang": poses_longxiang, "xiahoulan": poses_xiahoulan,
+def poses_tangbuyi():
+    """大師兄：轉著金錢鏢哼小調、大聲叫師弟、輕功飛身擲鏢、無言抓頭、瞇眼賊笑。"""
+    return {
+        # 一手叉腰、指間轉著金錢鏢，哼著小調
+        "idle": [P(arms=("hip", "hold"), prop=("coins", 0), mouth="smirk"),
+                 P(arms=("hip", "hold"), prop=("coins", 1), mouth="smirk", fx=("note",)),
+                 P(arms=("hip", "hold"), prop=("coins", 0), eyes="closed", mouth="smirk", fx=("note",)),
+                 P(arms=("hip", "hold"), prop=("coins", 1), mouth="smirk", dy=1, fx=("note",)),
+                 P(arms=("hip", "hold"), prop=("coins", 0), mouth="smirk", dy=1),
+                 P(arms=("hip", "hold"), prop=("coins", 1), mouth="smirk", hair_sway=1)],
+        "running-right": run_row(mouth="grin", eyes="drowsy"),
+        # 「師弟！師弟啊！」大力揮手、張嘴大笑
+        "waving": [P(arms=("hip", "wave_mid"), mouth="fang", eyes="happy"),
+                   P(arms=("hip", "wave_up"), mouth="fang", eyes="happy", fx=("note",)),
+                   P(arms=("hip", "wave_mid"), mouth="laugh", eyes="happy"),
+                   P(arms=("hip", "wave_up"), mouth="fang", eyes="happy", fx=("note",))],
+        # 飛俠：輕功一躍，空中擲出金錢鏢
+        "jumping": [P(dy=2, legs="crouch", arms=("hip", "hold"), prop=("coins", 0), eyes="drowsy", mouth="smirk"),
+                    P(dy=-4, legs="tuck", arms=("spread", "thrust"), prop=("coins", 1), mouth="grin"),
+                    P(dy=-6, legs="tuck", arms=("spread", "thrust"), prop=("coins", "throw"), mouth="fang", eyes="happy"),
+                    P(dy=-3, legs="stand", arms=("spread", "thrust"), prop=("coins", "throw"), mouth="grin"),
+                    P(dy=1, legs="crouch", arms=("hip", "hold"), prop=("coins", 0), mouth="smirk", fx=("note",))],
+        # 失敗：無言地冒汗，再尷尬地抓頭傻笑
+        "failed": [P(arms=("down", "down"), eyes="open", mouth="flat", fx=("speechless",)),
+                   P(arms=("down", "down"), eyes="open", mouth="flat", fx=("speechless", "sweat")),
+                   P(arms=("down", "bonk"), eyes="closed", mouth="flat", fx=("sweat",)),
+                   P(arms=("down", "bonk"), eyes="closed", mouth="grin", fx=("sweat",)),
+                   P(arms=("down", "bonk"), eyes="happy", mouth="grin", dy=-1),
+                   P(arms=("down", "bonk"), eyes="happy", mouth="grin"),
+                   P(arms=("hip", "hold"), prop=("coins", 0), eyes="drowsy", mouth="smirk"),
+                   P(arms=("hip", "hold"), prop=("coins", 1), eyes="drowsy", mouth="smirk")],
+        # 等你回覆：伸手在你眼前晃，「回神了沒？」
+        "waiting": [P(arms=("hip", "ask"), eyes="open", mouth="open", fx=("q",)),
+                    P(arms=("hip", "wave_mid"), eyes="open", mouth="open", fx=("q",)),
+                    P(arms=("hip", "ask"), eyes="open", mouth="smirk", fx=("q",)),
+                    P(arms=("hip", "wave_mid"), eyes="blink", mouth="open", fx=("q",)),
+                    P(arms=("hip", "ask"), eyes="open", mouth="smirk", fx=("q",), tilt=1),
+                    P(arms=("hip", "wave_mid"), eyes="open", mouth="open", fx=("q",))],
+        # 工作中：練擲金錢鏢
+        "running": [P(arms=("hip", "hold"), prop=("coins", 0), eyes="drowsy", mouth="flat"),
+                    P(arms=("hip", "thrust"), prop=("coins", "throw"), eyes="drowsy", mouth="grin", dx=1),
+                    P(arms=("hip", "hold"), prop=("coins", 1), eyes="drowsy", mouth="smirk"),
+                    P(arms=("hip", "hold"), prop=("coins", 0), eyes="closed", mouth="smirk", fx=("note",)),
+                    P(arms=("hip", "thrust"), prop=("coins", "throw"), eyes="drowsy", mouth="grin", dx=1),
+                    P(arms=("hip", "hold"), prop=("coins", 1), eyes="happy", mouth="smirk")],
+        # 審視：托著下巴瞇眼賊笑
+        "review": [P(arms=("hip", "chin"), eyes="drowsy", mouth="smirk"),
+                   P(arms=("hip", "chin"), eyes="drowsy", mouth="smirk", tilt=1),
+                   P(arms=("hip", "chin"), eyes="side", mouth="smirk", tilt=1, fx=("note",)),
+                   P(arms=("hip", "chin"), eyes="closed", mouth="grin", tilt=1),
+                   P(arms=("hip", "chin"), eyes="drowsy", mouth="smirk"),
+                   P(arms=("hip", "chin"), eyes="drowsy", mouth="smirk")],
+    }
+
+
+CUSTOM_POSES = {"tangbuyi": poses_tangbuyi, "weiju": poses_weiju, "xiaoshimei": poses_shimei, "longxiang": poses_longxiang, "xiahoulan": poses_xiahoulan,
                 "yeyunshang": poses_yeyunshang}
 
 

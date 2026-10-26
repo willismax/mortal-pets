@@ -483,6 +483,61 @@
             ]
           }
         ]
+      },
+      tangbuyi: {
+        name: "Senior Brother",
+        fullName: "Tang Buyi",
+        title: "First Disciple of the Tang Clan Master, known as “the Flying Knight”",
+        tagline: "The Tang Clan's breezy, free-spirited eldest senior brother. First-rate at hidden weapons and lightness skill, he dreams of retiring from the jianghu to do a comic double act (xiangsheng) with you. (Bonus character)",
+        profile: [
+          "The first disciple of the Tang Clan's master. His name is Buyi, and the jianghu calls him “the Flying Knight.” (Bonus character, not a romance option)",
+          "Naturally gifted, open-hearted and unconstrained; his mastery of both hidden weapons and lightness skill ranks among the finest of his age.",
+          "Free-spirited to a fault, he regularly drags his juniors off to skip class and play pranks, sending the Master into fits of rage. He grew up alongside Junior Sister and shares a deep bond with Zhao Huo.",
+          "His hidden weapons are real gold-coin darts; against money-loving opponents, he kicks them instead.",
+          "His dream is to one day retire from the jianghu and take the stage with Zhao Huo in a comic double act (xiangsheng).",
+          "Long purplish-black hair with reddish-brown tips, tied in a low ponytail with a straw cord; a blue-teal stand-collar robe with gold frog buttons, reddish-brown bracers on his forearms with red feather ornaments.",
+          "(Spoiler) The Master once promised Junior Sister to him. In the third year he dies in the story; it's said he had his fortune told in the Apricot Blossom Grove long before and knew this trial was fated."
+        ],
+        lines: {
+          greet: ["Little brother! Hey, little brother! There you are, I was bored out of my skull!", "Yo, little brother. Today's lesson... you skipped it, right?", "Perfect timing, little brother. Come pick fruit with me on the back hill."],
+          idle: ["(twirling a gold-coin dart between his fingers, humming a tune)", "My lightness skill isn't top ten under heaven... top five, though? Sure.", "Sigh, the Master's looking for me again, isn't he? Shh, you didn't see me.", "Once we retire from the jianghu, we're doing a comic double act. I've already got the sign picked out."],
+          working: ["You do your thing. I'll keep watch for you.", "With this in your hands, little brother, I can relax completely.", "(feet up) Mm-hm, nicely done. Keep going, keep going."],
+          done: ["Yes! That's my little brother!", "All done? Come on, drinks are on me. You're paying, of course.", "Beautiful move. More accurate than my gold-coin darts."],
+          failed: ["Oops... the Master's going to chew us out. Tell him it was my idea.", "It's fine, it's fine. I caused way bigger messes than this back in the day.", "Tch, missed? Go again. I'm watching."],
+          waiting: ["Little brother? Little brother! Hey, little brother! Say something already!", "(waving a hand in front of your face) Anybody home?", "Just say the word and I'll make my move."],
+          review: ["(squinting with a grin) Right here, there's an opening. Obvious as the Master's beard.", "Hmm, this move looks flashy, but it isn't really.", "Let me take a look... heh, gotcha."],
+          pet: ["Hey, hey, little brother, patting your senior brother's head? Have you no decorum? ...Okay, one more.", "Haha, did you pick that up from Junior Sister?", "Quit it. If my hair gets messy, the Master will nag me again."],
+          feed: ["Delicious! Your cooking's gotten better, little brother.", "Could I... get another serving? It's for Junior Sister.", "Gotta eat well if we're going to have the energy to skip class."],
+          train: ["Watch closely, I'm only showing you once. The gold-coin dart goes here... whoosh!", "The secret of lightness skill? Just run faster than the Master's yelling.", "Training? ...Fine, but promise me: afterward you'll practice our double act with me."],
+          gift: ["For me? You really get me, little brother!", "Is this... real gold? Now I can't bear to throw it as a dart.", "Nice! I'll take it. Next round of drinks is on me."],
+          night: ["Little brother, if one day I'm not around anymore, look after Junior Sister for me.", "In this life, there are some things you just can't dodge. ...Just talking. Don't take it seriously.", "It's quiet at night. Makes me think of when we were kids skipping class together."]
+        },
+        talks: [
+          {
+            q: "Little brother, skipping the next lesson? I'll cover for you.",
+            opts: [
+              { t: "Let's skip! Lead the way, Senior Brother!", r: "That's my boy! Come on, the fruit on the back hill is ripe." },
+              { t: "No way, the Master will scold us.", r: "Tch. You're getting more like the Master every day." },
+              { t: "I'm telling the Master.", r: "...Little brother, you've gone bad." }
+            ]
+          },
+          {
+            q: "When we retire and do our comic double act (xiangsheng), will you be the funny man or the straight man?",
+            opts: [
+              { t: "I'll be the straight man; you be the funny man.", r: "It's a deal! We'll call the act “Buyi & Zhao Huo.”" },
+              { t: "I'll be the funny man!", r: "Ooh, ambitious. Guess I'll have to play straight man for you, then." },
+              { t: "Maybe focus on your training first, Senior Brother.", r: "...You sound exactly like the Master." }
+            ]
+          },
+          {
+            q: "Little brother, what kind of gift do you think Junior Sister would like?",
+            opts: [
+              { t: "She loves paper folding. Get her some pretty paper.", r: "Yes, yes! You really do know her best. I'm off to buy some right now." },
+              { t: "Gold-coin darts?", r: "...Those are hidden weapons, little brother." },
+              { t: "Think of something yourself, Senior Brother.", r: "Haha, fair enough. Can't cut corners on something like this." }
+            ]
+          }
+        ]
       }
     }
   };
