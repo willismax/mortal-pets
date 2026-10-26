@@ -2,7 +2,8 @@
 
 配圖：
 - `update-0.4.0.png`：直式 1080×1350（4:5），巴哈封面、Threads 第一張
-- `update-0.4.0.gif`：魏菊害羞冒煙、大師兄彈金錢、連發金錢鏢，巴哈內文、Threads 第二張
+- `update-0.4.0.gif`：魏菊害羞冒煙、大師兄彈金錢、連發金錢鏢，放巴哈內文
+- `update-0.4.0.mp4`：22 秒介紹短影片（4:5、無聲），Threads 不支援 GIF，用這支當第二個附件（巴哈也可以上傳影片）
 
 ---
 
@@ -59,7 +60,7 @@
 
 ## Threads（中文）
 
-**第一則**（配 update-0.4.0.png ＋ update-0.4.0.gif）
+**第一則**（配 update-0.4.0.png ＋ update-0.4.0.mp4）
 
 活俠傳桌面寵物更新 v0.4.0 🐾
 
@@ -90,6 +91,8 @@ Codex：git pull && ./install.sh codex
 
 ## Threads（日本語版）
 
+（配 update-0.4.0.mp4）
+
 『活俠傳（カッキョウデン）』デスクトップペット v0.4.0 🐾
 
 リクエストの多かった二人が仲間入り：
@@ -112,6 +115,8 @@ claude plugin update mortal-buddy@mortal-pets
 
 ## Threads（한국어판）
 
+（配 update-0.4.0.mp4）
+
 활협전 데스크톱 펫 v0.4.0 업데이트 🐾
 
 요청이 많았던 두 사람이 합류했어요:
@@ -133,6 +138,8 @@ claude plugin update mortal-buddy@mortal-pets
 ---
 
 ## Threads (English)
+
+（配 update-0.4.0.mp4）
 
 Legend of Mortal desktop pets, v0.4.0 🐾
 
