@@ -25,7 +25,11 @@ mortal-pets/
 │       ├── buddy.cjs             hook、status line、互動指令、Codex 通知共用的程式
 │       ├── characters.js         角色資料與台詞（網頁、Claude、Codex 共用）
 │       └── locales/              日文、韓文、英文台詞（ja.js、ko.js、en.js）
-└── tools/build_sprites.py        產生像素 spritesheet
+├── promo/                        宣傳圖、招牌動作 GIF 與巴哈／Threads 貼文草稿
+└── tools/
+    ├── build_sprites.py          產生像素 spritesheet
+    ├── make_promo.py             產生 promo/ 的宣傳圖與 GIF
+    └── check_locales.cjs         檢查日韓英語言檔的結構
 ```
 
 ## Codex 寵物
