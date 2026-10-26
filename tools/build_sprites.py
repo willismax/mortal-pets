@@ -198,7 +198,7 @@ CHARACTERS["tangbuyi"] = {
     "description": "唐門大師兄唐布衣，人稱「飛俠」：爽朗不羈、暗器輕功當世一流，指間轉著金錢鏢、哼著小調，夢想是退隱江湖說相聲。（活俠傳同人・番外）",
     # 依 LoM Wiki 立繪：紫黑長髮帶紅褐髮梢、凌亂瀏海與呆毛、細長鬢髮、頸後草繩紮的低馬尾垂到腰；
     # 青藍立領長袍配金色盤扣、紅褐護腕與紅羽飾，指間夾著金錢鏢，臉頰一道小疤
-    # Q 版參考：暖深棕的大蓬長髮、大呆毛、耳後金綠繩結；白內領、胸前金色十字繡、
+    # Q 版參考：暖深棕的蓬亂頭髮、大呆毛、後腦高處金繩紮的馬尾辮；白內領、胸前金色十字繡、
     # 腰間玉珮紅流蘇、金邊長袍前襟開衩、深藍燈籠褲、黑長靴、棕色護腕
     "hair": (62, 38, 32, 255), "hair_hi": (104, 66, 50, 255), "hair_tip": (88, 52, 40, 255),
     "skin": (252, 234, 220, 255), "skin_sh": (232, 204, 190, 255),
@@ -339,22 +339,18 @@ def draw_frame(cid, pose):
         p.poly(pts, c["hair"], OUTLINE)
         p.line([(bx0 + 5 * k, hy - 12), (bx0 + 10 * k + sway * k, hy - 5)], c["hair_hi"])
     elif c.get("head") == "swept":
-        # 大師兄：蓬鬆的長髮披在背後兩側一路垂到腰，耳後用金綠繩結輕輕束著
+        # 大師兄：蓬亂的頭髮在後腦高處用金繩紮成一條馬尾辮，往後側垂過肩膀
         k = -1 if face_r else 1
         P_ = lambda u, v: (hx + u * k, hy + v)
-        p.ell(hx - 13, hy - 14, hx + 13, hy + 6, c["hair"], OUTLINE)
-        # 一大片長髮披在背後，往後側飄、下緣參差不齊（身體會擋住中間）
         w = sway
-        mass = [(-13, -2), (13, -2), (16 + w, 10), (17 + 2 * w, 20), (14 + 2 * w, 26), (11 + w, 21), (8 + w, 25),
-                (4, 20), (-4, 20), (-8 + w, 23), (-11 + w, 18), (-14 + w, 21), (-15 + w, 10)]
-        p.poly([P_(u, v) for u, v in mass], c["hair"], OUTLINE)
-        p.line([P_(14, 4), P_(16 + w, 17)], c["hair_hi"])
-        p.line([P_(-13, 4), P_(-13 + w, 14)], c["hair_hi"])
-        # 耳後的繩結與垂下的穗
-        bx, by = P_(10, 1)
-        p.ell(bx - 1, by - 2, bx + 1, by, c["rope"], OUTLINE)
-        p.ell(bx - 1, by, bx + 1, by + 2, c["rope"], OUTLINE)
-        p.line([(bx, by + 2), (bx, by + 5)], c["rope"])
+        p.ell(hx - 13, hy - 14, hx + 13, hy + 7, c["hair"], OUTLINE)
+        for tuft in ([(-12, -6), (-16, -5), (-13, -2)], [(-13, 0), (-15, 3), (-12, 4)], [(11, -9), (15, -8), (12, -5)]):
+            p.poly([P_(u, v) for u, v in tuft], c["hair"], OUTLINE)  # 蓬亂的髮尖
+        tail = [(8, -9), (12, -10), (15, -3), (17 + w, 7), (17 + 2 * w, 17), (14 + 2 * w, 25), (13 + w, 16), (12, 6), (9, -2)]
+        p.poly([P_(u, v) for u, v in tail], c["hair"], OUTLINE)
+        p.line([P_(13, -4), P_(15 + w, 8)], c["hair_hi"])
+        p.line([P_(15 + w, 10), P_(15 + 2 * w, 18)], c["hair_hi"])
+        p.poly([P_(u, v) for u, v in [(9, -11), (12, -12), (13, -9), (10, -8)]], c["rope"], OUTLINE)  # 金色髮繩
     elif c.get("head") == "twin":
         # 葉雲裳：頭頂兩側的小髻
         p.ell(hx - 12, hy - 12, hx + 12, hy + 9, c["hair"], OUTLINE)
@@ -714,7 +710,7 @@ def draw_frame(cid, pose):
         p.line([P_(4, -7), P_(8, -4)], c["hair_hi"])
         p.line([P_(0, -14), P_(-1, -16), P_(1, -18), P_(4, -17), P_(4, -15)], OUTLINE, 2)  # 呆毛
         p.line([P_(0, -14), P_(-1, -16), P_(1, -18), P_(4, -17)], hair)
-        for side, end in ((-k, 15),):  # 只有臉前方那側垂一綹鬢髮到胸前
+        for side, end in ((-k, 8),):  # 臉前方那側的鬢髮垂到臉頰
             x0 = hx + 10 * side
             p.poly([(x0, hy - 4), (x0 + side * 2, hy - 3), (x0 + side * 2, hy + 6),
                     (x0 + side, hy + end), (x0, hy + end - 3), (x0, hy + 4)], hair, OUTLINE)
