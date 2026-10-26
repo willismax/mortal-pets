@@ -1,8 +1,10 @@
 # 活俠傳結緣寵物（同人）
 
-把《活俠傳》的結緣角色做成 **Codex 寵物**和 **Claude Code 寵物**，並依角色個性寫了互動對話。目前有小梅（虞小梅）、小竹（郁竹）、小師妹（唐默鈴）、龍湘、夏侯蘭五位。
+**中文** ｜ [日本語](README.ja.md) ｜ [한국어](README.ko.md) ｜ [English](README.en.md)
 
-- 線上試玩：<https://willismax.github.io/mortal-pets/>（直接開 `index.html` 也可以）
+把《活俠傳》的結緣角色做成 **Codex 寵物**和 **Claude Code 寵物**，並依角色個性寫了互動對話。目前有小梅（虞小梅）、小竹（郁竹）、小師妹（唐默鈴）、龍湘、夏侯蘭、葉雲裳六位。
+
+- 線上試玩：<https://willismax.github.io/mortal-pets/>（直接開 `index.html` 也可以；右上角可切換中文、日本語、한국어、English，分享時可加 `?lang=ja`、`?lang=ko`、`?lang=en`）
 - Claude Code 安裝：`/plugin install mortal-buddy --marketplace willismax/mortal-pets`
 - 非官方二創：角色設定整理自公開資料；像素圖、台詞都是原創，沒有使用遊戲素材或原文。
 
@@ -13,7 +15,7 @@ mortal-pets/
 ├── .claude-plugin/marketplace.json  Claude Code 外掛市集設定
 ├── index.html                    互動網頁：摸頭、餵食、練功、送禮、聊天、9 種動畫預覽
 ├── install.sh                    安裝 Codex 寵物／skill／通知，以及 Claude Code status line
-├── codex/pets/<id>/              Codex 寵物：xiaomei、xiaozhu、xiaozhu-battle、xiaoshimei、longxiang、xiahoulan
+├── codex/pets/<id>/              Codex 寵物：xiaomei、xiaozhu、xiaozhu-battle、xiaoshimei、longxiang、xiahoulan、yeyunshang
 ├── codex/qa/                     總覽圖與各狀態 GIF，方便檢查動畫
 ├── claude-plugin/mortal-buddy/   Claude Code 外掛
 │   ├── hooks/hooks.json          依工作狀態切換心情與台詞
@@ -21,7 +23,8 @@ mortal-pets/
 │   ├── skills/xiaomei|xiaozhu/   角色卡（Codex 也能用）
 │   └── scripts/
 │       ├── buddy.cjs             hook、status line、互動指令、Codex 通知共用的程式
-│       └── characters.js         角色資料與台詞（網頁、Claude、Codex 共用）
+│       ├── characters.js         角色資料與台詞（網頁、Claude、Codex 共用）
+│       └── locales/              日文、韓文、英文台詞（ja.js、ko.js、en.js）
 └── tools/build_sprites.py        產生像素 spritesheet
 ```
 
@@ -32,7 +35,7 @@ git clone https://github.com/willismax/mortal-pets.git
 cd mortal-pets && ./install.sh codex
 ```
 
-會把六隻寵物（小梅、小竹、小竹・裂骨魔、小師妹、龍湘、夏侯蘭）複製到 `~/.codex/pets/`，角色卡複製到 `~/.codex/skills/`。接著到 Codex 的 Settings → Pets → Refresh 選一隻；對話中可用 `/pet` 叫出或收起寵物。
+會把七隻寵物（小梅、小竹、小竹・裂骨魔、小師妹、龍湘、夏侯蘭、葉雲裳）複製到 `~/.codex/pets/`，角色卡複製到 `~/.codex/skills/`。接著到 Codex 的 Settings → Pets → Refresh 選一隻；對話中可用 `/pet` 叫出或收起寵物。
 
 想在每輪完成時收到角色的系統通知，在 `~/.codex/config.toml` 加上（安裝腳本會印出實際路徑）：
 
@@ -99,12 +102,13 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 
 | 指令 | 說明 |
 | --- | --- |
-| `/mortal-buddy:pick xiaozhu` | 換寵物（`xiaomei`、`xiaozhu`、`xiaoshimei`、`longxiang`、`xiahoulan`） |
+| `/mortal-buddy:pick xiaozhu` | 換寵物（`xiaomei`、`xiaozhu`、`xiaoshimei`、`longxiang`、`xiahoulan`、`yeyunshang`） |
 | `/mortal-buddy:pet feed` | `pet` 摸頭、`feed` 餵食、`train` 練功（各 +1）、`gift` 送禮（+3），同一種互動一分鐘內只算一次 |
 | `/mortal-buddy:talk` | 她出題，用 `/mortal-buddy:talk 2` 回答，答案會加減好感 |
 | `/mortal-buddy:roleplay 今天好累` | 載入角色卡，讓她用自己的口吻回你 |
 | `/mortal-buddy:status` | 查看兩人的好感與階段 |
 | `/mortal-buddy:mute` | 開關對話中的反應訊息 |
+| `/mortal-buddy:lang ja` | 切換語言：`zh` 中文、`ja` 日本語、`ko` 한국어、`en` English（第一次會依系統語系自動判斷） |
 
 好感分四個階段：初識（0）、熟識（10）、知己（30）、結緣（60）。到了「知己」，深夜（23:00–05:00）她偶爾會說出藏在心底的話。
 
@@ -169,6 +173,25 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 
 設計對應（參考 LoM Wiki 立繪）：齊瀏海長黑髮、藍色髮繩、藍色寬袖長衣、撐著油紙傘、無神的眼睛；揮手是「懶徒兒，跟我來」；開心是難得的驚訝、用袖子遮臉；審視是不屑；台詞嘴硬心軟。
 
+### 葉雲裳
+
+- 點蒼派弟子，人稱「點蒼明珠」，葉雲舟的胞妹。
+- 縱是盛夏，貂裘亦不離身；俏皮愛搗蛋的美貌姑娘，卻總鬧不消半天便會發燒倒下。
+- 愛惡作劇、愛撒嬌又任性，鬧過頭弄哭人又會後悔；愛吃甜食；看似天真，其實對外人相當戒備。
+- 劇透：葉家世代效忠岳家軍，遭朝廷清算後父母冤死；她幼時被一掌震斷經脈，靠點蒼高人保住性命，內傷至今未癒。
+
+設計對應（參考 LoM Wiki 立繪與表情）：深棕中分瀏海、頭頂雙小髻配紅花與紅緞帶、胸前低雙馬尾（綠繩）、珊瑚色斗篷配白毛領、豆綠長裙與紅細腰帶。
+
+| 列 | 狀態 | 葉雲裳 |
+| --- | --- | --- |
+| 0 | idle | 雙手捏著胸前的領結 |
+| 3 | waving | **欸嘿**：眨眼吐舌冒星星 |
+| 4 | jumping | **興奮**：抓著斗篷往兩邊張開跳起來 |
+| 5 | failed | **嘟嘴**生悶氣 → **大哭** → **發燒**沒力氣 |
+| 6 | waiting | **祈禱**：雙手合十拜託你 |
+| 7 | running（工作中） | 拿著樹枝（聽雲棒）氣呼呼地比劃 |
+| 8 | review | **有心事**：垂著眼安靜下來，最後害羞一笑 |
+
 ### 新增角色
 
 步驟：
@@ -194,6 +217,7 @@ Claude Code 內建的 `/buddy` 物種是依帳號固定的，無法自訂，所�
 - [巴哈姆特：龍湘線含相關資訊統整](https://forum.gamer.com.tw/C.php?bsn=73317&snA=536)
 - [聯合新聞網：夏侯蘭支線更新](https://game.udn.com/game/story/122089/9823786)
 - [4Gamers：活俠傳女角人氣投票](https://www.4gamers.com.tw/news/detail/66059/legend-of-mortal-female-characters-popularity-charts)
+- [聯合新聞網：葉雲裳結緣攻略](https://game.udn.com/game/story/122090/8970592)、[LoM Wiki：葉雲裳](https://smilin.net/LoM-wiki/people/characters/girl2.html)、[GAMEX JP：葉雲裳ルート解説](https://gamexjp.com/games/1538/)
 - Codex 寵物格式：[openai/skills hatch-pet](https://github.com/openai/skills/tree/main/skills/.curated/hatch-pet)（`references/animation-rows.md`）
 
 ## 版權

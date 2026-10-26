@@ -1,5 +1,5 @@
 ---
-description: 開關寵物在對話中的反應訊息（status line 不受影響）
+description: 開關反應訊息 / Toggle reactions（status line 不受影響）
 allowed-tools: Bash(node:*)
 ---
 

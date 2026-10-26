@@ -1,6 +1,6 @@
 ---
-description: 換寵物（xiaomei 小梅、xiaozhu 小竹、xiaoshimei 小師妹、longxiang 龍湘、xiahoulan 夏侯蘭）
-argument-hint: xiaomei | xiaozhu | xiaoshimei | longxiang | xiahoulan
+description: 換寵物 / Switch pet（xiaomei 小梅、xiaozhu 小竹、xiaoshimei 小師妹、longxiang 龍湘、xiahoulan 夏侯蘭、yeyunshang 葉雲裳）
+argument-hint: xiaomei | xiaozhu | xiaoshimei | longxiang | xiahoulan | yeyunshang
 allowed-tools: Bash(node:*)
 ---
 

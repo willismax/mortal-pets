@@ -1,5 +1,5 @@
 ---
-description: 跟寵物互動：pet 摸頭、feed 餵食、train 練功、gift 送禮
+description: 跟寵物互動 / Interact：pet 摸頭、feed 餵食、train 練功、gift 送禮
 argument-hint: pet | feed | train | gift
 allowed-tools: Bash(node:*)
 ---

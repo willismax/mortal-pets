@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>活俠傳結緣寵物</title>
-<meta name="description" content="活俠傳同人：小梅、小竹、小師妹、龍湘、夏侯蘭的 Codex 與 Claude Code 寵物，可摸頭、餵食、練功、聊天累積好感。">
+<meta name="description" content="活俠傳同人：小梅、小竹、小師妹、龍湘、夏侯蘭、葉雲裳的 Codex 與 Claude Code 寵物，可摸頭、餵食、練功、聊天累積好感。">
 <style>
   :root {
     --paper: #f3ead8;
@@ -21,13 +21,18 @@
     margin: 0;
     background: var(--paper);
     color: var(--ink);
-    font-family: "Noto Serif TC", "Source Han Serif TC", "PMingLiU", serif;
+    font-family: "Noto Serif TC", "Source Han Serif TC", "Noto Serif JP", "Noto Serif KR", "PMingLiU", serif;
     line-height: 1.7;
   }
   main { max-width: 980px; margin: 0 auto; padding: 24px 16px 48px; }
   header h1 { margin: 0; font-size: 1.9rem; letter-spacing: .08em; }
   header h1 small { font-size: .9rem; color: var(--seal); border: 2px solid var(--seal); padding: 0 6px; margin-left: 8px; vertical-align: middle; letter-spacing: 0; }
   header p { margin: 4px 0 18px; color: var(--ink-soft); }
+  .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+  .langs { display: flex; gap: 4px; flex-wrap: wrap; }
+  .langs button { font: inherit; font-size: .85rem; padding: 2px 10px; border: 1px solid var(--line); background: var(--paper-2); color: var(--ink); cursor: pointer; border-radius: 2px; }
+  .langs button[aria-pressed="true"] { border-color: var(--seal); color: var(--seal); }
+  .langs button:focus-visible { outline: 2px solid var(--char); outline-offset: 2px; }
 
   .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
   .tab {
@@ -105,8 +110,11 @@
 <body>
 <main>
   <header>
-    <h1>活俠傳結緣寵物<small>同人</small></h1>
-    <p>把活俠傳的結緣角色養在 Codex 與 Claude Code 裡。點她、餵她、陪她練功，好感會慢慢累積。</p>
+    <div class="top">
+      <h1><span data-i18n="title">活俠傳結緣寵物</span><small data-i18n="fan">同人</small></h1>
+      <div class="langs" id="langs" role="group" aria-label="Language"></div>
+    </div>
+    <p data-i18n="intro">把活俠傳的結緣角色養在 Codex 與 Claude Code 裡。點她、餵她、陪她練功，好感會慢慢累積。</p>
   </header>
 
   <div class="tabs" role="tablist" id="tabs"></div>
@@ -127,29 +135,29 @@
         <div class="aff-text"><span id="tier"></span><span id="affNum"></span></div>
       </div>
       <div class="actions">
-        <button class="btn" data-act="pet">摸頭</button>
-        <button class="btn" data-act="feed">餵食</button>
-        <button class="btn" data-act="train">練功</button>
-        <button class="btn" data-act="gift">送禮</button>
-        <button class="btn" data-act="talk">聊天</button>
+        <button class="btn" data-act="pet" data-i18n="pet">摸頭</button>
+        <button class="btn" data-act="feed" data-i18n="feed">餵食</button>
+        <button class="btn" data-act="train" data-i18n="train">練功</button>
+        <button class="btn" data-act="gift" data-i18n="gift">送禮</button>
+        <button class="btn" data-act="talk" data-i18n="talk">聊天</button>
       </div>
     </section>
 
     <div class="stack">
       <section class="card" id="talkCard" hidden>
-        <h2>聊天</h2>
+        <h2 data-i18n="talk">聊天</h2>
         <p class="talk-q" id="talkQ"></p>
         <div class="talk-opts" id="talkOpts"></div>
       </section>
 
       <section class="card">
-        <h2>Codex 動畫狀態預覽</h2>
-        <p class="muted">Codex 依工作狀態切換這 9 種動畫，點一下就能預覽。</p>
+        <h2 data-i18n="hStates">Codex 動畫狀態預覽</h2>
+        <p class="muted" data-i18n="statesHint">Codex 依工作狀態切換這 9 種動畫，點一下就能預覽。</p>
         <div class="chips" id="states"></div>
       </section>
 
       <section class="card">
-        <h2>角色檔案</h2>
+        <h2 data-i18n="hProfile">角色檔案</h2>
         <p class="muted" id="tagline"></p>
         <ul class="profile" id="profile"></ul>
       </section>
@@ -157,39 +165,118 @@
   </div>
 
   <section class="card" style="margin-top:16px">
-    <h2>帶回家</h2>
-    <p><b>Codex</b>：把 <code id="petPath"></code> 資料夾（<a id="petJson">pet.json</a>、<a id="petSheet">spritesheet.webp</a>）複製到 <code>~/.codex/pets/</code>，再到 Settings → Pets → Refresh。或把 repo 抓下來執行：</p>
+    <h2 data-i18n="hHome">帶回家</h2>
+    <p><b>Codex</b><span data-i18n="codexA">：把</span> <code id="petPath"></code> <span data-i18n="codexB">資料夾</span>（<a id="petJson">pet.json</a>、<a id="petSheet">spritesheet.webp</a>）<span data-i18n="codexC">複製到 <code>~/.codex/pets/</code>，再到 Settings → Pets → Refresh。或把 repo 抓下來執行：</span></p>
     <pre>git clone https://github.com/willismax/mortal-pets.git
 cd mortal-pets && ./install.sh codex</pre>
-    <p><b>Claude Code</b>：安裝外掛後，她會依你的工作狀態說話，也能用指令互動。</p>
-    <pre>/plugin install mortal-buddy --marketplace willismax/mortal-pets
-/mortal-buddy:pick xiaozhu     換寵物
-/mortal-buddy:pet feed         摸頭 pet／餵食 feed／練功 train／送禮 gift
-/mortal-buddy:talk             聊天（回答用 /mortal-buddy:talk 2）
-/mortal-buddy:roleplay 今天好累  讓她用自己的口吻回你</pre>
-    <p class="muted">完整說明見 <a href="https://github.com/willismax/mortal-pets">GitHub 上的 README</a>。網頁上的好感只存在這個瀏覽器，和 Codex／Claude Code 的好感是分開的。</p>
+    <p><b>Claude Code</b><span data-i18n="claudeP">：安裝外掛後，她會依你的工作狀態說話，也能用指令互動。</span></p>
+    <pre id="cmds"></pre>
+    <p class="muted" data-i18n="more">完整說明見 <a href="https://github.com/willismax/mortal-pets">GitHub 上的 README</a>。網頁上的好感只存在這個瀏覽器，和 Codex／Claude Code 的好感是分開的。</p>
   </section>
 
-  <footer>
+  <footer data-i18n="footer">
     《活俠傳》（Legend of Mortal）及其角色的著作權屬於原開發商與發行商。本頁為非官方同人作品：角色設定整理自公開資料，像素圖與台詞為原創二創，並非遊戲素材或原文。
   </footer>
 </main>
 
 <script src="claude-plugin/mortal-buddy/scripts/characters.js"></script>
+<script src="claude-plugin/mortal-buddy/scripts/locales/ja.js"></script>
+<script src="claude-plugin/mortal-buddy/scripts/locales/ko.js"></script>
+<script src="claude-plugin/mortal-buddy/scripts/locales/en.js"></script>
 <script>
-  const { CHARS, UPCOMING, TIERS } = window.MORTAL_CHARS;
+  const BASE = window.MORTAL_CHARS;
+  const { UPCOMING } = BASE;
+  let { CHARS, TIERS } = BASE;
+
+  // 介面文字；角色台詞在 locales/<lang>.js
+  const UI = {
+    zh: {
+      label: "中文", htmlLang: "zh-Hant",
+      title: "活俠傳結緣寵物", fan: "同人",
+      intro: "把活俠傳的結緣角色養在 Codex 與 Claude Code 裡。點她、餵她、陪她練功，好感會慢慢累積。",
+      desc: "活俠傳同人：小梅、小竹、小師妹、龍湘、夏侯蘭、葉雲裳的 Codex 與 Claude Code 寵物，可摸頭、餵食、練功、聊天累積好感。",
+      pet: "摸頭", feed: "餵食", train: "練功", gift: "送禮", talk: "聊天",
+      hStates: "Codex 動畫狀態預覽", statesHint: "Codex 依工作狀態切換這 9 種動畫，點一下就能預覽。",
+      hProfile: "角色檔案", hHome: "帶回家",
+      codexA: "：把", codexB: "資料夾",
+      codexC: "複製到 <code>~/.codex/pets/</code>，再到 Settings → Pets → Refresh。或把 repo 抓下來執行：",
+      claudeP: "：安裝外掛後，她會依你的工作狀態說話，也能用指令互動。",
+      cmds: ["換寵物", "摸頭 pet／餵食 feed／練功 train／送禮 gift", "聊天（回答用 /mortal-buddy:talk 2）", "今天好累", "讓她用自己的口吻回你", "切換語言（zh／ja／ko／en）"],
+      more: "完整說明見 <a href=\"https://github.com/willismax/mortal-pets\">GitHub 上的 README</a>。網頁上的好感只存在這個瀏覽器，和 Codex／Claude Code 的好感是分開的。",
+      footer: "《活俠傳》（Legend of Mortal）及其角色的著作權屬於原開發商與發行商。本頁為非官方同人作品：角色設定整理自公開資料，像素圖與台詞為原創二創，並非遊戲素材或原文。",
+      states: { "idle": "閒置", "running-right": "往右跑", "running-left": "往左跑", "waving": "揮手", "jumping": "開心跳", "failed": "失敗", "waiting": "等你回覆", "running": "工作中", "review": "審視" },
+      tier: (t) => `好感階段：${t}`, next: (n, d, t) => `${n}（再 ${d} 點到「${t}」）`,
+      spoiler: "點一下顯示劇透", upcoming: "製作中", open: "「", close: "」", colon: "：", lp: "（", rp: "）"
+    },
+    ja: {
+      label: "日本語", htmlLang: "ja",
+      title: "活俠傳 縁結びペット", fan: "二次創作",
+      intro: "『活俠傳（カッキョウデン）』の縁結びキャラを Codex と Claude Code で育てよう。なでたり、ごはんをあげたり、一緒に修行したりすると好感度が上がります。",
+      desc: "活俠傳ファンメイド：小梅・小竹・小師妹・龍湘・夏侯蘭・葉雲裳の Codex／Claude Code ペット。なでる・ごはん・修行・おしゃべりで好感度アップ。",
+      pet: "なでる", feed: "ごはん", train: "修行", gift: "贈り物", talk: "会話",
+      hStates: "Codex アニメーション一覧", statesHint: "Codex は作業状況に合わせてこの 9 種類のアニメーションを切り替えます。クリックでプレビュー。",
+      hProfile: "キャラクター紹介", hHome: "おうちに連れて帰る",
+      codexA: "：", codexB: "フォルダ",
+      codexC: "を <code>~/.codex/pets/</code> にコピーして、Settings → Pets → Refresh。またはリポジトリを取得して実行：",
+      claudeP: "：プラグインを入れると、作業の様子に合わせて話しかけてくれます。コマンドで遊ぶこともできます。",
+      cmds: ["ペットを切り替え", "なでる pet／ごはん feed／修行 train／贈り物 gift", "会話（答えは /mortal-buddy:talk 2）", "今日は疲れた", "キャラの口調で返事してもらう", "言語を切り替え（zh／ja／ko／en）"],
+      more: "詳しくは <a href=\"https://github.com/willismax/mortal-pets/blob/main/README.ja.md\">GitHub の README（日本語）</a>へ。このページの好感度はこのブラウザだけに保存され、Codex／Claude Code とは別です。",
+      footer: "『活俠傳』（Legend of Mortal）とそのキャラクターの著作権は開発元・販売元に帰属します。本ページは非公式のファン作品です。設定は公開情報をもとにまとめ、ドット絵とセリフはオリジナルの二次創作で、ゲームの素材や原文は使用していません。",
+      states: { "idle": "待機", "running-right": "右へ走る", "running-left": "左へ走る", "waving": "手を振る", "jumping": "ジャンプ", "failed": "失敗", "waiting": "返事待ち", "running": "作業中", "review": "確認中" },
+      tier: (t) => `好感度：${t}`, next: (n, d, t) => `${n}（「${t}」まであと ${d}）`,
+      spoiler: "クリックでネタバレを表示", upcoming: "制作中", open: "「", close: "」", colon: "：", lp: "・", rp: ""  // 日文全名本身帶讀音括號，避免雙層括號
+    },
+    ko: {
+      label: "한국어", htmlLang: "ko",
+      title: "활협전 인연 펫", fan: "팬메이드",
+      intro: "활협전의 인연 캐릭터를 Codex와 Claude Code에서 키워 보세요. 쓰다듬고, 먹이고, 함께 수련하면 호감도가 조금씩 올라갑니다.",
+      desc: "활협전 팬메이드: 소매, 소죽, 소사매, 용상, 하후란, 엽운상의 Codex / Claude Code 펫. 쓰다듬기, 먹이기, 수련, 대화로 호감도를 올려 보세요.",
+      pet: "쓰다듬기", feed: "먹이기", train: "수련", gift: "선물", talk: "대화",
+      hStates: "Codex 애니메이션 미리보기", statesHint: "Codex는 작업 상태에 따라 이 9가지 애니메이션을 바꿉니다. 눌러서 미리 보세요.",
+      hProfile: "캐릭터 소개", hHome: "데려가기",
+      codexA: ": ", codexB: "폴더",
+      codexC: "를 <code>~/.codex/pets/</code>에 복사한 뒤 Settings → Pets → Refresh. 또는 저장소를 받아서 실행:",
+      claudeP: ": 플러그인을 설치하면 작업 상태에 맞춰 말을 걸어 옵니다. 명령어로 놀아 줄 수도 있어요.",
+      cmds: ["펫 바꾸기", "쓰다듬기 pet / 먹이기 feed / 수련 train / 선물 gift", "대화 (대답은 /mortal-buddy:talk 2)", "오늘 너무 피곤해", "캐릭터 말투로 대답하기", "언어 바꾸기 (zh / ja / ko / en)"],
+      more: "자세한 내용은 <a href=\"https://github.com/willismax/mortal-pets/blob/main/README.ko.md\">GitHub README (한국어)</a>를 참고하세요. 이 페이지의 호감도는 이 브라우저에만 저장되며 Codex / Claude Code와는 따로입니다.",
+      footer: "활협전(Legend of Mortal)과 등장인물의 저작권은 개발사와 배급사에 있습니다. 이 페이지는 비공식 팬 작품입니다. 설정은 공개 자료를 바탕으로 정리했고, 도트 그림과 대사는 창작한 2차 창작물이며 게임 리소스나 원문을 사용하지 않았습니다.",
+      states: { "idle": "대기", "running-right": "오른쪽으로 달리기", "running-left": "왼쪽으로 달리기", "waving": "손 흔들기", "jumping": "점프", "failed": "실패", "waiting": "대답 기다리기", "running": "작업 중", "review": "검토 중" },
+      tier: (t) => `호감도 단계: ${t}`, next: (n, d, t) => `${n} (“${t}”까지 ${d})`,
+      spoiler: "눌러서 스포일러 보기", upcoming: "제작 중", open: "“", close: "”", colon: ": ", lp: " (", rp: ")"
+    },
+    en: {
+      label: "English", htmlLang: "en",
+      title: "Legend of Mortal Pets", fan: "Fan-made",
+      intro: "Keep the romanceable heroines of Legend of Mortal as pets in Codex and Claude Code. Pet her, feed her, train with her, and watch your bond grow.",
+      desc: "Fan-made Legend of Mortal companions for Codex and Claude Code: Xiaomei, Xiaozhu, Junior Sister, Long Xiang, Xiahou Lan and Ye Yunshang. Pet, feed, train and chat to raise affection.",
+      pet: "Pet", feed: "Feed", train: "Train", gift: "Gift", talk: "Chat",
+      hStates: "Codex animation preview", statesHint: "Codex switches between these 9 animations as it works. Click one to preview it.",
+      hProfile: "Profile", hHome: "Take her home",
+      codexA: ": copy the", codexB: "folder",
+      codexC: " into <code>~/.codex/pets/</code>, then Settings → Pets → Refresh. Or clone the repo and run:",
+      claudeP: ": install the plugin and she reacts to what you are doing. You can also play with her through commands.",
+      cmds: ["switch pet", "pet / feed / train / gift", "chat (answer with /mortal-buddy:talk 2)", "long day today", "she replies in her own voice", "switch language (zh / ja / ko / en)"],
+      more: "See the <a href=\"https://github.com/willismax/mortal-pets/blob/main/README.en.md\">English README on GitHub</a>. Affection on this page is saved only in this browser and is separate from Codex / Claude Code.",
+      footer: "Legend of Mortal (活俠傳) and its characters are the property of their developer and publisher. This is an unofficial fan project: character details are compiled from public sources, and all pixel art and dialogue are original fan creations, not game assets or text.",
+      states: { "idle": "Idle", "running-right": "Run right", "running-left": "Run left", "waving": "Wave", "jumping": "Jump", "failed": "Failed", "waiting": "Waiting", "running": "Working", "review": "Reviewing" },
+      tier: (t) => `Bond: ${t}`, next: (n, d, t) => `${n} (${d} more to “${t}”)`,
+      spoiler: "Click to reveal spoiler", upcoming: "coming soon", open: "“", close: "”", colon: ": ", lp: " (", rp: ")"
+    }
+  };
+  const LANGS = Object.keys(UI);
+  let T = UI.zh;
   const CELL_W = 192, CELL_H = 208;
   // 與 tools/build_sprites.py 的 ROW_SPEC 一致
   const ROWS = {
-    "idle": { row: 0, d: [280, 110, 110, 140, 140, 320], label: "閒置" },
-    "running-right": { row: 1, d: [120, 120, 120, 120, 120, 120, 120, 220], label: "往右跑" },
-    "running-left": { row: 2, d: [120, 120, 120, 120, 120, 120, 120, 220], label: "往左跑" },
-    "waving": { row: 3, d: [140, 140, 140, 280], label: "揮手" },
-    "jumping": { row: 4, d: [140, 140, 140, 140, 280], label: "開心跳" },
-    "failed": { row: 5, d: [140, 140, 140, 140, 140, 140, 140, 240], label: "失敗" },
-    "waiting": { row: 6, d: [150, 150, 150, 150, 150, 260], label: "等你回覆" },
-    "running": { row: 7, d: [120, 120, 120, 120, 120, 220], label: "工作中" },
-    "review": { row: 8, d: [150, 150, 150, 150, 150, 280], label: "審視" },
+    "idle": { row: 0, d: [280, 110, 110, 140, 140, 320] },
+    "running-right": { row: 1, d: [120, 120, 120, 120, 120, 120, 120, 220] },
+    "running-left": { row: 2, d: [120, 120, 120, 120, 120, 120, 120, 220] },
+    "waving": { row: 3, d: [140, 140, 140, 280] },
+    "jumping": { row: 4, d: [140, 140, 140, 140, 280] },
+    "failed": { row: 5, d: [140, 140, 140, 140, 140, 140, 140, 240] },
+    "waiting": { row: 6, d: [150, 150, 150, 150, 150, 260] },
+    "running": { row: 7, d: [120, 120, 120, 120, 120, 220] },
+    "review": { row: 8, d: [150, 150, 150, 150, 150, 280] },
   };
   const ACT_ANIM = { pet: "waving", feed: "jumping", train: "running", gift: "jumping" };
   const ACT_GAIN = { pet: 1, feed: 1, train: 1, gift: 3 };
@@ -206,6 +293,19 @@ cd mortal-pets && ./install.sh codex</pre>
   }
   const store = Object.assign({ current: "xiaomei", aff: {}, outfit: {} }, loadSave());
   store.outfit = store.outfit || {};
+
+  // 語言：網址 ?lang= 優先，其次是上次選的，最後看瀏覽器語言
+  function guessLang() {
+    const q = new URLSearchParams(location.search).get("lang");
+    if (LANGS.includes(q)) return q;
+    if (LANGS.includes(store.lang)) return store.lang;
+    for (const l of navigator.languages || [navigator.language || ""]) {
+      const k = l.toLowerCase().slice(0, 2);
+      if (k === "zh") return "zh";
+      if (LANGS.includes(k)) return k;
+    }
+    return "zh";
+  }
   function persist() {
     try { localStorage.setItem("mortal-pets", JSON.stringify(store)); } catch {}
   }
@@ -253,8 +353,8 @@ cd mortal-pets && ./install.sh codex</pre>
     const t = tierOf(n);
     const next = TIERS.find((x) => x.min > n);
     $("affFill").style.width = `${(n / AFF_MAX) * 100}%`;
-    $("tier").textContent = `好感階段：${t.name}`;
-    $("affNum").textContent = next ? `${n}（再 ${next.min - n} 點到「${next.name}」）` : `${n}`;
+    $("tier").textContent = T.tier(t.name);
+    $("affNum").textContent = next ? T.next(n, next.min - n, next.name) : `${n}`;
   }
 
   function speak(mood, line) {
@@ -263,7 +363,7 @@ cd mortal-pets && ./install.sh codex</pre>
     $("bubble").innerHTML = "";
     const b = document.createElement("b");
     b.textContent = `${c.name}${face}`;
-    $("bubble").append(b, `「${line}」`);
+    $("bubble").append(b, `${T.open}${line}${T.close}`);
   }
 
   function isNight() {
@@ -283,7 +383,7 @@ cd mortal-pets && ./install.sh codex</pre>
     const c = cur();
     const t = pick(c.talks);
     $("talkCard").hidden = false;
-    $("talkQ").textContent = `${c.name}：「${t.q}」`;
+    $("talkQ").textContent = `${c.name}${T.colon}${T.open}${t.q}${T.close}`;
     const box = $("talkOpts");
     box.innerHTML = "";
     t.opts.forEach((o) => {
@@ -349,7 +449,8 @@ cd mortal-pets && ./install.sh codex</pre>
     sprite.style.transition = "none";
     sprite.style.left = "50%";
     requestAnimationFrame(() => { sprite.style.transition = ""; });
-    $("name").textContent = c.fullName === c.name ? c.name : `${c.name}（${c.fullName}）`;
+    // 全名開頭就是名字（例如日文「龍湘（りゅう・しょう）」）時只顯示全名，避免重複
+    $("name").textContent = c.fullName.startsWith(c.name) ? c.fullName : `${c.name}${T.lp}${c.fullName}${T.rp}`;
     $("title").textContent = c.title;
     $("tagline").textContent = c.tagline;
     $("petPath").textContent = `mortal-pets/codex/pets/${petId}/`;
@@ -357,12 +458,12 @@ cd mortal-pets && ./install.sh codex</pre>
     $("petSheet").href = `codex/pets/${petId}/spritesheet.webp`;
     const ul = $("profile");
     ul.innerHTML = "";
-    c.profile.forEach((p) => {
+    c.profile.forEach((p, i) => {
       const li = document.createElement("li");
       li.textContent = p;
-      if (p.startsWith("（劇透）")) {
+      if (BASE.CHARS[id].profile[i].startsWith("（劇透）")) {  // 劇透標記以中文原文為準
         li.className = "spoiler";
-        li.title = "點一下顯示劇透";
+        li.title = T.spoiler;
         li.onclick = () => li.classList.toggle("shown");
       }
       ul.append(li);
@@ -374,30 +475,32 @@ cd mortal-pets && ./install.sh codex</pre>
   }
 
   // 分頁
-  for (const c of Object.values(CHARS)) {
-    const b = document.createElement("button");
-    b.className = "tab";
-    b.role = "tab";
-    b.dataset.id = c.id;
-    b.textContent = c.name;
-    b.onclick = () => select(c.id);
-    $("tabs").append(b);
-  }
-  for (const u of UPCOMING) {
-    const b = document.createElement("button");
-    b.className = "tab";
-    b.disabled = true;
-    b.textContent = `${u.name}（製作中）`;
-    b.title = u.note;
-    $("tabs").append(b);
+  function renderTabs() {
+    $("tabs").innerHTML = "";
+    for (const c of Object.values(CHARS)) {
+      const b = document.createElement("button");
+      b.className = "tab";
+      b.role = "tab";
+      b.dataset.id = c.id;
+      b.textContent = c.name;
+      b.onclick = () => select(c.id);
+      $("tabs").append(b);
+    }
+    for (const u of UPCOMING) {
+      const b = document.createElement("button");
+      b.className = "tab";
+      b.disabled = true;
+      b.textContent = `${u.name}${T.lp}${T.upcoming}${T.rp}`;
+      b.title = u.note;
+      $("tabs").append(b);
+    }
   }
 
   // 狀態預覽
-  for (const [state, spec] of Object.entries(ROWS)) {
+  for (const [state] of Object.entries(ROWS)) {
     const b = document.createElement("button");
     b.className = "chip";
     b.dataset.state = state;
-    b.textContent = spec.label;
     b.onclick = () => {
       if (state.startsWith("running-")) {
         const stage = $("stage").clientWidth;
@@ -414,7 +517,42 @@ cd mortal-pets && ./install.sh codex</pre>
   sprite.onclick = () => act("pet");
   sprite.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); act("pet"); } };
 
-  select(CHARS[store.current] ? store.current : "xiaomei");
+  // 切換語言：換掉介面文字與角色台詞，好感與目前角色不變
+  function setLang(lang) {
+    T = UI[lang];
+    store.lang = lang;
+    persist();
+    ({ CHARS, TIERS } = BASE.localize(lang === "zh" ? null : (window.MORTAL_LOCALES || {})[lang]));
+    document.documentElement.lang = T.htmlLang;
+    document.title = T.title;
+    document.querySelector('meta[name="description"]').content = T.desc;
+    document.querySelectorAll("[data-i18n]").forEach((el) => { el.innerHTML = T[el.dataset.i18n]; });
+    sprite.setAttribute("aria-label", T.pet);
+    document.querySelectorAll("#states .chip").forEach((b) => { b.textContent = T.states[b.dataset.state]; });
+    const [pick_, act_, talk_, roleArg, role_, lang_] = T.cmds;
+    $("cmds").textContent = [
+      "/plugin install mortal-buddy --marketplace willismax/mortal-pets",
+      `/mortal-buddy:pick xiaozhu     ${pick_}`,
+      `/mortal-buddy:pet feed         ${act_}`,
+      `/mortal-buddy:talk             ${talk_}`,
+      `/mortal-buddy:roleplay ${roleArg}  ${role_}`,
+      `/mortal-buddy:lang ${lang}         ${lang_}`
+    ].join("\n");
+    document.querySelectorAll("#langs button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.lang === lang));
+    renderTabs();
+    select(CHARS[store.current] ? store.current : "xiaomei");
+  }
+
+  for (const l of LANGS) {
+    const b = document.createElement("button");
+    b.dataset.lang = l;
+    b.textContent = UI[l].label;
+    b.lang = UI[l].htmlLang;
+    b.onclick = () => setLang(l);
+    $("langs").append(b);
+  }
+
+  setLang(guessLang());
   wander();
 </script>
 </body>

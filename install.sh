@@ -13,6 +13,8 @@ CODEX="${CODEX_HOME:-$HOME/.codex}"
 install_bin() {
   mkdir -p "$BIN"
   cp "$PLUGIN/scripts/buddy.cjs" "$PLUGIN/scripts/characters.js" "$BIN/"
+  mkdir -p "$BIN/locales"
+  cp "$PLUGIN"/scripts/locales/*.js "$BIN/locales/"
 }
 
 install_codex() {
@@ -21,7 +23,7 @@ install_codex() {
     id="$(basename "$pet")"
     mkdir -p "$CODEX/pets/$id"
     cp "$pet/pet.json" "$pet/spritesheet.webp" "$CODEX/pets/$id/"
-    echo "Codex 寵物：$CODEX/pets/$id"
+    echo "Codex pet：$CODEX/pets/$id"
   done
   for skill in "$PLUGIN"/skills/*/; do
     id="$(basename "$skill")"
@@ -31,13 +33,17 @@ install_codex() {
   done
   cat <<MSG
 
-接著：
-1. 打開 Codex → Settings → Pets → Refresh，選「小梅」或「小竹」；或在對話中輸入 /pet。
+接著 / Next:
+1. 打開 Codex → Settings → Pets → Refresh 選一隻，或在對話中輸入 /pet。
+   Open Codex → Settings → Pets → Refresh and pick one, or type /pet in a conversation.
 2. 想在每輪完成時收到角色的通知，在 $CODEX/config.toml 最上方加入（已有 notify 的話請自行合併）：
+   For a notification from her after every turn, add this to the top of $CODEX/config.toml
+   (merge it if you already have a notify line):
 
    notify = ["node", "$BIN/buddy.cjs", "codex-notify"]
 
-3. 換角色：node "$BIN/buddy.cjs" pick xiaozhu
+3. 換角色 / Switch pet：node "$BIN/buddy.cjs" pick xiaozhu
+4. 換語言 / Language：node "$BIN/buddy.cjs" lang ja   （zh／ja／ko／en）
 MSG
 }
 
@@ -46,13 +52,14 @@ install_statusline() {
   cat <<MSG
 
 在 ~/.claude/settings.json 加入（已有 statusLine 的話請替換）：
+Add this to ~/.claude/settings.json (replace any existing statusLine):
 
   "statusLine": {
     "type": "command",
     "command": "node \"$BIN/buddy.cjs\" statusline"
   }
 
-外掛本體請在 Claude Code 中安裝：
+外掛本體請在 Claude Code 中安裝 / Install the plugin in Claude Code:
   /plugin install mortal-buddy --marketplace willismax/mortal-pets
 MSG
 }
@@ -61,5 +68,5 @@ case "${1:-all}" in
   codex) install_codex ;;
   statusline) install_statusline ;;
   all) install_codex; install_statusline ;;
-  *) echo "用法：$0 [codex|statusline|all]"; exit 1 ;;
+  *) echo "用法 / Usage：$0 [codex|statusline|all]"; exit 1 ;;
 esac
