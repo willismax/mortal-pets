@@ -136,7 +136,9 @@ CHARACTERS["xiahoulan"] = {
     # 齊瀏海長直髮、側邊藍色髮繩與翠綠耳墜、藍色寬袖長衣、淺藍內領、油紙傘
     "hair": (24, 22, 28, 255), "hair_hi": (64, 62, 74, 255),
     "skin": (252, 238, 234, 255), "skin_sh": (228, 204, 200, 255),
-    "eye": (70, 66, 72, 255), "lid": (28, 24, 30, 255),
+    "eye": (112, 108, 118, 255), "lid": (24, 20, 28, 255),  # 灰色無神的眼睛
+    "pupil": (46, 42, 52, 255), "shadow": (214, 186, 196, 255),
+    "mature": True,
     "cloth": (58, 92, 196, 255), "cloth_sh": (38, 62, 150, 255),
     "accent": (52, 82, 182, 255), "accent_sh": (34, 54, 136, 255),
     "collar": (150, 196, 246, 255),
@@ -144,7 +146,7 @@ CHARACTERS["xiahoulan"] = {
     "band": (70, 120, 220, 255), "earring": (80, 180, 120, 255),
     "sleeve": (70, 108, 212, 255), "wide_sleeves": True,
     "shoe": (30, 30, 50, 255), "leg": (52, 82, 182, 255),
-    "blush": (240, 150, 160, 255), "lips": (200, 70, 80, 255),
+    "blush": (240, 150, 160, 255), "lips": (196, 54, 70, 255), "lips_sh": (150, 40, 56, 255),
     "outfit": "dress", "head": "hime",
     "long_hair": True, "height_drop": -1, "tall": 1, "default_eyes": "dull",
 }
@@ -241,6 +243,8 @@ def draw_frame(cid, pose):
     eyes = pose["eyes"] or c["default_eyes"]
     if eyes == "squint" and c["default_eyes"] == "drowsy":
         eyes = "drowsy"  # 小竹的「兇」其實是睏
+    if c["default_eyes"] == "dull" and eyes in ("open", "squint", "side"):
+        eyes = "dull_side" if eyes == "side" else "dull"  # 夏侯蘭睜眼時一律是無神的眼睛
 
     hx = 24 + dx + pose["tilt"]  # 頭中心
     hy = 19 + dy
@@ -502,17 +506,22 @@ def draw_frame(cid, pose):
 
     # 頭
     hw = 11 if rnd else 10  # 小竹臉頰比較圓
-    p.ell(hx - hw, hy - 8, hx + hw, hy + 12, c["skin"], OUTLINE)
-    # 瀏海
+    chin = 13 if c.get("mature") else 12  # 夏侯蘭下巴稍長、臉型成熟
+    p.ell(hx - hw, hy - 8, hx + hw, hy + chin, c["skin"], OUTLINE)
     hair = c["hair"]
-    p.d.chord([hx - 11, hy - 12, hx + 11, hy + 8], 180, 360, fill=hair, outline=OUTLINE)
-    fringe_y = hy - 2
-    for i, fx_ in enumerate(range(hx - 9, hx + 10, 3)):
-        h = 3 if i % 2 == 0 else 2
-        p.poly([(fx_, fringe_y), (fx_ + 3, fringe_y), (fx_ + 1 + (1 if face_r else 0), fringe_y + h)], hair)
-    # 側髮
-    p.rect(hx - 11, hy - 2, hx - 9, hy + 7, hair)
-    p.rect(hx + 9, hy - 2, hx + 11, hy + 7, hair)
+    if c.get("head") == "locks":
+        # 小師妹：側分、露出額頭，不畫整排瀏海
+        p.d.chord([hx - 11, hy - 12, hx + 11, hy + 3], 180, 360, fill=hair, outline=OUTLINE)
+    else:
+        # 瀏海
+        p.d.chord([hx - 11, hy - 12, hx + 11, hy + 8], 180, 360, fill=hair, outline=OUTLINE)
+        fringe_y = hy - 2
+        for i, fx_ in enumerate(range(hx - 9, hx + 10, 3)):
+            h = 3 if i % 2 == 0 else 2
+            p.poly([(fx_, fringe_y), (fx_ + 3, fringe_y), (fx_ + 1 + (1 if face_r else 0), fringe_y + h)], hair)
+        # 側髮
+        p.rect(hx - 11, hy - 2, hx - 9, hy + 7, hair)
+        p.rect(hx + 9, hy - 2, hx + 11, hy + 7, hair)
     p.px(hx - 6, hy - 8, c["hair_hi"])
     p.px(hx - 5, hy - 8, c["hair_hi"])
     p.px(hx - 4, hy - 9, c["hair_hi"])
@@ -530,12 +539,19 @@ def draw_frame(cid, pose):
         if "forehead" in c:  # 額間的紅色花鈿
             p.px(hx + look, hy - 2, c["forehead"])
     elif c.get("head") == "locks":
-        # 側分瀏海，長長的鬢髮垂到胸前
+        # 依官方設定圖：在一側分線、露出額頭，一大綹頭髮斜斜蓋過另一側額角，
+        # 兩側長鬢髮順著臉頰垂到胸前，髮尾往外散開
         k = -1 if face_r else 1
-        p.poly([(hx - 10 * k, hy - 3), (hx + 2 * k, hy - 3), (hx - 6 * k, hy + 2)], hair)
-        p.rect(hx - 11, hy - 2, hx - 9, hy + 15, hair)
-        p.rect(hx + 9, hy - 2, hx + 11, hy + 15, hair)
-        p.line([(hx - 10, hy + 2), (hx - 10, hy + 13)], c["hair_hi"])
+        part = hx - 4 * k
+        p.poly([(part, hy - 6), (hx + 11 * k, hy - 5), (hx + 10 * k, hy + 4), (hx + 6 * k, hy - 1),
+                (hx + 1 * k, hy - 3)], hair)  # 蓋過額角的一綹
+        p.poly([(part, hy - 6), (hx - 11 * k, hy - 5), (hx - 10 * k, hy + 1), (hx - 7 * k, hy - 3)], hair)
+        p.line([(part, hy - 7), (part + k, hy - 5)], c["hair_hi"])  # 分線
+        for side in (-1, 1):
+            x0 = hx + 10 * side
+            p.poly([(x0 - side, hy - 3), (x0 + side * 2, hy - 2), (x0 + side * 3, hy + 17),
+                    (x0 + side * 1, hy + 19), (x0 - side * 2, hy + 14), (x0 - side * 2, hy + 4)], hair, OUTLINE)
+        p.line([(hx - 11, hy + 2), (hx - 12, hy + 14)], c["hair_hi"])
     elif c.get("head") == "ribbon":
         # 頭頂髮髻插著青色髮簪，簪尾垂著青色髮帶
         k = -1 if face_r else 1
@@ -612,10 +628,16 @@ def draw_frame(cid, pose):
             p.line([(x - 1, ey), (x + 2, ey)], c["lid"])
             p.rect(x, ey + 1, x + 1, ey + 2, eye)
             p.px(x + 1, ey + 1, white)
-    elif eyes == "dull":  # 夏侯蘭：眼皮半垂、沒有光的眼睛
-        for x in (lx, rx):
-            p.line([(x - 1, ey), (x + 2, ey)], c.get("lid", eye))
-            p.rect(x, ey + 1, x + 1, ey + 2, eye)
+    elif eyes in ("dull", "dull_side"):  # 夏侯蘭：大而無神的眼睛，眼皮半垂、濃密睫毛往外挑，沒有光
+        lid = c.get("lid", eye)
+        po = 1 if eyes == "dull_side" else 0  # 斜眼時瞳孔偏向一側
+        for x, out in ((lx - 1, -1), (rx, 1)):
+            p.line([(x - 1, ey), (x + 3, ey)], lid)  # 粗重的上睫毛
+            p.line([(x - 1, ey - 1), (x + 3, ey - 1)], lid)
+            p.px(x + (4 if out > 0 else -2), ey - 1, lid)  # 眼尾上挑
+            p.rect(x, ey + 1, x + 2, ey + 2, eye)  # 灰色瞳孔，沒有反光
+            p.px(x + 1 + po, ey + 1, c.get("pupil", lid))
+            p.line([(x, ey + 3), (x + 2, ey + 3)], c.get("shadow", eye))  # 眼下陰影
     elif eyes == "side":  # 害羞地往旁邊看
         for x in (lx, rx):
             p.rect(x + 1, ey, x + 2, ey + 2, eye)
@@ -631,7 +653,12 @@ def draw_frame(cid, pose):
     mx, my = hx - 1 + look, hy + 8
     m = pose["mouth"]
     mouth = (150, 50, 60, 255)
-    if m == "smile":
+    if "lips" in c and m in ("flat", "small"):
+        m = "lips"
+    if m == "lips":  # 小巧的紅唇
+        p.line([(mx, my), (mx + 1, my)], c["lips"])
+        p.px(mx, my + 1, c.get("lips_sh", c["lips"]))
+    elif m == "smile":
         p.px(mx - 1, my - 1, mouth); p.px(mx, my, mouth); p.px(mx + 1, my, mouth); p.px(mx + 2, my - 1, mouth)
     elif m == "grin":
         p.rect(mx - 1, my - 1, mx + 2, my, mouth); p.line([(mx - 1, my - 1), (mx + 2, my - 1)], white)
@@ -659,8 +686,8 @@ def draw_frame(cid, pose):
     if c.get("bells"):  # 頸上繫著鈴鐺的細繩（鈴鐺從不作響）
         p.line([(hx - 4, hy + 12), (hx + 4, hy + 12)], (60, 40, 40, 255))
         p.ell(hx - 1, hy + 12, hx + 1, hy + 14, (232, 196, 80, 255), OUTLINE)
-    if "lips" in c and m in ("flat", "smirk", "small"):
-        p.line([(mx, my), (mx + 1, my)], c["lips"])
+    if "lips" in c and m == "smirk":
+        p.px(mx, my, c["lips"])
 
     if "kerchief" in c:  # 領巾
         p.poly([(hx - 4, hy + 11), (hx + 4, hy + 11), (hx, hy + 15)], c["kerchief"], OUTLINE)
