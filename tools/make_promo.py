@@ -54,7 +54,7 @@ def center_text(d, x, y, text, size, fill):
 # 宣傳圖用的招牌姿勢：(角色, 名字, 列, 欄)
 LINEUP = [("xiaomei", "小梅", 3, 1), ("xiaozhu", "小竹", 4, 2), ("xiaozhu-battle", "裂骨魔", 0, 0),
           ("xiaoshimei", "小師妹", 3, 2), ("longxiang", "龍湘", 4, 2), ("xiahoulan", "夏侯蘭", 0, 0),
-          ("yeyunshang", "葉雲裳", 3, 1), ("weiju", "魏菊", 0, 3), ("tangbuyi", "大師兄", 4, 2)]
+          ("yeyunshang", "葉雲裳", 3, 1), ("weiju", "魏菊", 0, 3), ("shangguanying", "上官螢", 0, 0), ("tangbuyi", "大師兄", 4, 2)]
 
 def poster(w, h, cols, name):
     im = backdrop(w, h); d = ImageDraw.Draw(im)
@@ -89,14 +89,14 @@ def poster(w, h, cols, name):
     d.text((pad, foot + 50), "中文・日本語・한국어・English　｜　非官方同人作品，非遊戲素材", font=font(26), fill=SOFT)
     im.convert("RGB").save(OUT / name, quality=95)
 
-poster(1600, 1000, 9, "promo-landscape.png")   # 巴哈封面、橫式
+poster(1600, 1000, 10, "promo-landscape.png")   # 巴哈封面、橫式
 poster(1080, 1350, 5, "promo-portrait.png")    # Threads 直式 4:5
 
 # 動畫 GIF：六人同時做招牌動作
 GIF = [("xiaomei", "小梅・飛踢", "jumping"), ("xiaozhu", "小竹・擦汗", "running"),
        ("xiaoshimei", "小師妹・抖抖抖", "failed"), ("longxiang", "龍湘・雞腿劍", "jumping"),
        ("xiahoulan", "夏侯蘭・跟我來", "waving"), ("yeyunshang", "葉雲裳・欸嘿", "waving"),
-       ("weiju", "魏菊・嚇到", "failed"), ("tangbuyi", "大師兄・擲鏢", "jumping")]
+       ("weiju", "魏菊・嚇到", "failed"), ("shangguanying", "上官螢・冒愛心", "jumping"), ("tangbuyi", "大師兄・擲鏢", "jumping")]
 TICK, TOTAL = 40, 3360
 sheets = {cid: sheet(cid) for cid, _, _ in GIF}
 frames = []

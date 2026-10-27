@@ -166,6 +166,7 @@ CAST = [
     ("xiahoulan", "夏侯蘭", "崆峒奪魄門・人稱「奪魄幽蘭」", "waving", "「懶徒兒，跟我來」", "Xiahou Lan: \"Lazy disciple, follow me.\""),
     ("yeyunshang", "葉雲裳", "點蒼明珠", "waving", "欸嘿～", "Ye Yunshang: \"Ehehe~\""),
     ("weiju", "魏菊", "崆峒玄功門・當代掌門", "waving", "害羞到頭頂冒煙", "Wei Ju: blushing until she steams"),
+    ("shangguanying", "上官螢", "福州上官世家・人稱「上官千金」", "jumping", "眼冒愛心、頭頂冒煙", "Shangguan Ying: hearts and steam"),
     ("tangbuyi", "大師兄", "番外・飛俠 唐布衣", "running", "連發金錢鏢！", "Senior Brother: gold-coin darts"),
 ]
 
@@ -174,14 +175,14 @@ def shorts_video():
     cv = Canvas(1080, 1920)
 
     def hook(ms):
-        # 開頭 2 秒要抓住目光：九位角色一起出場
+        # 開頭 2 秒要抓住目光：全部角色一起出場（每排 4、3、3 位）
         im, d = cv.new()
         cv.center(d, 170, "寫程式時", 96, INK)
         cv.center(d, 290, "有她們陪著", 96, SEAL)
         for i, (cid, *_rest) in enumerate(CAST):
-            r, c = divmod(i, 3)
+            r, c, n = (0, i, 4) if i < 4 else (1 + (i - 4) // 3, (i - 4) % 3, 3)
             sp = frame_of(cid, "idle", ms + i * 90, 2)
-            im.alpha_composite(sp, (int(cv.w / 2 + (c - 1) * 330 - sp.width / 2), 470 + r * 400))
+            im.alpha_composite(sp, (int(cv.w / 2 + (c - (n - 1) / 2) * 250 - sp.width / 2), 470 + r * 400))
         cv.center(d, 1720, "活俠傳結緣寵物（同人）", 52, INK)
         cv.center(d, 1800, "Legend of Mortal desktop pets (fan-made)", 34, SOFT)
         return im

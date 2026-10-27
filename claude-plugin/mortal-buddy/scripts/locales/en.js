@@ -484,6 +484,60 @@
           }
         ]
       },
+      shangguanying: {
+        name: "Shangguan Ying",
+        fullName: "Shangguan Ying",
+        title: "Only daughter of the Shangguan family of Fuzhou, “the Shangguan Heiress”",
+        tagline: "A proud, competitive heiress who runs the family business in her father's stead at a young age. Sharp-tongued, yet she blushes the moment you see through her.",
+        profile: [
+          "The only daughter of the Shangguan family, one of the three great families of the martial world, long settled in Fuzhou. A renowned beauty of the present-day martial world.",
+          "Proud and competitive. Though a high-born lady, she refuses to be kept in the inner chambers, and at a young age took over the Shangguan family business in her father's stead.",
+          "A match for any man, she has made the vast family enterprise flourish with her shrewd hand. Bookkeeping and business deals alike are child's play to her.",
+          "She never lets anyone get the last word. When someone sees through her she turns red, and when truly angry her eyes redden and she clenches her fist.",
+          "Long dark grey-green hair swept back into a bun, pinned with a hairpin hung with amethyst and pearls, and a red ribbon tied at the back. A white high-collared inner garment, a purple fur-trimmed wide-sleeved robe and a long lilac skirt.",
+          "(Spoiler) She once mentioned that her family had arranged a marriage for her far from home; her romance route has not yet been officially opened."
+        ],
+        lines: {
+          greet: ["Hmph, there you are at last. I turned down three business deals to make time for this, you know.", "Zhao Huo, you're a quarter of an hour late. ...Fine, come in.", "Good timing. I've been staring at ledgers until my eyes went blurry."],
+          idle: ["(one hand on her hip, leafing through a ledger)", "The Shangguan business isn't propped up by our ancestors' good name alone.", "Don't take me for some heiress who only knows embroidery.", "The lychees in Fuzhou are ripe... I'll take you to try them next time."],
+          working: ["You get on with your work. I'll balance this month's accounts while I'm at it.", "Mm, that figure's not badly worked. Carry on.", "Focus. I'm watching, after all."],
+          done: ["Well done. ...I rarely praise anyone, so you'd better remember this.", "(her eyes light up for a moment) Not bad. Faster than I expected.", "Very well, I'll count this one to your credit."],
+          failed: ["...(dabs the corner of her eye with her sleeve) I-I'm not crying. It's the dust.", "Honestly, you... never mind. I'll look it over again for you.", "Mistakes get fixed. Even the Shangguan family has taken a loss in business."],
+          waiting: ["What are you standing around for? I'm waiting on your word.", "(arms folded) My time is expensive, you know.", "Out with it. What do you want to do?"],
+          review: ["(narrows her eyes) This line doesn't balance.", "Don't think you can fudge your way past me. I can tell.", "Hmm... it looks right at a glance, but look closer and there's a problem."],
+          pet: ["Wh-what do you think you're doing! (instantly turns scarlet)", "...Just once.", "(covers her mouth and looks away) Don't you dare laugh."],
+          feed: ["These pastries... are passable, I suppose.", "Fuzhou fish balls are far better than this. ...But thank you.", "(eats in small, dainty bites)"],
+          train: ["Training? My swordplay is no worse than yours.", "Too slow. Again!", "(clenches her fist) Have at you!"],
+          gift: ["This is... for me? (hearts in her eyes)", "Hmph, you have decent taste.", "(blushes to the tips of her ears) ...I'll keep it safe."],
+          night: ["Once the night's accounts are done, I remember I'm just a girl, after all.", "Zhao Huo... if one day I had to leave Fuzhou, would you come looking for me?", "Everyone else only sees “the Shangguan Heiress”. You're the only one who asks if I'm tired."]
+        },
+        talks: [
+          {
+            q: "Would you look over the Shangguan accounts for this month on my behalf?",
+            opts: [
+              { t: "Leave it to me. Not a single coin out of place.", r: "(the corners of her mouth turn up) Hmph, then let's see what you're made of." },
+              { t: "Bookkeeping is what I dread most...", r: "...Hopeless. Never mind, I'll do it myself." },
+              { t: "Carrying the family business all by yourself, aren't you tired?", r: "(taken aback for a moment) ...You're the first person who's ever asked me that." }
+            ]
+          },
+          {
+            q: "What do you think of my outfit today?",
+            opts: [
+              { t: "Purple suits you best. You look like you stepped out of a painting.", r: "(blushes, steam rising from her head) D-don't you sweet-talk me!" },
+              { t: "Same as usual, isn't it?", r: "(eyes reddening, fist clenched) ...Zhao Huo, stay right where you are." },
+              { t: "Those fur-trimmed sleeves look warm.", r: "Fuzhou winters are damp and cold, so I had it made specially. You've a good eye." }
+            ]
+          },
+          {
+            q: "I hear something big has happened in the Tang Clan. Whose side are you on?",
+            opts: [
+              { t: "I'm on your side.", r: "(looks away) ...You'd better mean it. I won't forget." },
+              { t: "I want to get the facts straight first.", r: "Mm, level-headed. That's the mark of someone who could do great things." },
+              { t: "It's none of my business anyway.", r: "...I was wrong about you." }
+            ]
+          }
+        ]
+      },
       tangbuyi: {
         name: "Senior Brother",
         fullName: "Tang Buyi",

@@ -193,6 +193,28 @@ CHARACTERS["weiju"] = {
     "long_hair": True, "height_drop": -1, "tall": 1, "default_eyes": "open",
 }
 
+CHARACTERS["shangguanying"] = {
+    "displayName": "上官螢",
+    "description": "福州上官世家的獨女上官螢：驕傲好強的千金名媛，年紀輕輕便代父操持家業；嘴上不饒人，被說中心事就臉紅。（活俠傳同人）",
+    # 依 LoM Wiki 立繪：深灰綠長髮往後梳、盤髻插著掛紫晶的金簪、腦後紅髮帶；
+    # 白色立領內衣配米金交領、紫色寬袖外袍與白毛袖口、粉紫長裙，一手叉腰
+    "hair": (58, 64, 58, 255), "hair_hi": (104, 112, 100, 255),
+    "skin": (255, 236, 226, 255), "skin_sh": (240, 204, 190, 255),
+    "eye": (96, 64, 56, 255), "lid": (40, 30, 34, 255),
+    "cloth": (124, 88, 164, 255), "cloth_sh": (94, 64, 132, 255),
+    "accent": (206, 128, 176, 255), "accent_sh": (172, 96, 146, 255),
+    "collar": (214, 190, 140, 255), "kerchief": (246, 244, 242, 255), "kerchief_sh": (214, 190, 140, 255),  # 白色立領內衣、金色盤扣
+    "sash": (226, 170, 200, 255), "thin_sash": True,
+    "robe": (124, 88, 164, 255), "robe_sh": (94, 64, 132, 255),
+    "sleeve": (124, 88, 164, 255), "wide_sleeves": True,
+    "bracer": (240, 238, 234, 255),  # 寬袖口的白色毛邊
+    "pin": (214, 176, 84, 255), "ribbon": (196, 44, 56, 255),
+    "shoe": (124, 88, 164, 255), "leg": (246, 244, 242, 255),
+    "blush": (255, 150, 170, 255),
+    "outfit": "dress", "head": "updo", "topknot": True,
+    "long_hair": True, "height_drop": -1, "tall": 1, "default_eyes": "open",
+}
+
 CHARACTERS["tangbuyi"] = {
     "displayName": "大師兄",
     "description": "唐門大師兄唐布衣，人稱「飛俠」：爽朗不羈、暗器輕功當世一流，指間轉著金錢鏢、哼著小調，夢想是退隱江湖說相聲。（活俠傳同人・番外）",
@@ -850,11 +872,14 @@ def draw_frame(cid, pose):
 
     if ar == "wipe":
         # 擦汗：戴手套的前臂從手肘橫到額頭前
+        # 擦淚（上官螢）：袖子橫到眼角，手背貼著眼睛
+        crying = "tear" in pose["fx"] or "tear2" in pose["fx"]
         elbow = (sx_r + 5, sy - 9)
-        hand = (hx + 5 + look, hy)
+        hand = (hx + 5 + look, hy + (3 if crying else 0))
         p.line([elbow, hand], OUTLINE, 5)
-        p.line([elbow, hand], c.get("glove", c["skin"]), 3)
-        p.ell(hand[0] - 2, hand[1] - 2, hand[0] + 2, hand[1] + 2, c.get("glove", c["skin"]), OUTLINE)
+        p.line([elbow, hand], c.get("glove", c["sleeve"] if crying else c["skin"]), 3)
+        r_ = 1 if crying else 2  # 擦淚的手小一點，貼在眼角
+        p.ell(hand[0] - r_, hand[1] - r_, hand[0] + r_, hand[1] + r_, c.get("glove", c["skin"]), OUTLINE)
 
     if pose["blush"] or c.get("blush_always"):
         p.rect(hx - 8 + look, hy + 6, hx - 7 + look, hy + 6, c["blush"])
@@ -1536,6 +1561,59 @@ def poses_weiju():
     }
 
 
+def poses_shangguanying():
+    """上官螢：叉腰的驕傲千金、看帳本、冒愛心冒煙、摀嘴害羞、擦眼淚、雙手抱胸、氣到握拳。"""
+    hp = ("hip", "down")
+    return {
+        # 一手叉腰，抬著下巴；偶爾「哼」地閉眼別過頭
+        "idle": [P(arms=hp, mouth="flat"), P(arms=hp, mouth="flat"),
+                 P(arms=hp, eyes="blink", mouth="flat"), P(arms=hp, eyes="closed", mouth="flat", tilt=1),
+                 P(arms=hp, eyes="side", mouth="smirk", tilt=1), P(arms=hp, mouth="flat")],
+        "running-right": run_row(mouth="flat", eyes="open"),
+        # 打招呼：抬手一揮，嘴上嫌你來得晚
+        "waving": [P(arms=("hip", "wave_mid"), mouth="smirk"),
+                   P(arms=("hip", "wave_up"), mouth="open"),
+                   P(arms=("hip", "wave_mid"), mouth="smirk", eyes="side"),
+                   P(arms=hp, mouth="flat", eyes="closed", tilt=1)],
+        # 開心：雙手揪著衣襟，眼冒愛心、臉紅到頭頂冒煙
+        "jumping": [P(arms=("clasp", "clasp"), eyes="happy", mouth="open", blush=True),
+                    P(dy=-2, legs="tuck", arms=("clasp", "clasp"), eyes="happy", mouth="open", blush=True, fx=("heart",)),
+                    P(dy=-3, legs="tuck", arms=("clasp", "clasp"), eyes="happy", mouth="laugh", blush=True, fx=("heart", "head_steam")),
+                    P(dy=-1, legs="stand", arms=("clasp", "clasp"), eyes="happy", mouth="open", blush=True, fx=("heart", "head_steam")),
+                    P(arms=("clasp", "clasp"), eyes="happy", mouth="smile", blush=True, fx=("head_steam",))],
+        # 失敗：先氣到握拳冒青筋，再用袖子擦眼淚「才沒哭」
+        "failed": [P(arms=("down", "fist_side"), eyes="squint", mouth="frown", fx=("anger",)),
+                   P(arms=("down", "fist_side"), eyes="squint", mouth="frown", fx=("anger",), dx=1),
+                   P(arms=("down", "fist_side"), eyes="squint", mouth="frown", fx=("anger",), dx=-1),
+                   P(arms=("down", "wipe"), eyes="sad", mouth="wobble", blush=True, fx=("tear",)),
+                   P(arms=("down", "wipe"), eyes="closed", mouth="wobble", blush=True, fx=("tear2",)),
+                   P(arms=("down", "wipe"), eyes="sad", mouth="wobble", blush=True, fx=("tear",)),
+                   P(arms=hp, eyes="side", mouth="flat", blush=True),
+                   P(arms=hp, eyes="open", mouth="flat")],
+        # 等你回覆：雙手抱胸，不耐煩地等
+        "waiting": [P(arms=("cross", "cross"), eyes="open", mouth="flat", fx=("q",)),
+                    P(arms=("cross", "cross"), eyes="side", mouth="flat", fx=("q",)),
+                    P(arms=("cross", "cross"), eyes="squint", mouth="flat", fx=("q",), tilt=1),
+                    P(arms=("cross", "cross"), eyes="blink", mouth="flat", fx=("q",), tilt=1),
+                    P(arms=("cross", "cross"), eyes="open", mouth="frown", fx=("q",)),
+                    P(arms=("cross", "cross"), eyes="open", mouth="flat", fx=("q",))],
+        # 工作中：捧著帳本對帳
+        "running": [P(arms=("hold_up", "hold_up"), prop=("book", 0), eyes="side", mouth="flat"),
+                    P(arms=("hold_up", "hold_up"), prop=("book", 0), eyes="side", mouth="flat"),
+                    P(arms=("hold_up", "hold_up"), prop=("book", 1), eyes="blink", mouth="flat"),
+                    P(arms=("hold_up", "hold_up"), prop=("book", 0), eyes="squint", mouth="flat"),
+                    P(arms=("hold_up", "hold_up"), prop=("book", 0), eyes="open", mouth="smirk"),
+                    P(arms=("hold_up", "hold_up"), prop=("book", 1), eyes="blink", mouth="flat")],
+        # 審視：一手摀著嘴、臉紅地斜眼打量
+        "review": [P(arms=("mouth_cover", "hip"), eyes="side", blush=True),
+                   P(arms=("mouth_cover", "hip"), eyes="side", blush=True),
+                   P(arms=("mouth_cover", "hip"), eyes="squint", blush=True, tilt=1),
+                   P(arms=("mouth_cover", "hip"), eyes="blink", blush=True, tilt=1),
+                   P(arms=("mouth_cover", "hip"), eyes="open", blush=True),
+                   P(arms=("mouth_cover", "hip"), eyes="side", blush=True)],
+    }
+
+
 def poses_tangbuyi():
     """大師兄（依 Q 版參考）：叉腰轉金錢鏢、豎指「有了！」、摸後腦大笑、抱胸、出掌擲鏢。"""
     return {
@@ -1591,7 +1669,7 @@ def poses_tangbuyi():
     }
 
 
-CUSTOM_POSES = {"tangbuyi": poses_tangbuyi, "weiju": poses_weiju, "xiaoshimei": poses_shimei, "longxiang": poses_longxiang, "xiahoulan": poses_xiahoulan,
+CUSTOM_POSES = {"shangguanying": poses_shangguanying, "tangbuyi": poses_tangbuyi, "weiju": poses_weiju, "xiaoshimei": poses_shimei, "longxiang": poses_longxiang, "xiahoulan": poses_xiahoulan,
                 "yeyunshang": poses_yeyunshang}
 
 

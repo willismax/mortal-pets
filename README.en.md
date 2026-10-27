@@ -2,7 +2,7 @@
 
 [中文](README.md) ｜ [日本語](README.ja.md) ｜ [한국어](README.ko.md) ｜ **English**
 
-![Legend of Mortal Pets: pixel art of Xiaomei, Xiaozhu, the Bone-Breaker, Junior Sister, Long Xiang, Xiahou Lan, Ye Yunshang, Wei Ju and Senior Brother Tang Buyi](promo/promo-landscape.png)
+![Legend of Mortal Pets: pixel art of Xiaomei, Xiaozhu, the Bone-Breaker, Junior Sister, Long Xiang, Xiahou Lan, Ye Yunshang, Wei Ju, Shangguan Ying and Senior Brother Tang Buyi](promo/promo-landscape.png)
 
 ![Signature moves, animated](promo/promo-moves.gif)
 
@@ -24,6 +24,7 @@ The romanceable heroines of the Taiwanese wuxia RPG **Legend of Mortal (活俠�
 | `xiahoulan` | Xiahou Lan | "The Soul-Stealing Orchid" of the Soul-Stealing Gate. A cool young master with an oil-paper umbrella; sharp-tongued, secretly caring. |
 | `yeyunshang` | Ye Yunshang | "The Pearl of Diancang", Ye Yunzhou's little sister. A mischievous imp who loves pranks and sweets; wears a sable cloak even in midsummer and runs a fever after half a day of mischief. Signature moves: "Ehehe" wink, pouting, praying hands. |
 | `weiju` | Wei Ju | Direct disciple and current master of Kongtong's Mystic Arts Gate. Graceful, well-read and gentle, an odd one out in martial Kongtong; always holding the hand warmer Yu Zhu made for her. Blushes until steam rises from her head. |
+| `shangguanying` | Shangguan Ying | Only daughter of the Shangguan family of Fuzhou, “the Shangguan Heiress”. Proud and competitive, she runs the family business in her father’s place; sharp-tongued, blushes when caught out, and wipes away tears insisting it’s just the dust. Her romance route isn’t officially out yet. |
 | `tangbuyi` | Senior Brother (Tang Buyi) | Bonus character, not a romance option. First disciple of the Tang Clan's master, "the Flying Knight": carefree, flicks real gold-coin darts, claims his lightness skill ranks top five, and dreams of retiring to do comedy with you. |
 
 ## Claude Code
@@ -50,7 +51,7 @@ Commands:
 
 | Command | What it does |
 | --- | --- |
-| `/mortal-buddy:pick xiaozhu` | Switch pet (`xiaomei`, `xiaozhu`, `xiaoshimei`, `longxiang`, `xiahoulan`, `yeyunshang`, `weiju`, `tangbuyi`) |
+| `/mortal-buddy:pick xiaozhu` | Switch pet (`xiaomei`, `xiaozhu`, `xiaoshimei`, `longxiang`, `xiahoulan`, `yeyunshang`, `weiju`, `shangguanying`, `tangbuyi`) |
 | `/mortal-buddy:pet feed` | `pet`, `feed`, `train` (+1 each) or `gift` (+3); each action counts once a minute |
 | `/mortal-buddy:talk` | She asks you something; answer with `/mortal-buddy:talk 2` and your answer changes her affection |
 | `/mortal-buddy:roleplay long day today` | She replies in her own voice (in the language you write in) |
@@ -75,7 +76,7 @@ Note: Codex pet names (displayName) stay in Chinese. Notification lines follow t
 
 ## Updating
 
-The current version is **0.4.0** (adds Wei Ju and bonus character Senior Brother Tang Buyi). See [CHANGELOG.md](CHANGELOG.md) for what changed.
+The current version is **0.5.0** (adds Shangguan Ying). See [CHANGELOG.md](CHANGELOG.md) for what changed.
 
 - Claude Code: run these two lines in a terminal, then restart Claude Code. From 0.4.0 on, a new session tells you when a newer version is out (at most once a day). To turn the check off, set `MORTAL_BUDDY_NO_UPDATE_CHECK=1`.
 
