@@ -236,6 +236,7 @@ CHARACTERS["zhaohuo"] = {
     "bitmap": "tools/ref/zhaohuo_base.png",
     "bm_brows": "plain", "bm_eyes": "bulge", "bm_mouth": "teeth", "bm_face_lines": ("wrinkles",),
     "bm_eye_x": (19, 28),  # 眼距開
+    "bm_hair": ((30, 18, 22), (58, 36, 36), (86, 56, 52), (110, 74, 64)),  # 底圖的頭髮色，罩頭巾時換成布
     "bm_brow_px": ((18, 20), (19, 20), (28, 20), (29, 20)),  # 細細淡淡的眉毛
     "bm_wrinkle_px": ((21, 25), (21, 26), (27, 25), (27, 26)), "bm_wrinkle_k": 0.88,  # 淡淡的法令紋，太深會像鬍子
     "bm_feet": ((18, 23), (26, 31)),
@@ -311,7 +312,8 @@ ARM_HANDS = {
     "belly": ((5, 5), (-5, 5)),
     "wipe": ((-5, -9), (5, -9)),
     "cross": ((7, 3), (-7, 3)),  # 雙手抱胸
-    "claw": ((-3, -3), (3, 2)),  # 決鬥架式：一手抬在胸前、一手在腹前，手指彎成爪
+    "claw": ((-3, -3), (3, 2)),
+    "limp": ((-7, -9), (7, -9)),  # 手抬到肩膀旁、手腕軟軟垂下（趙活大笑時的蘭花手）  # 決鬥架式：一手抬在胸前、一手在腹前，手指彎成爪
     "clasp": ((5, -1), (-5, -1)),  # 雙手交握在胸前（小師妹的招牌姿勢）
     "hair_hold": ((-1, -3), (1, -3)),  # 雙手握著胸前的鬢髮
     "ribbon": ((4, -3), (-4, -3)),  # 葉雲裳：雙手捏著胸前的領結緞帶
@@ -1243,6 +1245,9 @@ def draw_bitmap_frame(c, pose):
             put((mx + ex * 3) // 4, (my + ey * 3) // 4, c["gold"])
         d.rectangle([ex - 1, ey - 1, ex + 1, ey + 1], fill=O)
         d.rectangle([ex - 1, ey - 1, ex, ey], fill=skin)
+        if name == "limp":  # 手腕往下垂、指尖朝下
+            for fy_ in (1, 2):
+                put(ex + (1 if side == 0 else -1), ey + fy_, skin)
         if name == "claw":  # 彎起來的指尖
             for fx_, fy_ in ((-1, -2), (1, -2), (2, 0)):
                 put(ex + fx_ * (1 if side == 0 else -1), ey + fy_, skin)
@@ -1362,6 +1367,13 @@ def draw_bitmap_frame(c, pose):
             putf(24, 27, (200, 80, 80, 255)); putf(25, 27, (200, 80, 80, 255))
             for x in range(23, 26):
                 putf(x, 28, m)
+        elif mouth == "clench":  # 咬緊牙、上下兩排牙都露出來的獰笑
+            for x in range(21, 28):
+                putf(x, 25, m)
+            for x in range(22, 27):
+                putf(x, 26, white); putf(x, 27, (226, 222, 212, 255)); putf(x, 28, m)
+            putf(21, 26, m); putf(27, 26, m); putf(21, 27, m); putf(27, 27, m)
+            putf(24, 27, (190, 186, 178, 255))
         elif mouth == "flat":
             putf(23, 26, m); putf(24, 26, m); putf(25, 26, m)
         elif mouth == "wobble":
@@ -1471,6 +1483,20 @@ def draw_bitmap_frame(c, pose):
                 for x in range(16, 33):
                     if img.getpixel((x, y)) == skin:
                         img.putpixel((x, y), dark)
+        elif f == "hood":  # 拿衣服當頭巾罩住頭，只露出瀏海和臉
+            hair = {tuple(h) for h in c.get("bm_hair", ())}
+            hc, hd, ho = c["sleeve"], tuple(int(v * 0.72) for v in c["sleeve"][:3]) + (255,), O
+            snap = img.copy()
+            for y in range(0, 36):
+                for x in range(W):
+                    px = snap.getpixel((x, y))
+                    if px[:3] not in hair:
+                        continue
+                    if 15 + foy <= y <= 21 + foy and 17 <= x <= 30:
+                        continue  # 瀏海留著
+                    edge = any(not (snap.getpixel((x + dx_, y + dy_)) if 0 <= x + dx_ < W and 0 <= y + dy_ < H else (0, 0, 0, 0))[3]
+                               for dx_, dy_ in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+                    img.putpixel((x, y), ho if edge else (hd if (x + y // 3) % 5 == 0 else hc))
         elif f == "spark":
             for x, y in ((11, 20), (36, 20), (13, 16), (34, 16)):
                 put(x, y, (255, 220, 120, 255))
@@ -1889,12 +1915,12 @@ def poses_zhaohuo():
                    P(arms=("hip", "wave_mid"), eyes="happy", mouth="grin", dy=-1),
                    P(arms=("hip", "wave_up"), eyes="open", mouth="grin"),
                    P(arms=("hip", "wave_mid"), eyes="wink", mouth="grin")],
-        # 計畫通：握拳跳起來大笑
-        "jumping": [P(arms=("fist_side", "fist_side"), eyes="happy", mouth="grin", dy=1, legs="crouch"),
-                    P(arms=("fist_up", "fist_up"), eyes="happy", mouth="laugh", dy=-3, legs="tuck"),
-                    P(arms=("fist_up", "fist_up"), eyes="happy", mouth="laugh", dy=-4, legs="tuck", fx=("spark",)),
-                    P(arms=("fist_up", "fist_up"), eyes="happy", mouth="laugh", dy=-1),
-                    P(arms=("hip", "fist_up"), eyes="happy", mouth="grin")],
+        # 開心時擺官方的三個招牌姿勢：蘭花手仰頭大笑、衣服罩頭咬牙獰笑、撫臉拋媚眼
+        "jumping": [P(arms=("limp", "down"), eyes="happy", mouth="laugh"),
+                    P(arms=("limp", "down"), eyes="happy", mouth="laugh", dy=-1, tilt=1),
+                    P(arms=("fist_side", "fist_side"), eyes="wide", mouth="clench", fx=("hood",)),
+                    P(arms=("cheek", "belly"), eyes="sly", mouth="smirk", tilt=1),
+                    P(arms=("cheek", "belly"), eyes="wink", mouth="smirk", tilt=1)],
         # 失敗：中招被揍冒星星，摸著頭上的腫包哭
         "failed": [P(arms=("spread", "spread"), eyes="wide", mouth="o", fx=("sweat",)),
                    P(arms=("spread", "spread"), eyes="closed", mouth="scream", fx=("star",), dx=-2),
