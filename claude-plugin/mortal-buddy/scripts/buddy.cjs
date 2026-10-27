@@ -136,6 +136,12 @@ const LATEST_FILE = path.join(HOME, "latest.json");
 const DAY_MS = 24 * 60 * 60 * 1000;
 // 各版新增的內容，更新後第一次開對話時說一次
 const NEWS = {
+  "0.5.0": {
+    zh: "新增上官螢（福州上官千金），還有番外的主角趙活",
+    ja: "上官螢（福州の上官家の令嬢）と、番外編の主人公・趙活が仲間入り",
+    ko: "상관형(푸저우 상관가의 아가씨)과 번외편 주인공 조활 추가",
+    en: "Shangguan Ying, the Shangguan Heiress of Fuzhou, and bonus character Zhao Huo himself join the cast"
+  },
   "0.4.0": {
     zh: "新增魏菊、番外大師兄唐布衣",
     ja: "魏菊と番外編の大師兄・唐布衣が仲間入り",

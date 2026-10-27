@@ -54,7 +54,7 @@ def center_text(d, x, y, text, size, fill):
 # 宣傳圖用的招牌姿勢：(角色, 名字, 列, 欄)
 LINEUP = [("xiaomei", "小梅", 3, 1), ("xiaozhu", "小竹", 4, 2), ("xiaozhu-battle", "裂骨魔", 0, 0),
           ("xiaoshimei", "小師妹", 3, 2), ("longxiang", "龍湘", 4, 2), ("xiahoulan", "夏侯蘭", 0, 0),
-          ("yeyunshang", "葉雲裳", 3, 1), ("weiju", "魏菊", 0, 3), ("tangbuyi", "大師兄", 4, 2)]
+          ("yeyunshang", "葉雲裳", 3, 1), ("weiju", "魏菊", 0, 3), ("shangguanying", "上官螢", 0, 0), ("tangbuyi", "大師兄", 4, 2), ("zhaohuo", "趙活", 3, 0)]
 
 def poster(w, h, cols, name):
     im = backdrop(w, h); d = ImageDraw.Draw(im)
@@ -89,14 +89,14 @@ def poster(w, h, cols, name):
     d.text((pad, foot + 50), "中文・日本語・한국어・English　｜　非官方同人作品，非遊戲素材", font=font(26), fill=SOFT)
     im.convert("RGB").save(OUT / name, quality=95)
 
-poster(1600, 1000, 9, "promo-landscape.png")   # 巴哈封面、橫式
-poster(1080, 1350, 5, "promo-portrait.png")    # Threads 直式 4:5
+poster(1600, 1000, 11, "promo-landscape.png")   # 巴哈封面、橫式
+poster(1080, 1350, 6, "promo-portrait.png")    # Threads 直式 4:5
 
 # 動畫 GIF：六人同時做招牌動作
 GIF = [("xiaomei", "小梅・飛踢", "jumping"), ("xiaozhu", "小竹・擦汗", "running"),
        ("xiaoshimei", "小師妹・抖抖抖", "failed"), ("longxiang", "龍湘・雞腿劍", "jumping"),
        ("xiahoulan", "夏侯蘭・跟我來", "waving"), ("yeyunshang", "葉雲裳・欸嘿", "waving"),
-       ("weiju", "魏菊・嚇到", "failed"), ("tangbuyi", "大師兄・擲鏢", "jumping")]
+       ("weiju", "魏菊・嚇到", "failed"), ("shangguanying", "上官螢・冒愛心", "jumping"), ("zhaohuo", "趙活・計畫通", "jumping"), ("tangbuyi", "大師兄・擲鏢", "jumping")]
 TICK, TOTAL = 40, 3360
 sheets = {cid: sheet(cid) for cid, _, _ in GIF}
 frames = []
@@ -163,3 +163,25 @@ print("ok")
 for cid, nm, r, c in LINEUP:
     sprite(cid, r, c, 10).save(OUT / "sprites" / f"{cid}.png")
 print("ok sprites")
+
+# 0.5.0 更新公告：新角色上官螢與番外趙活
+update_poster("update-0.5.0.png", "v0.5.0",
+              [("shangguanying", "上官螢", "福州上官千金", 0, 0), ("zhaohuo", "趙活", "番外・唐門醜俠", 4, 0)])
+
+UPD5 = [("shangguanying", "上官螢・眼冒愛心", "jumping"), ("shangguanying", "上官螢・才沒哭", "failed"),
+        ("zhaohuo", "趙活・招牌姿勢", "jumping"), ("zhaohuo", "趙活・決鬥臉", "review")]
+frames = []
+W2, H2 = CW * len(UPD5), CH + 56
+sheets = {cid: sheet(cid) for cid, _, _ in UPD5}
+for t in range(0, TOTAL, TICK):
+    im = Image.new("RGBA", (W2, H2), PAPER + (255,)); d = ImageDraw.Draw(im)
+    for i, (cid, label, st) in enumerate(UPD5):
+        row, durs = ROWS[st]
+        tt, col = t % sum(durs), 0
+        while tt >= durs[col]:
+            tt -= durs[col]; col += 1
+        im.alpha_composite(sheets[cid].crop((col * CW, row * CH, (col + 1) * CW, (row + 1) * CH)), (i * CW, 0))
+        center_text(d, i * CW + CW / 2, CH + 8, label, 22, INK)
+    frames.append(im.convert("RGB").quantize(colors=128, method=Image.Quantize.MEDIANCUT))
+frames[0].save(OUT / "update-0.5.0.gif", save_all=True, append_images=frames[1:], duration=TICK, loop=0, optimize=True)
+print("ok")

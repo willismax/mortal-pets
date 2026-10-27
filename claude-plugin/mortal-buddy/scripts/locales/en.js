@@ -484,6 +484,60 @@
           }
         ]
       },
+      shangguanying: {
+        name: "Shangguan Ying",
+        fullName: "Shangguan Ying",
+        title: "Only daughter of the Shangguan family of Fuzhou, “the Shangguan Heiress”",
+        tagline: "A proud, competitive heiress who runs the family business in her father's stead at a young age. Sharp-tongued, yet she blushes the moment you see through her.",
+        profile: [
+          "The only daughter of the Shangguan family, one of the three great families of the martial world, long settled in Fuzhou. A renowned beauty of the present-day martial world.",
+          "Proud and competitive. Though a high-born lady, she refuses to be kept in the inner chambers, and at a young age took over the Shangguan family business in her father's stead.",
+          "A match for any man, she has made the vast family enterprise flourish with her shrewd hand. Bookkeeping and business deals alike are child's play to her.",
+          "She never lets anyone get the last word. When someone sees through her she turns red, and when truly angry her eyes redden and she clenches her fist.",
+          "Long dark grey-green hair swept back into a bun, pinned with a hairpin hung with amethyst and pearls, and a red ribbon tied at the back. A white high-collared inner garment, a purple fur-trimmed wide-sleeved robe and a long lilac skirt.",
+          "(Spoiler) She once mentioned that her family had arranged a marriage for her far from home; her romance route has not yet been officially opened."
+        ],
+        lines: {
+          greet: ["Hmph, there you are at last. I turned down three business deals to make time for this, you know.", "Zhao Huo, you're a quarter of an hour late. ...Fine, come in.", "Good timing. I've been staring at ledgers until my eyes went blurry."],
+          idle: ["(one hand on her hip, leafing through a ledger)", "The Shangguan business isn't propped up by our ancestors' good name alone.", "Don't take me for some heiress who only knows embroidery.", "The lychees in Fuzhou are ripe... I'll take you to try them next time."],
+          working: ["You get on with your work. I'll balance this month's accounts while I'm at it.", "Mm, that figure's not badly worked. Carry on.", "Focus. I'm watching, after all."],
+          done: ["Well done. ...I rarely praise anyone, so you'd better remember this.", "(her eyes light up for a moment) Not bad. Faster than I expected.", "Very well, I'll count this one to your credit."],
+          failed: ["...(dabs the corner of her eye with her sleeve) I-I'm not crying. It's the dust.", "Honestly, you... never mind. I'll look it over again for you.", "Mistakes get fixed. Even the Shangguan family has taken a loss in business."],
+          waiting: ["What are you standing around for? I'm waiting on your word.", "(arms folded) My time is expensive, you know.", "Out with it. What do you want to do?"],
+          review: ["(narrows her eyes) This line doesn't balance.", "Don't think you can fudge your way past me. I can tell.", "Hmm... it looks right at a glance, but look closer and there's a problem."],
+          pet: ["Wh-what do you think you're doing! (instantly turns scarlet)", "...Just once.", "(covers her mouth and looks away) Don't you dare laugh."],
+          feed: ["These pastries... are passable, I suppose.", "Fuzhou fish balls are far better than this. ...But thank you.", "(eats in small, dainty bites)"],
+          train: ["Training? My swordplay is no worse than yours.", "Too slow. Again!", "(clenches her fist) Have at you!"],
+          gift: ["This is... for me? (hearts in her eyes)", "Hmph, you have decent taste.", "(blushes to the tips of her ears) ...I'll keep it safe."],
+          night: ["Once the night's accounts are done, I remember I'm just a girl, after all.", "Zhao Huo... if one day I had to leave Fuzhou, would you come looking for me?", "Everyone else only sees “the Shangguan Heiress”. You're the only one who asks if I'm tired."]
+        },
+        talks: [
+          {
+            q: "Would you look over the Shangguan accounts for this month on my behalf?",
+            opts: [
+              { t: "Leave it to me. Not a single coin out of place.", r: "(the corners of her mouth turn up) Hmph, then let's see what you're made of." },
+              { t: "Bookkeeping is what I dread most...", r: "...Hopeless. Never mind, I'll do it myself." },
+              { t: "Carrying the family business all by yourself, aren't you tired?", r: "(taken aback for a moment) ...You're the first person who's ever asked me that." }
+            ]
+          },
+          {
+            q: "What do you think of my outfit today?",
+            opts: [
+              { t: "Purple suits you best. You look like you stepped out of a painting.", r: "(blushes, steam rising from her head) D-don't you sweet-talk me!" },
+              { t: "Same as usual, isn't it?", r: "(eyes reddening, fist clenched) ...Zhao Huo, stay right where you are." },
+              { t: "Those fur-trimmed sleeves look warm.", r: "Fuzhou winters are damp and cold, so I had it made specially. You've a good eye." }
+            ]
+          },
+          {
+            q: "I hear something big has happened in the Tang Clan. Whose side are you on?",
+            opts: [
+              { t: "I'm on your side.", r: "(looks away) ...You'd better mean it. I won't forget." },
+              { t: "I want to get the facts straight first.", r: "Mm, level-headed. That's the mark of someone who could do great things." },
+              { t: "It's none of my business anyway.", r: "...I was wrong about you." }
+            ]
+          }
+        ]
+      },
       tangbuyi: {
         name: "Senior Brother",
         fullName: "Tang Buyi",
@@ -535,6 +589,60 @@
               { t: "She loves paper folding. Get her some pretty paper.", r: "Yes, yes! You really do know her best. I'm off to buy some right now." },
               { t: "Gold-coin darts?", r: "...Those are hidden weapons, little brother." },
               { t: "Think of something yourself, Senior Brother.", r: "Haha, fair enough. Can't cut corners on something like this." }
+            ]
+          }
+        ]
+      },
+      zhaohuo: {
+        name: "Zhao Huo",
+        fullName: "Zhao Huo",
+        title: "Outsider disciple doing chores in the Tang Clan, known as “the Ugly Hero of the Tang Clan”",
+        tagline: "The homely, smart-mouthed protagonist himself. Vain and fond of petty schemes, he only ever dares to steal one egg, and dreams of someday becoming a great hero. (Bonus character)",
+        profile: [
+          "The protagonist of Legend of Mortal: an outsider disciple who does chores in the Tang Clan and is often bullied by the inner-circle disciples. (Bonus character, not a romance option)",
+          "Remarkably plain-looking, he's known as “the Ugly Hero of the Tang Clan,” though he himself thinks he looks better the longer you look.",
+          "A smart-mouthed trash-talker who loves petty schemes; when things go just as planned, he flashes a smug, shifty grin. And when he gets beaten up, it's especially pitiful.",
+          "He's always grumbling against heaven and everyone else, but for all his grumbling he never uses it to hurt anyone. Even when sneaking eggs, he only dares to steal one.",
+          "Dark-brown hair with a cowlick sticking up at the front, tied back in a ponytail; a teal cross-collared short robe with a mint-green sash, baggy teal trousers, and reddish-brown fingerless bracers on both hands. His trademark is that face: bulging eyes, heavy eye bags and a mouthful of crooked teeth.",
+          "(Spoiler) Over three years, he goes from a lowly Tang Clan nobody to a true great hero... or else goes astray."
+        ],
+        lines: {
+          greet: ["Buddy, you're here! Yours truly is looking handsome today, in a very low-key way.", "Yo, we meet again. What big deeds are we pulling off today?", "Shh! Keep it down, I just snuck out of the kitchen."],
+          idle: ["(stroking his own face) ...Mm, pretty easy on the eyes today.", "Once I'm a great hero, the first thing I'll do is make my senior brothers wash my clothes for a change.", "Stealing eggs? Taking just one doesn't count as stealing.", "(picking his nose) Hmm... the jianghu sure is big."],
+          working: ["(dropping into a stance) Right, I've got this move down!", "You focus on writing, buddy. I'll keep watch for you.", "Heh heh, just as planned... probably."],
+          done: ["Hahahaha! Told you, stick with yours truly and you can't go wrong!", "Just as planned! (shifty grin)", "Beautiful! Put half the credit for this one on my tab."],
+          failed: ["Ow ow ow... (black and blue all over) that punch had some real weight behind it.", "...Not my fault. It's fate.", "Got me... buddy, give me a hand up."],
+          waiting: ["(frozen in shock) Huh? I'm supposed to decide?", "Hurry up and say something, my legs have gone numb from squatting.", "(sweating buckets) ...This is way more than I can handle."],
+          review: ["(sneering) Heh heh, there's an opening right here.", "I'm a great judge of people, and this part's fishy.", "(squinting) Something's off... let me take another look."],
+          pet: ["(blushing) Buddy, you'll make me all bashful doing that.", "Heh heh, a couple more pats. Makes my cowlick stick up even more stylishly.", "...Nobody's ever been this nice to me before."],
+          feed: ["An egg! A whole entire egg!", "(wolfing it down) Delicious! This doesn't count as stealing, right?", "Way tastier than the Tang Clan's leftovers."],
+          train: ["(determined) This time I'm definitely winning!", "Watch this... ow!", "Training is exhausting... but if I skip it, I'll get beaten up even worse."],
+          gift: ["For me? (eyes sparkling) That's the first gift yours truly has ever gotten in his whole life!", "This... I'll keep it safe. I'm not showing it to anyone.", "Buddy, now that's loyalty!"],
+          night: ["When I was little, I thought if I just worked hard enough I could become a great hero. ...I still think so.", "Everyone in the Tang Clan looks down on me. You're the only one who'll talk to me.", "If one day I really do go astray, will you pull me back?"]
+        },
+        talks: [
+          {
+            q: "Buddy, look at this face. Doesn't it get better the longer you look?",
+            opts: [
+              { t: "Hmm... it's a very approachable face.", r: "(stroking his face, smitten with himself) I knew it. You've got taste!" },
+              { t: "You want the honest answer?", r: "...Forget it, don't say it. I get it." },
+              { t: "A great hero doesn't get by on looks.", r: "Well said! Yours truly gets by on this mouth." }
+            ]
+          },
+          {
+            q: "There are two eggs left in the kitchen. How many do we steal?",
+            opts: [
+              { t: "Just one. A person should know their limits.", r: "(moved) Buddy, you really get me!" },
+              { t: "Take both!", r: "...You've got more nerve than I do. Fine, one's yours." },
+              { t: "Let's not. If we get caught, we'll get beaten.", r: "Fair point. My face is already in bad enough shape." }
+            ]
+          },
+          {
+            q: "If I become a great hero, what title do you think I should go by?",
+            opts: [
+              { t: "The Ugly Hero of the Tang Clan!", r: "(face twisting) ...Say that again, I dare you." },
+              { t: "The Living Hero. A great hero who's still alive.", r: "(eyes welling up) ...Good name. It's settled." },
+              { t: "Survive this year first, then we'll talk.", r: "(snapping back) How come you talk as nastily as Senior Brother?" }
             ]
           }
         ]
