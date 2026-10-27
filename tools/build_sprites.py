@@ -231,21 +231,17 @@ CHARACTERS["tangbuyi"] = {
 CHARACTERS["zhaohuo"] = {
     "displayName": "趙活",
     "description": "活俠傳的主角趙活：在唐門打雜的外姓弟子，人稱「唐門醜俠」；自戀、嘴砲又賤，偷雞蛋只敢偷一顆，夢想有天當上大俠。（活俠傳同人・番外）",
-    # 依 LoM Wiki 立繪與表情：深棕短髮、額前一撮翹髮、腦後小馬尾；
-    # 青藍交領布衣配淺色內領與藍色滾邊、藍腰帶，雙手戴紅褐露指護腕；奇貌不揚的大鼻子與法令紋
-    "hair": (70, 46, 44, 255), "hair_hi": (120, 82, 70, 255),
-    "skin": (236, 200, 170, 255), "skin_sh": (200, 158, 128, 255),
-    "eye": (46, 34, 30, 255), "lid": (46, 34, 30, 255), "bags": (212, 172, 144, 255),
-    "cloth": (82, 120, 134, 255), "cloth_sh": (60, 94, 108, 255),
-    "accent": (82, 120, 134, 255), "accent_sh": (60, 94, 108, 255),
-    "collar": (232, 226, 210, 255), "trim": (78, 124, 186, 255),
-    "sash": (78, 124, 186, 255),
-    "sleeve": (82, 120, 134, 255),
-    "bracer": (128, 58, 50, 255),
-    "shoe": (40, 36, 40, 255), "leg": (56, 84, 98, 255),
-    "blush": (230, 140, 140, 255),
-    "outfit": "tunic", "head": "short", "homely": True,
-    "long_hair": False, "height_drop": 0, "default_eyes": "open",
+    # 依網友提供的像素參考圖畫成 Q 版底圖（tools/ref/make_zhaohuo_base.py）：
+    # 層次蓬鬆的深棕短髮帶淺色挑染、兩側髮尾外翹；青藍交領布衣、藍腰帶、開衩衣襬、燈籠褲、靴子、紅褐護腕。
+    # 表情與手臂依動作在底圖上重畫，咧嘴時露出缺一顆的門牙
+    "bitmap": "tools/ref/zhaohuo_base.png", "bitmap_noarms": "tools/ref/zhaohuo_noarms.png",
+    "bm_face_clear": [], "bm_brows": "thin", "bm_mouth": "teeth",
+    "bm_shoulders": ((19, 33), (29, 33)), "bm_feet": ((18, 23), (26, 31)),
+    "skin": (240, 206, 178, 255), "outline": (34, 24, 30, 255),
+    "sleeve": (88, 114, 136, 255), "bracer": (134, 66, 54, 255),
+    "eye": (40, 28, 30, 255), "iris": (70, 46, 40, 255), "brow": (96, 62, 50, 255),
+    "mouth": (150, 52, 48, 255), "blush": (236, 150, 140, 255),
+    "default_eyes": "drowsy", "height_drop": 0,
 }
 
 # 小竹・裂骨魔：同一個人，換上鐵網護甲、虎紋背帶、虎頭面具與機關臂，背著刻紅紋的大刀
@@ -299,6 +295,7 @@ ARM_HANDS = {
     "swing_f": ((4, 4), (4, 4)),
     "swing_b": ((-4, 5), (-4, 5)),
     "chin": ((3, -3), (-3, -3)),
+    "cheek": ((-2, -8), (2, -8)),  # 一手撫著臉頰外側（趙活的自戀）
     "brow": ((4, -9), (-4, -9)),
     "hold": ((5, 2), (5, 2)),
     "hammer_up": ((7, -7), (7, -7)),
@@ -1165,12 +1162,13 @@ def mirror_row(frames):
     return [f.transpose(Image.FLIP_LEFT_RIGHT) for f in frames]
 
 
-# 點陣底圖角色（大師兄）：底圖的眉毛位置，重畫表情前先抹成膚色（眼口在底圖上已抹掉）
+# 點陣底圖角色（大師兄、趙活）：大師兄底圖的眉毛位置，重畫表情前先抹成膚色（眼口在底圖上已抹掉）
 BM_FACE = [(19, 20), (20, 20), (26, 20), (27, 20)]
 
 
 def draw_bitmap_frame(c, pose):
     base = Image.open(ROOT / c["bitmap"]).convert("RGBA")
+    noarms = Image.open(ROOT / c["bitmap_noarms"]).convert("RGBA") if "bitmap_noarms" in c else None
     img = base.copy()
     put = lambda x, y, col: 0 <= x < W and 0 <= y < H and img.putpixel((x, y), col)
     O, skin, eye = c["outline"], c["skin"], c["eye"]
@@ -1189,12 +1187,13 @@ def draw_bitmap_frame(c, pose):
         for x in range(x0, x1 + 1):  # 抬起時補回下襬
             if base.getpixel((x, 46))[3] and not img.getpixel((x, 46))[3]:
                 img.putpixel((x, 46), base.getpixel((x, 46)))
+    (fl0, fl1), (fr0, fr1) = c.get("bm_feet", ((19, 23), (26, 30)))
     if legs in ("stepA",):
-        lift(19, 23, 1)
+        lift(fl0, fl1, 1)
     elif legs in ("stepB",):
-        lift(26, 30, 1)
+        lift(fr0, fr1, 1)
     elif legs == "tuck":
-        lift(19, 23, 2); lift(26, 30, 2)
+        lift(fl0, fl1, 2); lift(fr0, fr1, 2)
 
     # 手臂：不是垂手就把底圖的手抹掉，從肩膀重畫袖子、棕色袖套與手
     hands = [(19, 38), (29, 38)]
@@ -1202,13 +1201,18 @@ def draw_bitmap_frame(c, pose):
         if name == "down":
             continue
         xs = range(16, 20) if side == 0 else range(29, 33)
-        edge = 20 if side == 0 else 28
-        for y in range(32, 40):
-            for x in xs:
-                put(x, y, (0, 0, 0, 0))
-            if img.getpixel((edge, y))[3]:
-                put(edge, y, O)
-        sx, sy = (20, 34) if side == 0 else (28, 34)
+        if noarms:  # 有沒畫手臂的底圖就直接補回身體
+            for y in range(31, 44):
+                for x in xs:
+                    img.putpixel((x, y), noarms.getpixel((x, y)))
+        else:
+            edge = 20 if side == 0 else 28
+            for y in range(32, 40):
+                for x in xs:
+                    put(x, y, (0, 0, 0, 0))
+                if img.getpixel((edge, y))[3]:
+                    put(edge, y, O)
+        sx, sy = c.get("bm_shoulders", ((20, 34), (28, 34)))[side]
         hdx, hdy = ARM_HANDS[name][side]
         ex, ey = sx + hdx, sy + hdy
         d = ImageDraw.Draw(img)
@@ -1216,21 +1220,26 @@ def draw_bitmap_frame(c, pose):
         d.line([(sx, sy), (ex, ey)], fill=c["sleeve"], width=2)
         mx, my = (sx + ex) // 2, (sy + ey) // 2
         d.line([(mx, my), (ex, ey)], fill=c["bracer"], width=2)
-        put((mx + ex * 3) // 4, (my + ey * 3) // 4, c["gold"])
+        if "gold" in c:  # 大師兄護腕上的金環
+            put((mx + ex * 3) // 4, (my + ey * 3) // 4, c["gold"])
         d.rectangle([ex - 1, ey - 1, ex + 1, ey + 1], fill=O)
         d.rectangle([ex - 1, ey - 1, ex, ey], fill=skin)
         hands[side] = (ex, ey)
 
     # 五官
-    for x, y in BM_FACE:
+    for x, y in c.get("bm_face_clear", BM_FACE):
         put(x, y, skin)
     eyes = pose["eyes"] or c["default_eyes"]
+    eyes = {"squint": "drowsy", "dull": "drowsy"}.get(eyes, eyes)
     mouth = pose["mouth"]
     sharp = eyes in ("open", "wide", "side", "look_up", "drowsy", "wink")
-    for x, y in ((19, 20), (20, 20), (27, 20), (28, 20)):  # 劍眉
-        put(x, y, eye)
-    if sharp:  # 睜眼時眉頭壓低，閉眼笑時不壓，免得看起來像打叉
+    brow = c.get("brow", eye)
+    for x, y in ((19, 20), (20, 20), (27, 20), (28, 20)):  # 眉毛
+        put(x, y, brow)
+    if sharp and c.get("bm_brows", "sharp") == "sharp":  # 劍眉：睜眼時眉頭壓低，閉眼笑時不壓，免得看起來像打叉
         put(21, 21, eye); put(26, 21, eye)
+    if eyes == "sad":  # 眉尾下垂
+        put(19, 21, brow); put(28, 21, brow)
     L, R = 20, 27
     if eyes in ("open", "wide", "side", "look_up"):
         o = 1 if eyes == "side" else 0
@@ -1250,8 +1259,36 @@ def draw_bitmap_frame(c, pose):
     elif eyes == "wink":
         put(L, 22, eye); put(L, 23, c["iris"])
         put(R - 1, 23, eye); put(R, 22, eye); put(R + 1, 23, eye)
+    elif eyes == "sad":
+        for x in (L, R):
+            put(x - 1, 23, eye); put(x, 23, eye); put(x + 1, 22, eye) if x == L else put(x - 1, 22, eye)
+    if pose["blush"]:
+        put(19, 25, c["blush"]); put(29, 25, c["blush"])
     m = c["mouth"]
-    if mouth in ("smirk", "smile"):
+    white = (250, 246, 236, 255)
+    if "mouth_cover" in pose["arms"]:
+        pass  # 嘴被手摀住
+    elif c.get("bm_mouth") == "teeth":  # 趙活：咧嘴露出缺了一顆的門牙
+        if mouth == "smirk":  # 歪嘴賊笑，一邊嘴角翹起來
+            put(22, 26, m); put(23, 26, white); put(24, 26, eye); put(25, 26, white); put(26, 25, m)
+            put(23, 27, m); put(24, 27, m); put(25, 27, m)
+        elif mouth in ("smile", "grin"):
+            put(22, 25, m); put(26, 25, m)
+            put(22, 26, m); put(23, 26, white); put(24, 26, eye); put(25, 26, white); put(26, 26, m)
+            put(23, 27, m); put(24, 27, m); put(25, 27, m)
+        elif mouth in ("laugh", "fang", "open", "scream"):
+            for x in range(22, 27):
+                put(x, 26, m); put(x, 27, eye)
+            put(23, 26, white); put(25, 26, white); put(24, 26, eye)
+            for x in range(23, 26):
+                put(x, 28, m)
+        elif mouth == "flat":
+            put(23, 26, m); put(24, 26, m); put(25, 26, m)
+        elif mouth == "wobble":
+            put(22, 27, m); put(23, 26, m); put(24, 27, m); put(25, 26, m); put(26, 27, m)
+        elif mouth == "o":
+            put(24, 26, eye); put(24, 27, eye)
+    elif mouth in ("smirk", "smile"):
         put(23, 26, m); put(24, 26, m); put(25, 25, m)
     elif mouth == "flat":
         put(23, 26, m); put(24, 26, m); put(25, 26, m)
@@ -1330,6 +1367,33 @@ def draw_bitmap_frame(c, pose):
         elif f == "speechless":
             for x in (8, 10, 12):
                 put(x, 14, O)
+        elif f == "star":
+            col = (250, 210, 70, 255)
+            for x0, y0 in ((35, 8), (12, 6)):
+                for ox, oy in ((1, 0), (0, 1), (1, 1), (2, 1), (1, 2)):
+                    put(x0 + ox, y0 + oy, col)
+        elif f == "bruise":  # 被揍：黑眼圈、臉頰腫、頭上一個包（卡通化，不畫流血）
+            purple, red = (130, 84, 150, 255), (224, 120, 110, 255)
+            for ox, oy in ((-1, 21), (0, 21), (1, 21), (-2, 22), (2, 22), (-2, 23), (2, 23), (-1, 24), (0, 24), (1, 24)):
+                put(20 + ox, oy, purple)
+            for x in (28, 29):
+                for y in (24, 25):
+                    put(x, y, red)
+            d = ImageDraw.Draw(img)
+            d.ellipse([25, 2, 29, 6], fill=skin, outline=O)
+        elif f in ("tear", "tear2"):
+            col = (120, 180, 230, 255)
+            for x in ((20,) if f == "tear" else (20, 27)):
+                put(x, 24, col); put(x, 25, col)
+        elif f == "gloom":  # 臉上一片陰影
+            dark = tuple(int(v * 0.72) for v in skin[:3]) + (255,)
+            for y in range(17, 24):  # 眼睛那一帶
+                for x in range(16, 33):
+                    if img.getpixel((x, y)) == skin:
+                        img.putpixel((x, y), dark)
+        elif f == "spark":
+            for x, y in ((11, 20), (36, 20), (13, 16), (34, 16)):
+                put(x, y, (255, 220, 120, 255))
 
     # 身體上下移動（輕功、彈跳）
     shift = pose["dy"] + (1 if legs == "crouch" else 0)
@@ -1733,12 +1797,12 @@ def poses_zhaohuo():
     """趙活（依官方表情）：自戀撫臉、狂笑、計畫通、被揍到鼻青臉腫、嚇呆、決心、冷笑。"""
     return {
         # 自戀：一手撫著臉，越看自己越順眼；偶爾挖個鼻孔
-        "idle": [P(arms=("down", "chin"), eyes="drowsy", mouth="smirk"),
-                 P(arms=("down", "chin"), eyes="drowsy", mouth="smirk", tilt=1),
-                 P(arms=("down", "chin"), eyes="closed", mouth="smirk", tilt=1, blush=True),
-                 P(arms=("down", "chin"), eyes="drowsy", mouth="smirk"),
+        "idle": [P(arms=("down", "cheek"), eyes="drowsy", mouth="smirk"),
+                 P(arms=("down", "cheek"), eyes="drowsy", mouth="smirk", tilt=1),
+                 P(arms=("down", "cheek"), eyes="closed", mouth="smirk", tilt=1, blush=True),
+                 P(arms=("down", "cheek"), eyes="drowsy", mouth="smirk"),
                  P(arms=("down", "nibble"), eyes="side", mouth="flat"),
-                 P(arms=("down", "chin"), eyes="drowsy", mouth="smirk")],
+                 P(arms=("down", "cheek"), eyes="drowsy", mouth="smirk")],
         "running-right": run_row(mouth="grin", eyes="open"),
         # 打招呼：瞇眼狂笑、一手往前揮
         "waving": [P(arms=("down", "wave_mid"), eyes="happy", mouth="laugh"),
@@ -1750,7 +1814,7 @@ def poses_zhaohuo():
                     P(dy=-3, legs="tuck", arms=("fist_up", "fist_up"), eyes="happy", mouth="laugh"),
                     P(dy=-4, legs="tuck", arms=("fist_up", "fist_up"), eyes="happy", mouth="laugh", fx=("spark",)),
                     P(dy=-1, legs="stand", arms=("down", "fist_up"), eyes="happy", mouth="grin"),
-                    P(arms=("down", "chin"), eyes="drowsy", mouth="smirk", blush=True)],
+                    P(arms=("down", "cheek"), eyes="drowsy", mouth="smirk", blush=True)],
         # 失敗：中招被揍，鼻青臉腫冒星星，再哀哀叫
         "failed": [P(arms=("down", "down"), eyes="wide", mouth="o", fx=("sweat",)),
                    P(arms=("down", "down"), eyes="closed", mouth="scream", fx=("star",), dx=-2),
@@ -1775,12 +1839,12 @@ def poses_zhaohuo():
                     P(arms=("fist_side", "fist_side"), eyes="squint", mouth="flat"),
                     P(arms=("fist_side", "fist_side"), eyes="open", mouth="smirk")],
         # 審視：猙獰冷笑，臉上一片陰影
-        "review": [P(arms=("down", "chin"), eyes="squint", mouth="smirk"),
-                   P(arms=("down", "chin"), eyes="squint", mouth="grin", fx=("gloom",)),
-                   P(arms=("down", "chin"), eyes="squint", mouth="grin", fx=("gloom",), tilt=1),
-                   P(arms=("down", "chin"), eyes="side", mouth="grin", fx=("gloom",), tilt=1),
-                   P(arms=("down", "chin"), eyes="squint", mouth="smirk", fx=("gloom",)),
-                   P(arms=("down", "chin"), eyes="drowsy", mouth="smirk")],
+        "review": [P(arms=("down", "cheek"), eyes="squint", mouth="smirk"),
+                   P(arms=("down", "cheek"), eyes="squint", mouth="grin", fx=("gloom",)),
+                   P(arms=("down", "cheek"), eyes="squint", mouth="grin", fx=("gloom",), tilt=1),
+                   P(arms=("down", "cheek"), eyes="side", mouth="grin", fx=("gloom",), tilt=1),
+                   P(arms=("down", "cheek"), eyes="squint", mouth="smirk", fx=("gloom",)),
+                   P(arms=("down", "cheek"), eyes="drowsy", mouth="smirk")],
     }
 
 
