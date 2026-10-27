@@ -2,7 +2,7 @@
 
 [中文](README.md) ｜ **日本語** ｜ [한국어](README.ko.md) ｜ [English](README.en.md)
 
-![活俠傳 縁結びペット：小梅・小竹・裂骨魔・小師妹・龍湘・夏侯蘭・葉雲裳・魏菊・上官螢・大師兄のドット絵](promo/promo-landscape.png)
+![活俠傳 縁結びペット：小梅・小竹・裂骨魔・小師妹・龍湘・夏侯蘭・葉雲裳・魏菊・上官螢・大師兄・趙活のドット絵](promo/promo-landscape.png)
 
 ![得意技アニメーション](promo/promo-moves.gif)
 
@@ -26,6 +26,7 @@
 | `weiju` | 魏菊 | 崆峒派・玄功門の嫡伝女弟子にして当代掌門。端正で教養があり、武張った崆峒派では異色の才女。郁竹が作った手炉をいつも抱えている。照れると頭から湯気が出る。 |
 | `shangguanying` | 上官螢 | 武林三大世家のひとつ、福州・上官家の一人娘で「上官家の令嬢」。誇り高く負けず嫌いで、若くして父に代わり家業を切り盛りする。口は達者だが図星を突かれると赤くなり、涙を袖でぬぐって「泣いてない」と言い張る。縁結びルートは公式未実装。 |
 | `tangbuyi` | 大師兄（唐布衣） | 番外編（縁結び対象ではありません）。唐門掌門の一番弟子、人呼んで「飛俠」。豪快で自由気まま、本物の金でできた金銭鏢を指先で回し、軽功は「天下五指」と言い張る。夢は引退して師弟と漫才をすること。 |
+| `zhaohuo` | 趙活 | 番外編（主人公本人、縁結び対象ではありません）。唐門で雑用をこなす外様の弟子で、人呼んで「唐門の醜男侠客」。ナルシストで口が悪く、小賢しい策（「計画通り」）が大好き、殴られると派手にボコボコになる。卵を盗むのも一個だけ。あなたを「兄弟」と呼ぶ。 |
 
 ## Claude Code
 
@@ -51,7 +52,7 @@
 
 | コマンド | 説明 |
 | --- | --- |
-| `/mortal-buddy:pick xiaozhu` | ペットを切り替え（`xiaomei`、`xiaozhu`、`xiaoshimei`、`longxiang`、`xiahoulan`、`yeyunshang`、`weiju`、`shangguanying`、`tangbuyi`） |
+| `/mortal-buddy:pick xiaozhu` | ペットを切り替え（`xiaomei`、`xiaozhu`、`xiaoshimei`、`longxiang`、`xiahoulan`、`yeyunshang`、`weiju`、`shangguanying`、`tangbuyi`、`zhaohuo`） |
 | `/mortal-buddy:pet feed` | `pet` なでる・`feed` ごはん・`train` 修行（各 +1）・`gift` 贈り物（+3）。同じ行動は 1 分に 1 回だけ加算 |
 | `/mortal-buddy:talk` | 彼女が質問してきます。`/mortal-buddy:talk 2` のように番号で答えると好感度が変わります |
 | `/mortal-buddy:roleplay 今日は疲れた` | キャラクターの口調で返事してもらう（日本語で話しかければ日本語で返事） |
@@ -76,7 +77,7 @@ Codex の Settings → Pets → Refresh でペットを選びます。会話中�
 
 ## アップデート
 
-現在のバージョンは **0.5.0**（上官螢を追加）。変更点は [CHANGELOG.md](CHANGELOG.md) を参照してください。
+現在のバージョンは **0.5.0**（上官螢と番外編の趙活を追加）。変更点は [CHANGELOG.md](CHANGELOG.md) を参照してください。
 
 - Claude Code：ターミナルで次の 2 行を実行し、Claude Code を再起動します。0.4.0 以降は、新しいバージョンが出ると会話の開始時に知らせてくれます（1 日 1 回まで）。自動チェックを止めるには環境変数 `MORTAL_BUDDY_NO_UPDATE_CHECK=1` を設定してください。
 

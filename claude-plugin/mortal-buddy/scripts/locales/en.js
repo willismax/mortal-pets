@@ -592,6 +592,60 @@
             ]
           }
         ]
+      },
+      zhaohuo: {
+        name: "Zhao Huo",
+        fullName: "Zhao Huo",
+        title: "Outsider disciple doing chores in the Tang Clan, known as “the Ugly Hero of the Tang Clan”",
+        tagline: "The homely, smart-mouthed protagonist himself. Vain and fond of petty schemes, he only ever dares to steal one egg, and dreams of someday becoming a great hero. (Bonus character)",
+        profile: [
+          "The protagonist of Legend of Mortal: an outsider disciple who does chores in the Tang Clan and is often bullied by the inner-circle disciples. (Bonus character, not a romance option)",
+          "Remarkably plain-looking, he's known as “the Ugly Hero of the Tang Clan,” though he himself thinks he looks better the longer you look.",
+          "A smart-mouthed trash-talker who loves petty schemes; when things go just as planned, he flashes a smug, shifty grin. And when he gets beaten up, it's especially pitiful.",
+          "He's always grumbling against heaven and everyone else, but for all his grumbling he never uses it to hurt anyone. Even when sneaking eggs, he only dares to steal one.",
+          "Short dark-brown hair with a cowlick sticking up at the front and a small ponytail at the back; a blue-teal cross-collared cloth robe with a blue sash, and reddish-brown fingerless bracers on both hands.",
+          "(Spoiler) Over three years, he goes from a lowly Tang Clan nobody to a true great hero... or else goes astray."
+        ],
+        lines: {
+          greet: ["Buddy, you're here! Yours truly is looking handsome today, in a very low-key way.", "Yo, we meet again. What big deeds are we pulling off today?", "Shh! Keep it down, I just snuck out of the kitchen."],
+          idle: ["(stroking his own face) ...Mm, pretty easy on the eyes today.", "Once I'm a great hero, the first thing I'll do is make my senior brothers wash my clothes for a change.", "Stealing eggs? Taking just one doesn't count as stealing.", "(picking his nose) Hmm... the jianghu sure is big."],
+          working: ["(dropping into a stance) Right, I've got this move down!", "You focus on writing, buddy. I'll keep watch for you.", "Heh heh, just as planned... probably."],
+          done: ["Hahahaha! Told you, stick with yours truly and you can't go wrong!", "Just as planned! (shifty grin)", "Beautiful! Put half the credit for this one on my tab."],
+          failed: ["Ow ow ow... (black and blue all over) that punch had some real weight behind it.", "...Not my fault. It's fate.", "Got me... buddy, give me a hand up."],
+          waiting: ["(frozen in shock) Huh? I'm supposed to decide?", "Hurry up and say something, my legs have gone numb from squatting.", "(sweating buckets) ...This is way more than I can handle."],
+          review: ["(sneering) Heh heh, there's an opening right here.", "I'm a great judge of people, and this part's fishy.", "(squinting) Something's off... let me take another look."],
+          pet: ["(blushing) Buddy, you'll make me all bashful doing that.", "Heh heh, a couple more pats. Makes my cowlick stick up even more stylishly.", "...Nobody's ever been this nice to me before."],
+          feed: ["An egg! A whole entire egg!", "(wolfing it down) Delicious! This doesn't count as stealing, right?", "Way tastier than the Tang Clan's leftovers."],
+          train: ["(determined) This time I'm definitely winning!", "Watch this... ow!", "Training is exhausting... but if I skip it, I'll get beaten up even worse."],
+          gift: ["For me? (eyes sparkling) That's the first gift yours truly has ever gotten in his whole life!", "This... I'll keep it safe. I'm not showing it to anyone.", "Buddy, now that's loyalty!"],
+          night: ["When I was little, I thought if I just worked hard enough I could become a great hero. ...I still think so.", "Everyone in the Tang Clan looks down on me. You're the only one who'll talk to me.", "If one day I really do go astray, will you pull me back?"]
+        },
+        talks: [
+          {
+            q: "Buddy, look at this face. Doesn't it get better the longer you look?",
+            opts: [
+              { t: "Hmm... it's a very approachable face.", r: "(stroking his face, smitten with himself) I knew it. You've got taste!" },
+              { t: "You want the honest answer?", r: "...Forget it, don't say it. I get it." },
+              { t: "A great hero doesn't get by on looks.", r: "Well said! Yours truly gets by on this mouth." }
+            ]
+          },
+          {
+            q: "There are two eggs left in the kitchen. How many do we steal?",
+            opts: [
+              { t: "Just one. A person should know their limits.", r: "(moved) Buddy, you really get me!" },
+              { t: "Take both!", r: "...You've got more nerve than I do. Fine, one's yours." },
+              { t: "Let's not. If we get caught, we'll get beaten.", r: "Fair point. My face is already in bad enough shape." }
+            ]
+          },
+          {
+            q: "If I become a great hero, what title do you think I should go by?",
+            opts: [
+              { t: "The Ugly Hero of the Tang Clan!", r: "(face twisting) ...Say that again, I dare you." },
+              { t: "The Living Hero. A great hero who's still alive.", r: "(eyes welling up) ...Good name. It's settled." },
+              { t: "Survive this year first, then we'll talk.", r: "(snapping back) How come you talk as nastily as Senior Brother?" }
+            ]
+          }
+        ]
       }
     }
   };

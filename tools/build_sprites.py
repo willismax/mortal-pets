@@ -228,6 +228,26 @@ CHARACTERS["tangbuyi"] = {
     "default_eyes": "open", "height_drop": 0,
 }
 
+CHARACTERS["zhaohuo"] = {
+    "displayName": "趙活",
+    "description": "活俠傳的主角趙活：在唐門打雜的外姓弟子，人稱「唐門醜俠」；自戀、嘴砲又賤，偷雞蛋只敢偷一顆，夢想有天當上大俠。（活俠傳同人・番外）",
+    # 依 LoM Wiki 立繪與表情：深棕短髮、額前一撮翹髮、腦後小馬尾；
+    # 青藍交領布衣配淺色內領與藍色滾邊、藍腰帶，雙手戴紅褐露指護腕；奇貌不揚的大鼻子與法令紋
+    "hair": (70, 46, 44, 255), "hair_hi": (120, 82, 70, 255),
+    "skin": (236, 200, 170, 255), "skin_sh": (200, 158, 128, 255),
+    "eye": (46, 34, 30, 255), "lid": (46, 34, 30, 255), "bags": (212, 172, 144, 255),
+    "cloth": (82, 120, 134, 255), "cloth_sh": (60, 94, 108, 255),
+    "accent": (82, 120, 134, 255), "accent_sh": (60, 94, 108, 255),
+    "collar": (232, 226, 210, 255), "trim": (78, 124, 186, 255),
+    "sash": (78, 124, 186, 255),
+    "sleeve": (82, 120, 134, 255),
+    "bracer": (128, 58, 50, 255),
+    "shoe": (40, 36, 40, 255), "leg": (56, 84, 98, 255),
+    "blush": (230, 140, 140, 255),
+    "outfit": "tunic", "head": "short", "homely": True,
+    "long_hair": False, "height_drop": 0, "default_eyes": "open",
+}
+
 # 小竹・裂骨魔：同一個人，換上鐵網護甲、虎紋背帶、虎頭面具與機關臂，背著刻紅紋的大刀
 CHARACTERS["xiaozhu-battle"] = {
     **CHARACTERS["xiaozhu"],
@@ -352,6 +372,14 @@ def draw_frame(cid, pose):
                (bx0 + 9 * k + sway * k, hy - 4), (bx0 + 3 * k, hy - 10)]
         p.poly(pts, c["hair"], OUTLINE)
         p.line([(bx0 + 5 * k, hy - 12), (bx0 + 10 * k + sway * k, hy - 5)], c["hair_hi"])
+    elif c.get("head") == "short":
+        # 趙活：短髮，腦後隨手紮一小撮馬尾
+        p.ell(hx - 11, hy - 12, hx + 11, hy + 6, c["hair"], OUTLINE)
+        k = -1 if face_r else 1
+        bx0 = hx + 9 * k
+        p.poly([(bx0, hy - 6), (bx0 + 3 * k, hy - 7), (bx0 + 6 * k + sway * k, hy - 1),
+                (bx0 + 5 * k + sway * 2 * k, hy + 5), (bx0 + 2 * k + sway * k, hy + 1)], c["hair"], OUTLINE)
+        p.line([(bx0 + 3 * k, hy - 4), (bx0 + 4 * k + sway * k, hy + 1)], c["hair_hi"])
     elif c.get("head") == "twin":
         # 葉雲裳：頭頂兩側的小髻
         p.ell(hx - 12, hy - 12, hx + 12, hy + 9, c["hair"], OUTLINE)
@@ -498,6 +526,17 @@ def draw_frame(cid, pose):
             p.line([(17 + dx, 34 + dy), (16 + dx, 36 + dy)], (200, 170, 90, 255), 2)
             p.line([(15 + dx, 38 + dy), (14 + dx, 43 + dy)], (200, 40, 50, 255))
             p.px(13 + dx, 44 + dy, (220, 180, 80, 255))
+    elif c.get("outfit") == "tunic":
+        # 趙活：交領布衣（淺色內領、藍色滾邊）、藍腰帶，衣襬到膝蓋，底下露出褲管
+        hem = 44 + dy
+        p.poly([(18 + dx, 39 + dy), (30 + dx, 39 + dy), (31 + dx + flare, hem), (17 + dx + flare, hem)], c["cloth"], OUTLINE)
+        p.line([(24 + dx, 41 + dy), (25 + dx + flare, hem - 1)], c["cloth_sh"])  # 衣襟交疊
+        p.line([(22 + dx, 33 + dy), (24 + dx, 36 + dy)], c["collar"])
+        p.line([(26 + dx, 33 + dy), (24 + dx, 36 + dy)], c["collar"])
+        p.line([(21 + dx, 33 + dy), (25 + dx, 38 + dy)], c["trim"])  # 藍色滾邊斜過胸前
+        p.line([(27 + dx, 33 + dy), (26 + dx, 35 + dy)], c["trim"])
+        p.rect(18 + dx, 38 + dy, 30 + dx, 40 + dy, c["sash"])
+        p.line([(28 + dx, 40 + dy), (29 + dx + flare, 43 + dy)], c["sash"])
     else:
         # 圍裙吊帶、深色腰帶、卡其長圍裙
         p.line([(20 + dx, 32 + dy), (20 + dx, 38 + dy)], c["accent"], 2)
@@ -626,9 +665,12 @@ def draw_frame(cid, pose):
     chin = 13 if c.get("mature") else 12  # 夏侯蘭下巴稍長、臉型成熟
     p.ell(hx - hw, hy - 8, hx + hw, hy + chin, c["skin"], OUTLINE)
     hair = c["hair"]
-    if c.get("head") == "locks":
-        # 小師妹：側分、露出額頭，不畫整排瀏海
+    if c.get("head") in ("locks", "short"):
+        # 小師妹、趙活：側分、露出額頭，不畫整排瀏海
         p.d.chord([hx - 11, hy - 13, hx + 11, hy - 1], 180, 360, fill=hair, outline=OUTLINE)
+        if c.get("head") == "short":  # 趙活的短鬢角
+            p.rect(hx - 11, hy - 4, hx - 9, hy + 4, hair)
+            p.rect(hx + 9, hy - 4, hx + 11, hy + 4, hair)
     else:
         # 瀏海
         p.d.chord([hx - 11, hy - 12, hx + 11, hy + 8], 180, 360, fill=hair, outline=OUTLINE)
@@ -681,6 +723,11 @@ def draw_frame(cid, pose):
         p.line([(hx + 5 * k, hy - 12), (hx + 8 * k, hy - 6)], c["ribbon"])
         p.rect(hx - 11, hy - 2, hx - 9, hy + 10, hair)
         p.rect(hx + 9, hy - 2, hx + 11, hy + 10, hair)
+    elif c.get("head") == "short":
+        # 趙活：額前一撮頭髮翹起來往旁邊甩
+        k = -1 if face_r else 1
+        p.poly([(hx + 2 * k, hy - 6), (hx - 3 * k, hy - 3), (hx - 8 * k, hy + 1), (hx - 7 * k, hy - 2), (hx - 3 * k, hy - 6)], hair, OUTLINE)
+        p.line([(hx, hy - 5), (hx - 6 * k, hy - 1)], c["hair_hi"])
     elif c.get("head") == "updo":
         # 長髮往後梳、額頭露出來：只留髮際線，兩側長髮順著臉頰垂下
         p.ell(hx - 7, hy - 5, hx + 7, hy + 3, c["skin"])
@@ -806,6 +853,9 @@ def draw_frame(cid, pose):
         p.line([(rx - 1, ey + 3), (rx + 2, ey + 3)], c["bags"])
 
     mx, my = hx - 1 + look, hy + 8
+    if c.get("homely"):  # 趙活奇貌不揚：大鼻子、法令紋
+        p.rect(mx, hy + 5, mx + 1, hy + 6, c["skin_sh"])
+        p.px(mx - 3, hy + 7, c["skin_sh"]); p.px(mx + 4, hy + 7, c["skin_sh"])
     m = pose["mouth"]
     mouth = (150, 50, 60, 255)
     if "lips" in c and m in ("flat", "small"):
@@ -1049,6 +1099,13 @@ def draw_frame(cid, pose):
             col = (220, 40, 50, 255)
             for ox, oy in ((0, 1), (1, 0), (3, 0), (4, 1), (0, 3), (1, 4), (3, 4), (4, 3)):
                 p.px(x + ox, y + oy, col)
+        elif f == "bruise":  # 被揍：黑眼圈、臉頰腫、頭上一個包
+            purple, red = (130, 84, 150, 255), (224, 120, 110, 255)
+            ex0 = hx - 5 + look
+            for ox, oy in ((-1, 2), (-1, 3), (-1, 4), (0, 5), (1, 5), (2, 4), (2, 3), (2, 2), (0, 1), (1, 1)):
+                p.px(ex0 + ox, hy + oy, purple)
+            p.rect(hx + 5 + look, hy + 6, hx + 7 + look, hy + 8, red)
+            p.ell(hx + 1, hy - 16, hx + 5, hy - 12, c["skin"], OUTLINE)
         elif f == "star":  # 敲頭冒出的小星星，貼在拳頭旁
             x, y = hx + 13, hy - 9
             col = (250, 210, 70, 255)
@@ -1672,7 +1729,62 @@ def poses_tangbuyi():
     }
 
 
-CUSTOM_POSES = {"shangguanying": poses_shangguanying, "tangbuyi": poses_tangbuyi, "weiju": poses_weiju, "xiaoshimei": poses_shimei, "longxiang": poses_longxiang, "xiahoulan": poses_xiahoulan,
+def poses_zhaohuo():
+    """趙活（依官方表情）：自戀撫臉、狂笑、計畫通、被揍到鼻青臉腫、嚇呆、決心、冷笑。"""
+    return {
+        # 自戀：一手撫著臉，越看自己越順眼；偶爾挖個鼻孔
+        "idle": [P(arms=("down", "chin"), eyes="drowsy", mouth="smirk"),
+                 P(arms=("down", "chin"), eyes="drowsy", mouth="smirk", tilt=1),
+                 P(arms=("down", "chin"), eyes="closed", mouth="smirk", tilt=1, blush=True),
+                 P(arms=("down", "chin"), eyes="drowsy", mouth="smirk"),
+                 P(arms=("down", "nibble"), eyes="side", mouth="flat"),
+                 P(arms=("down", "chin"), eyes="drowsy", mouth="smirk")],
+        "running-right": run_row(mouth="grin", eyes="open"),
+        # 打招呼：瞇眼狂笑、一手往前揮
+        "waving": [P(arms=("down", "wave_mid"), eyes="happy", mouth="laugh"),
+                   P(arms=("down", "wave_up"), eyes="happy", mouth="laugh", dy=-1),
+                   P(arms=("down", "wave_mid"), eyes="happy", mouth="laugh"),
+                   P(arms=("down", "wave_up"), eyes="happy", mouth="grin")],
+        # 計畫通：握拳跳起來大笑
+        "jumping": [P(dy=2, legs="crouch", arms=("fist_side", "fist_side"), eyes="squint", mouth="smirk"),
+                    P(dy=-3, legs="tuck", arms=("fist_up", "fist_up"), eyes="happy", mouth="laugh"),
+                    P(dy=-4, legs="tuck", arms=("fist_up", "fist_up"), eyes="happy", mouth="laugh", fx=("spark",)),
+                    P(dy=-1, legs="stand", arms=("down", "fist_up"), eyes="happy", mouth="grin"),
+                    P(arms=("down", "chin"), eyes="drowsy", mouth="smirk", blush=True)],
+        # 失敗：中招被揍，鼻青臉腫冒星星，再哀哀叫
+        "failed": [P(arms=("down", "down"), eyes="wide", mouth="o", fx=("sweat",)),
+                   P(arms=("down", "down"), eyes="closed", mouth="scream", fx=("star",), dx=-2),
+                   P(arms=("down", "down"), eyes="closed", mouth="wobble", fx=("star", "bruise"), dx=-1),
+                   P(arms=("down", "bonk"), eyes="sad", mouth="wobble", fx=("bruise", "tear")),
+                   P(arms=("down", "bonk"), eyes="sad", mouth="wobble", fx=("bruise", "tear2")),
+                   P(arms=("down", "bonk"), eyes="sad", mouth="wobble", fx=("bruise",)),
+                   P(arms=("down", "down"), eyes="sad", mouth="flat", fx=("bruise",)),
+                   P(arms=("down", "down"), eyes="open", mouth="flat", fx=("bruise",))],
+        # 等你回覆：嚇呆、摀嘴冒冷汗
+        "waiting": [P(arms=("mouth_cover", "down"), eyes="wide", fx=("sweat",)),
+                    P(arms=("mouth_cover", "down"), eyes="wide", fx=("sweat", "q")),
+                    P(arms=("mouth_cover", "down"), eyes="wide", fx=("sweat",), dx=1),
+                    P(arms=("mouth_cover", "down"), eyes="wide", fx=("sweat", "q"), dx=-1),
+                    P(arms=("down", "down"), eyes="wide", mouth="o", fx=("q",)),
+                    P(arms=("down", "down"), eyes="open", mouth="o", fx=("q",))],
+        # 工作中：決心，握拳擺出架式
+        "running": [P(arms=("fist_side", "fist_side"), eyes="squint", mouth="flat"),
+                    P(arms=("fist_side", "thrust"), eyes="squint", mouth="flat", dx=1),
+                    P(arms=("fist_side", "fist_side"), eyes="squint", mouth="flat"),
+                    P(arms=("thrust", "fist_side"), eyes="squint", mouth="fang", dx=-1),
+                    P(arms=("fist_side", "fist_side"), eyes="squint", mouth="flat"),
+                    P(arms=("fist_side", "fist_side"), eyes="open", mouth="smirk")],
+        # 審視：猙獰冷笑，臉上一片陰影
+        "review": [P(arms=("down", "chin"), eyes="squint", mouth="smirk"),
+                   P(arms=("down", "chin"), eyes="squint", mouth="grin", fx=("gloom",)),
+                   P(arms=("down", "chin"), eyes="squint", mouth="grin", fx=("gloom",), tilt=1),
+                   P(arms=("down", "chin"), eyes="side", mouth="grin", fx=("gloom",), tilt=1),
+                   P(arms=("down", "chin"), eyes="squint", mouth="smirk", fx=("gloom",)),
+                   P(arms=("down", "chin"), eyes="drowsy", mouth="smirk")],
+    }
+
+
+CUSTOM_POSES = {"zhaohuo": poses_zhaohuo, "shangguanying": poses_shangguanying, "tangbuyi": poses_tangbuyi, "weiju": poses_weiju, "xiaoshimei": poses_shimei, "longxiang": poses_longxiang, "xiahoulan": poses_xiahoulan,
                 "yeyunshang": poses_yeyunshang}
 
 

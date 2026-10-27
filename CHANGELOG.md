@@ -3,7 +3,8 @@
 ## 0.5.0
 
 - 新增上官螢（福州上官世家獨女、人稱「上官千金」）：叉腰的驕傲千金、對帳、眼冒愛心頭頂冒煙、摀嘴害羞、氣到握拳、用袖子擦眼淚。
-- Added Shangguan Ying, the Shangguan Heiress of Fuzhou.
+- 新增番外角色趙活（主角本人，非結緣對象）：自戀撫臉、狂笑、計畫通、被揍到鼻青臉腫、嚇呆、決心、冷笑。
+- Added Shangguan Ying, the Shangguan Heiress of Fuzhou, and the bonus character Zhao Huo.
 
 ## 0.4.0
 
