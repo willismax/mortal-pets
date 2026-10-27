@@ -236,7 +236,7 @@ CHARACTERS["zhaohuo"] = {
     "bitmap": "tools/ref/zhaohuo_base.png",
     "bm_brows": "plain", "bm_eyes": "bulge", "bm_mouth": "teeth", "bm_face_lines": ("wrinkles",),
     "bm_eye_x": (19, 28),  # 眼距開
-    "bm_hair": ((30, 18, 22), (58, 36, 36), (86, 56, 52), (110, 74, 64)),  # 底圖的頭髮色，罩頭巾時換成布
+    "bm_hair": ((30, 18, 22), (58, 36, 36), (86, 56, 52), (110, 74, 64), (26, 20, 22)),  # 底圖的頭髮色，罩頭巾時換成布
     "bm_brow_px": ((18, 20), (19, 20), (28, 20), (29, 20)),  # 細細淡淡的眉毛
     "bm_wrinkle_px": ((21, 25), (21, 26), (27, 25), (27, 26)), "bm_wrinkle_k": 0.88,  # 淡淡的法令紋，太深會像鬍子
     "bm_feet": ((18, 23), (26, 31)),
@@ -1483,20 +1483,39 @@ def draw_bitmap_frame(c, pose):
                 for x in range(16, 33):
                     if img.getpixel((x, y)) == skin:
                         img.putpixel((x, y), dark)
-        elif f == "hood":  # 拿衣服當頭巾罩住頭，只露出瀏海和臉
+        elif f == "hood":  # 上衣故意沒穿好，整顆頭藏在衣服裡，只從領口露出臉和一點瀏海
             hair = {tuple(h) for h in c.get("bm_hair", ())}
-            hc, hd, ho = c["sleeve"], tuple(int(v * 0.72) for v in c["sleeve"][:3]) + (255,), O
-            snap = img.copy()
+            hc = c["sleeve"]
+            hd = tuple(int(v * 0.78) for v in hc[:3]) + (255,)
+            band = tuple(min(255, int(v * 1.3)) for v in hc[:3]) + (255,)
+            cx, top, bot = 24, 7 + foy, 33
+            def inside(x, y):  # 圓頂、往下垂到肩膀的布
+                if y < top or y > bot:
+                    return False
+                cy = top + 12
+                if y < cy:
+                    return ((x - cx) / 11.5) ** 2 + ((y - cy) / 12.5) ** 2 <= 1
+                return abs(x - cx) <= 11 + (y - cy) // 6
+            def face(x, y):  # 領口開的洞
+                return 17 <= x <= 30 and 16 + foy <= y <= 29 + foy and img.getpixel((x, y))[:3] not in hair
+            for y in range(0, 36):  # 頭髮整個收進衣服裡（瀏海除外）
+                for x in range(W):
+                    px = img.getpixel((x, y))
+                    bangs = 18 <= x <= 29 and 16 + foy <= y <= 17 + foy
+                    if px[:3] in hair and not bangs:
+                        img.putpixel((x, y), (0, 0, 0, 0))
+                    elif px[:3] == skin[:3] and not (17 <= x <= 30):  # 耳朵也包住
+                        img.putpixel((x, y), (0, 0, 0, 0))
+            filled = set()
             for y in range(0, 36):
                 for x in range(W):
-                    px = snap.getpixel((x, y))
-                    if px[:3] not in hair:
-                        continue
-                    if 15 + foy <= y <= 21 + foy and 17 <= x <= 30:
-                        continue  # 瀏海留著
-                    edge = any(not (snap.getpixel((x + dx_, y + dy_)) if 0 <= x + dx_ < W and 0 <= y + dy_ < H else (0, 0, 0, 0))[3]
-                               for dx_, dy_ in ((1, 0), (-1, 0), (0, 1), (0, -1)))
-                    img.putpixel((x, y), ho if edge else (hd if (x + y // 3) % 5 == 0 else hc))
+                    if inside(x, y) and not img.getpixel((x, y))[3]:
+                        filled.add((x, y))
+            for x, y in filled:
+                edge = any(not inside(x + dx_, y + dy_) for dx_, dy_ in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+                nb_face = any(img.getpixel((x + dx_, y + dy_))[:3] in (skin[:3],) or (x + dx_, y + dy_) in () for dx_, dy_ in ((1, 0), (-1, 0), (0, 1), (0, -1)) if 0 <= x + dx_ < W and 0 <= y + dy_ < H)
+                col = O if edge else (band if nb_face else (hd if abs(x - cx) >= 8 else hc))
+                img.putpixel((x, y), col)
         elif f == "spark":
             for x, y in ((11, 20), (36, 20), (13, 16), (34, 16)):
                 put(x, y, (255, 220, 120, 255))
@@ -1918,7 +1937,7 @@ def poses_zhaohuo():
         # 開心時擺官方的三個招牌姿勢：蘭花手仰頭大笑、衣服罩頭咬牙獰笑、撫臉拋媚眼
         "jumping": [P(arms=("limp", "down"), eyes="happy", mouth="laugh"),
                     P(arms=("limp", "down"), eyes="happy", mouth="laugh", dy=-1, tilt=1),
-                    P(arms=("fist_side", "fist_side"), eyes="wide", mouth="clench", fx=("hood",)),
+                    P(arms=("down", "down"), eyes="wide", mouth="clench", fx=("hood",)),
                     P(arms=("cheek", "belly"), eyes="sly", mouth="smirk", tilt=1),
                     P(arms=("cheek", "belly"), eyes="wink", mouth="smirk", tilt=1)],
         # 失敗：中招被揍冒星星，摸著頭上的腫包哭
