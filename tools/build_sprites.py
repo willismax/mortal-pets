@@ -311,6 +311,7 @@ ARM_HANDS = {
     "belly": ((5, 5), (-5, 5)),
     "wipe": ((-5, -9), (5, -9)),
     "cross": ((7, 3), (-7, 3)),  # 雙手抱胸
+    "claw": ((-3, -3), (3, 2)),  # 決鬥架式：一手抬在胸前、一手在腹前，手指彎成爪
     "clasp": ((5, -1), (-5, -1)),  # 雙手交握在胸前（小師妹的招牌姿勢）
     "hair_hold": ((-1, -3), (1, -3)),  # 雙手握著胸前的鬢髮
     "ribbon": ((4, -3), (-4, -3)),  # 葉雲裳：雙手捏著胸前的領結緞帶
@@ -1242,6 +1243,9 @@ def draw_bitmap_frame(c, pose):
             put((mx + ex * 3) // 4, (my + ey * 3) // 4, c["gold"])
         d.rectangle([ex - 1, ey - 1, ex + 1, ey + 1], fill=O)
         d.rectangle([ex - 1, ey - 1, ex, ey], fill=skin)
+        if name == "claw":  # 彎起來的指尖
+            for fx_, fy_ in ((-1, -2), (1, -2), (2, 0)):
+                put(ex + fx_ * (1 if side == 0 else -1), ey + fy_, skin)
         hands[side] = (ex, ey)
 
     # 五官
@@ -1274,11 +1278,11 @@ def draw_bitmap_frame(c, pose):
     if eyes == "sad":  # 眉尾下垂
         putf(19, 21, brow); putf(28, 21, brow)
     L, R = c.get("bm_eye_x", (20, 27))
-    if c.get("bm_eyes") == "bulge" and eyes in ("open", "wide", "side", "look_up", "drowsy", "wink", "sad"):
+    if c.get("bm_eyes") == "bulge" and eyes in ("open", "wide", "side", "look_up", "drowsy", "wink", "sad", "sly"):
         # 趙活：凸出來的大白眼、小小的灰眼珠，下面掛著眼袋
         bag = tuple(int(v * 0.72) for v in skin[:3]) + (255,)
         pupil = (84, 90, 98, 255)
-        o = {"side": 1, "look_up": 0}.get(eyes, 0)
+        o = {"side": 1, "sly": 1}.get(eyes, 0)
         for x in (L, R):
             if eyes == "wink" and x == R:
                 putf(x - 1, 23, eye); putf(x, 22, eye); putf(x + 1, 23, eye)
@@ -1289,7 +1293,7 @@ def draw_bitmap_frame(c, pose):
                     putf(xx, y, white_eye := (246, 244, 236, 255))
             for xx in (x - 1, x, x + 1):
                 putf(xx, 21, eye)
-            if eyes == "drowsy":  # 眼皮垂下來蓋住一半
+            if eyes in ("drowsy", "sly"):  # 眼皮垂下來蓋住一半；sly 是決鬥時斜眼瞄人
                 for xx in (x - 1, x, x + 1):
                     putf(xx, 22, eye)
             if eyes == "sad":  # 眼皮往外垂
@@ -1336,6 +1340,17 @@ def draw_bitmap_frame(c, pose):
             for x in range(22, 27):
                 putf(x, 26, m); putf(x, 27, eye)
             putf(23, 26, white); putf(24, 26, (224, 210, 160, 255)); putf(25, 26, white)
+            for x in range(23, 26):
+                putf(x, 28, m)
+        elif mouth == "duel":  # 決鬥臉：嘴角咧到耳根，露出上排牙和舌頭
+            putf(20, 24, m); putf(28, 24, m)
+            for x in range(21, 28):
+                putf(x, 25, m)
+            for x in range(22, 27):
+                putf(x, 26, white); putf(x, 27, eye)
+            putf(24, 26, (224, 210, 160, 255))
+            putf(21, 26, m); putf(27, 26, m)
+            putf(24, 27, (200, 80, 80, 255)); putf(25, 27, (200, 80, 80, 255))
             for x in range(23, 26):
                 putf(x, 28, m)
         elif mouth == "flat":
@@ -1894,13 +1909,13 @@ def poses_zhaohuo():
                     P(arms=("hip", "fist_up"), eyes="squint", mouth="grin", fx=("spark",)),
                     P(arms=("fist_side", "fist_side"), eyes="squint", mouth="flat"),
                     P(arms=("hip", "cheek"), eyes="open", mouth="smirk")],
-        # 審視：抱胸打量，臉上一片陰影冷笑
-        "review": [P(arms=("cross", "cross"), eyes="drowsy", mouth="smirk"),
-                   P(arms=("cross", "cross"), eyes="drowsy", mouth="smirk", tilt=1),
-                   P(arms=("cross", "cross"), eyes="side", mouth="smirk", fx=("gloom",)),
-                   P(arms=("cross", "cross"), eyes="drowsy", mouth="grin", fx=("gloom",)),
-                   P(arms=("cross", "cross"), eyes="blink", mouth="smirk"),
-                   P(arms=("cross", "cross"), eyes="drowsy", mouth="smirk")],
+        # 審視：擺出決鬥架式，斜眼咧嘴獰笑（官方決鬥時那張臉）
+        "review": [P(arms=("claw", "claw"), eyes="sly", mouth="duel"),
+                   P(arms=("claw", "claw"), eyes="sly", mouth="duel", tilt=1),
+                   P(arms=("claw", "claw"), eyes="sly", mouth="duel", dy=1),
+                   P(arms=("claw", "claw"), eyes="sly", mouth="duel", tilt=1, fx=("gloom",)),
+                   P(arms=("claw", "claw"), eyes="blink", mouth="duel"),
+                   P(arms=("claw", "claw"), eyes="sly", mouth="duel", dy=1)],
     }
 
 
