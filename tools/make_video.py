@@ -203,7 +203,7 @@ def update_video_050():
         (2.6, showcase("shangguanying", "上官螢", y_sub, "failed", "氣到握拳……才沒哭", "Fuming… and definitely not crying")),
         (2.2, showcase("shangguanying", "上官螢", y_sub, "running", "捧著帳本對帳", "Balancing the family ledgers")),
         (2.6, showcase("zhaohuo", "趙活", z_sub, "idle", "撫著臉，越看越帥", "Admiring his own face")),
-        (3.0, showcase("zhaohuo", "趙活", z_sub, "jumping", "三個招牌姿勢", "Three signature poses")),
+        (3.0, showcase("zhaohuo", "趙活", z_sub, "jumping", "蘭花手大笑、撫臉拋媚眼", "Laughing, then blowing a kiss")),
         (2.4, showcase("zhaohuo", "趙活", z_sub, "review", "決鬥臉！", "The duel face!")),
         (2.4, showcase("zhaohuo", "趙活", z_sub, "failed", "中招被揍，鼻青臉腫", "Took a hit, black eye and all")),
         (4.0, ending),
