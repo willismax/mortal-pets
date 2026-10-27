@@ -94,6 +94,10 @@ for x in range(W):  # 靴子上緣只留褲管下方
     if img.getpixel((x, 47))[3] and not any(l[0] <= x <= l[1] for l in LEGS):
         img.putpixel((x, 47), T)
 
+for y in range(16, 21):  # 拿掉垂在額頭正中間的那撮頭髮，免得看起來像眉心的皺紋
+    if img.getpixel((22, y))[:3] in (BROWN[:3], HI[:3], STREAK[:3]) and img.getpixel((22, y + 1))[:3] != BROWN[:3] or y >= 18:
+        if img.getpixel((21, y))[:3] == SKIN[:3] or img.getpixel((23, y))[:3] == SKIN[:3]:
+            img.putpixel((22, y), SKIN)
 for y in (40, 41, 42):  # 腰帶尾巴垂在左邊
     img.putpixel((20, y), BELT if y < 42 else BELT_HI)
 

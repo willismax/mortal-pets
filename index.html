@@ -180,10 +180,10 @@ cd mortal-pets && ./install.sh codex</pre>
 </main>
 
 <!-- ?v= 是版本號：更新角色資料時一起改，避免瀏覽器拿快取裡的舊檔配新網頁 -->
-<script src="claude-plugin/mortal-buddy/scripts/characters.js?v=0.3.16"></script>
-<script src="claude-plugin/mortal-buddy/scripts/locales/ja.js?v=0.3.16"></script>
-<script src="claude-plugin/mortal-buddy/scripts/locales/ko.js?v=0.3.16"></script>
-<script src="claude-plugin/mortal-buddy/scripts/locales/en.js?v=0.3.16"></script>
+<script src="claude-plugin/mortal-buddy/scripts/characters.js?v=0.3.17"></script>
+<script src="claude-plugin/mortal-buddy/scripts/locales/ja.js?v=0.3.17"></script>
+<script src="claude-plugin/mortal-buddy/scripts/locales/ko.js?v=0.3.17"></script>
+<script src="claude-plugin/mortal-buddy/scripts/locales/en.js?v=0.3.17"></script>
 <script>
   const BASE = window.MORTAL_CHARS;
   const { UPCOMING } = BASE;
@@ -435,7 +435,7 @@ cd mortal-pets && ./install.sh codex</pre>
     document.querySelectorAll("#tabs .tab").forEach((t) => t.setAttribute("aria-selected", t.dataset.id === id));
     const outfits = c.outfits || [{ id, name: "" }];
     const petId = outfits.some((o) => o.id === store.outfit[id]) ? store.outfit[id] : outfits[0].id;
-    sprite.style.backgroundImage = `url(codex/pets/${petId}/spritesheet.webp?v=0.3.16)`;
+    sprite.style.backgroundImage = `url(codex/pets/${petId}/spritesheet.webp?v=0.3.17)`;
     const ob = $("outfits");
     ob.innerHTML = "";
     ob.hidden = outfits.length < 2;

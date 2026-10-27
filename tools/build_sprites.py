@@ -232,13 +232,16 @@ CHARACTERS["zhaohuo"] = {
     "displayName": "趙活",
     "description": "活俠傳的主角趙活：在唐門打雜的外姓弟子，人稱「唐門醜俠」；自戀、嘴砲又賤，偷雞蛋只敢偷一顆，夢想有天當上大俠。（活俠傳同人・番外）",
     # 沿用大師兄的底圖骨架（tools/ref/make_zhaohuo_base.py），照官方立繪改：深棕髮綁馬尾，
-    # 青綠短衣、薄荷綠腰帶、青綠燈籠褲與黑靴；臉是招牌的醜：凸出的大白眼、小灰眼珠、眼袋、魚尾紋、法令紋、參差的牙
+    # 青綠短衣、薄荷綠腰帶、青綠燈籠褲與黑靴；臉是招牌的醜：眼距開的凸出大白眼、小灰眼珠、細淡的眉毛、眼袋、深深的法令紋、參差的牙
     "bitmap": "tools/ref/zhaohuo_base.png",
     "bm_brows": "plain", "bm_eyes": "bulge", "bm_mouth": "teeth", "bm_face_lines": ("wrinkles",),
+    "bm_eye_x": (19, 28),  # 眼距開
+    "bm_brow_px": ((18, 20), (19, 20), (28, 20), (29, 20)),  # 細細淡淡的眉毛
+    "bm_wrinkle_px": ((22, 24), (21, 25), (21, 26), (20, 27), (26, 24), (27, 25), (27, 26), (28, 27)),  # 深深的法令紋，從鼻翼斜到嘴角外
     "bm_feet": ((18, 23), (26, 31)),
     "skin": (240, 204, 170, 255), "outline": (18, 40, 50, 255),
     "sleeve": (56, 132, 142, 255), "bracer": (120, 72, 48, 255),
-    "eye": (40, 24, 28, 255), "iris": (84, 90, 98, 255), "brow": (58, 36, 36, 255),
+    "eye": (40, 24, 28, 255), "iris": (84, 90, 98, 255), "brow": (170, 126, 100, 255),
     "mouth": (140, 56, 52, 255), "blush": (230, 150, 130, 255),
     "default_eyes": "open", "height_drop": 0,
 }
@@ -1252,9 +1255,9 @@ def draw_bitmap_frame(c, pose):
                 if img.getpixel((x + fox, y + foy)) == skin:
                     putf(x, y, shade)
     if "wrinkles" in lines:  # 臉頰上一道道像魚鰓的皺紋，加上法令紋
-        wr = tuple(int(v * 0.72) for v in skin[:3]) + (255,)
-        for x, y in ((18, 22), (18, 23), (30, 22), (30, 23),  # 眼角的魚尾紋
-                     (21, 25), (21, 26), (22, 27), (27, 25), (27, 26), (26, 27)):  # 法令紋
+        wr = tuple(int(v * 0.6) for v in skin[:3]) + (255,)
+        for x, y in c.get("bm_wrinkle_px", ((18, 22), (18, 23), (30, 22), (30, 23),  # 眼角的魚尾紋
+                     (21, 25), (21, 26), (22, 27), (27, 25), (27, 26), (26, 27))):  # 法令紋
             if img.getpixel((x + fox, y + foy)) in (skin, tuple(int(v * 0.86) for v in skin[:3]) + (255,)):
                 putf(x, y, wr)
     eyes = pose["eyes"] or c["default_eyes"]
@@ -1262,7 +1265,7 @@ def draw_bitmap_frame(c, pose):
     mouth = pose["mouth"]
     sharp = eyes in ("open", "wide", "side", "look_up", "drowsy", "wink")
     brow = c.get("brow", eye)
-    for x, y in ((19, 20), (20, 20), (27, 20), (28, 20)):  # 眉毛
+    for x, y in c.get("bm_brow_px", ((19, 20), (20, 20), (27, 20), (28, 20))):  # 眉毛
         putf(x, y, brow)
     if c.get("bm_brows") == "thick":  # 趙活：粗眉，往兩側多一格
         putf(18, 20, brow); putf(29, 20, brow)
@@ -1270,7 +1273,7 @@ def draw_bitmap_frame(c, pose):
         putf(21, 21, eye); putf(26, 21, eye)
     if eyes == "sad":  # 眉尾下垂
         putf(19, 21, brow); putf(28, 21, brow)
-    L, R = 20, 27
+    L, R = c.get("bm_eye_x", (20, 27))
     if c.get("bm_eyes") == "bulge" and eyes in ("open", "wide", "side", "look_up", "drowsy", "wink", "sad"):
         # 趙活：凸出來的大白眼、小小的灰眼珠，下面掛著眼袋
         bag = tuple(int(v * 0.72) for v in skin[:3]) + (255,)
