@@ -236,7 +236,8 @@ CHARACTERS["zhaohuo"] = {
     "bitmap": "tools/ref/zhaohuo_base.png",
     "bm_brows": "plain", "bm_eyes": "bulge", "bm_mouth": "teeth", "bm_face_lines": ("wrinkles",),
     "bm_eye_x": (19, 28),  # 眼距開
-    "bm_hair": ((30, 18, 22), (58, 36, 36), (86, 56, 52), (110, 74, 64), (26, 20, 22)),  # 底圖的頭髮色，罩頭巾時換成布
+    "bm_hair": ((30, 18, 22), (58, 36, 36), (86, 56, 52), (110, 74, 64), (26, 20, 22)),
+    "bm_cloth": ((56, 132, 142), (36, 94, 106), (240, 236, 222), (178, 184, 206), (212, 172, 140), (44, 42, 44), (44, 42, 46)),  # 底圖的頭髮色，罩頭巾時換成布
     "bm_brow_px": ((18, 20), (19, 20), (28, 20), (29, 20)),  # 細細淡淡的眉毛
     "bm_wrinkle_px": ((21, 25), (21, 26), (27, 25), (27, 26)), "bm_wrinkle_k": 0.88,  # 淡淡的法令紋，太深會像鬍子
     "bm_feet": ((18, 23), (26, 31)),
@@ -1483,39 +1484,64 @@ def draw_bitmap_frame(c, pose):
                 for x in range(16, 33):
                     if img.getpixel((x, y)) == skin:
                         img.putpixel((x, y), dark)
-        elif f == "hood":  # 上衣故意沒穿好，整顆頭藏在衣服裡，只從領口露出臉和一點瀏海
+        elif f == "hood":  # 上衣故意沒穿好：衣服下襬還扎在腰帶裡，上半截往上拉、整顆頭藏進去，只從交領露出臉
             hair = {tuple(h) for h in c.get("bm_hair", ())}
+            cloth = {tuple(v) for v in c.get("bm_cloth", ())}
             hc = c["sleeve"]
-            hd = tuple(int(v * 0.78) for v in hc[:3]) + (255,)
-            band = tuple(min(255, int(v * 1.3)) for v in hc[:3]) + (255,)
-            cx, top, bot = 24, 7 + foy, 33
-            def inside(x, y):  # 圓頂、往下垂到肩膀的布
-                if y < top or y > bot:
-                    return False
+            hd = tuple(int(v * 0.8) for v in hc[:3]) + (255,)
+            band = c.get("bm_band", tuple(min(255, int(v * 1.3)) for v in hc[:3]) + (255,))
+            cx, top = 24.5, 7 + foy
+            def half(y):  # 圓頂往下，到肩膀收成身體的寬度，一路扎進腰帶
                 cy = top + 12
+                if y < top:
+                    return -1
                 if y < cy:
-                    return ((x - cx) / 11.5) ** 2 + ((y - cy) / 12.5) ** 2 <= 1
-                return abs(x - cx) <= 11 + (y - cy) // 6
-            def face(x, y):  # 領口開的洞
-                return 17 <= x <= 30 and 16 + foy <= y <= 29 + foy and img.getpixel((x, y))[:3] not in hair
-            for y in range(0, 36):  # 頭髮整個收進衣服裡（瀏海除外）
+                    return 11.5 * max(0.0, 1 - ((y - cy) / 12.5) ** 2) ** 0.5
+                if y <= 30:
+                    return 11.5
+                return max(6.5, 11.5 - (y - 30) * 1.2)
+            inside = lambda x, y: y <= 38 and abs(x + 0.5 - cx - 0.5) <= half(y)
+            for y in range(0, 39):  # 頭髮、耳朵、脖子、內領都收進衣服裡（只留瀏海）
                 for x in range(W):
                     px = img.getpixel((x, y))
                     bangs = 18 <= x <= 29 and 16 + foy <= y <= 17 + foy
-                    if px[:3] in hair and not bangs:
+                    if (px[:3] in hair and not bangs) or (px[:3] == skin[:3] and not (17 <= x <= 30 and y <= 29 + foy)) and y < 33:
                         img.putpixel((x, y), (0, 0, 0, 0))
-                    elif px[:3] == skin[:3] and not (17 <= x <= 30):  # 耳朵也包住
-                        img.putpixel((x, y), (0, 0, 0, 0))
-            filled = set()
-            for y in range(0, 36):
+            for y in range(0, 39):
                 for x in range(W):
-                    if inside(x, y) and not img.getpixel((x, y))[3]:
-                        filled.add((x, y))
-            for x, y in filled:
-                edge = any(not inside(x + dx_, y + dy_) for dx_, dy_ in ((1, 0), (-1, 0), (0, 1), (0, -1)))
-                nb_face = any(img.getpixel((x + dx_, y + dy_))[:3] in (skin[:3],) or (x + dx_, y + dy_) in () for dx_, dy_ in ((1, 0), (-1, 0), (0, 1), (0, -1)) if 0 <= x + dx_ < W and 0 <= y + dy_ < H)
-                col = O if edge else (band if nb_face else (hd if abs(x - cx) >= 8 else hc))
-                img.putpixel((x, y), col)
+                    if not inside(x, y):
+                        continue
+                    px = img.getpixel((x, y))
+                    if px[3] and px[:3] not in cloth and px[:3] not in hair:
+                        continue  # 臉、手、護腕、外框留著
+                    if px[:3] == skin[:3] or (px[:3] in hair and 18 <= x <= 29 and 16 + foy <= y <= 17 + foy):
+                        continue
+                    edge = any(not inside(x + dx_, y + dy_) for dx_, dy_ in ((1, 0), (-1, 0), (0, -1)))
+                    img.putpixel((x, y), O if edge else (hd if abs(x - cx) >= 8 else hc))
+            # 交領：從臉的兩側往下，左襟斜斜交叉到右邊的腰帶，右襟收在胸前
+            for y in range(16 + foy, 30 + foy):
+                for x in range(14, 36):
+                    if img.getpixel((x, y))[:3] == skin[:3]:
+                        for dx_ in (-1, 1):
+                            q = img.getpixel((x + dx_, y))
+                            if q[3] and q[:3] in {hc[:3], hd[:3]}:
+                                img.putpixel((x + dx_, y), band)
+            ly, lx = 30 + foy, 18
+            while ly <= 38:
+                for xx in (lx, lx + 1):
+                    if inside(xx, ly):
+                        img.putpixel((xx, ly), band)
+                ly += 1; lx += 1
+            ry, rx = 30 + foy, 30
+            while ry <= 35:
+                if inside(rx, ry):
+                    img.putpixel((rx, ry), band)
+                ry += 1; rx -= 1
+            for x, y in ((23, 30), (24, 30), (25, 30), (26, 30), (24, 31), (25, 31)):  # 領口裡的陰影
+                if inside(x, y + foy) and img.getpixel((x, y + foy))[:3] in {hc[:3], hd[:3]}:
+                    img.putpixel((x, y + foy), tuple(int(v * 0.55) for v in hc[:3]) + (255,))
+            for x, y in ((15, 21), (14, 22), (34, 21), (35, 22)):  # 衣服邊翹出來的兩撮頭髮
+                put(x, y + foy, c.get("brow", O))
         elif f == "spark":
             for x, y in ((11, 20), (36, 20), (13, 16), (34, 16)):
                 put(x, y, (255, 220, 120, 255))
