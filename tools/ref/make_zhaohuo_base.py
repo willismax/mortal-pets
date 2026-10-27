@@ -1,5 +1,5 @@
-"""用大師兄的底圖骨架改出趙活：拿掉馬尾、呆毛與髮飾，改成蓬鬆棕色短髮；
-袍子改成青灰布衣、藍腰帶、燈籠褲，拿掉金邊與玉珮，膚色曬深一點。
+"""用大師兄的底圖骨架改出趙活（照官方立繪）：拿掉呆毛與髮飾，深棕髮綁馬尾；
+袍子改成青綠短衣、薄荷綠腰帶（帶尾垂在左邊）、青綠燈籠褲，拿掉金邊與玉珮，膚色偏黃。
 用法：python3 tools/ref/make_zhaohuo_base.py"""
 from pathlib import Path
 from PIL import Image
@@ -24,14 +24,14 @@ for y in range(H):
         if src.getpixel((x, y))[3] == 0:
             continue
         rgb = src.getpixel((x, y))[:3]
-        cut = (8 <= y <= 21 and x >= 38) or (22 <= y <= 28 and x >= 36) or (y >= 29 and x >= 33 and y < 36)
+        cut = False  # 官方的趙活也綁馬尾，保留
         if cut and (rgb in HAIR_DARK or rgb in HAIR_HI):
             img.putpixel((x, y), T)
         elif y < 30 and rgb in ORN | {(34, 20, 26)}:
             img.putpixel((x, y), src.getpixel((x, y - 1)) if y > 0 else T)
 
 # 2. 頭髮改成棕色：碰到透明的是外框，裡面是棕色，原本的亮線改成挑染
-OUT, BROWN, HI, STREAK = (40, 20, 24, 255), (76, 44, 38, 255), (108, 66, 50, 255), (146, 96, 64, 255)
+OUT, BROWN, HI, STREAK = (30, 18, 22, 255), (58, 36, 36, 255), (86, 56, 52, 255), (110, 74, 64, 255)
 snap = img.copy()
 for y in range(30):
     for x in range(W):
@@ -47,7 +47,7 @@ for y in range(30):
             img.putpixel((x, y), STREAK if (x * 3 + y) % 7 == 0 else HI)
 
 # 3. 膚色曬深
-SKIN, SKIN_SH = (246, 185, 143, 255), (214, 148, 112, 255)
+SKIN, SKIN_SH = (240, 204, 170, 255), (212, 172, 140, 255)
 for y in range(H):
     for x in range(W):
         rgb = img.getpixel((x, y))[:3]
@@ -57,9 +57,9 @@ for y in range(H):
             img.putpixel((x, y), SKIN_SH)
 
 # 4. 衣服：青灰布衣，拿掉金邊、玉珮與流蘇；第 39 列是藍腰帶；第 44 列起是燈籠褲
-CL, CL_D, CL_O = (88, 114, 136, 255), (62, 82, 104, 255), (34, 38, 54, 255)
-BELT, BELT_HI = (52, 92, 160, 255), (92, 136, 200, 255)
-PANTS, PANTS_D = (70, 78, 96, 255), (50, 56, 72, 255)
+CL, CL_D, CL_O = (56, 132, 142, 255), (36, 94, 106, 255), (18, 40, 50, 255)
+BELT, BELT_HI = (120, 204, 176, 255), (170, 230, 204, 255)
+PANTS, PANTS_D = (52, 120, 132, 255), (34, 88, 100, 255)
 for y in range(30, H):
     for x in range(W):
         p = img.getpixel((x, y))
@@ -93,6 +93,9 @@ for y in (44, 45, 46):
 for x in range(W):  # 靴子上緣只留褲管下方
     if img.getpixel((x, 47))[3] and not any(l[0] <= x <= l[1] for l in LEGS):
         img.putpixel((x, 47), T)
+
+for y in (40, 41, 42):  # 腰帶尾巴垂在左邊
+    img.putpixel((20, y), BELT if y < 42 else BELT_HI)
 
 img.save(REF / "zhaohuo_base.png")
 print("wrote", REF / "zhaohuo_base.png")

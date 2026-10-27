@@ -603,7 +603,7 @@
           "Remarkably plain-looking, he's known as “the Ugly Hero of the Tang Clan,” though he himself thinks he looks better the longer you look.",
           "A smart-mouthed trash-talker who loves petty schemes; when things go just as planned, he flashes a smug, shifty grin. And when he gets beaten up, it's especially pitiful.",
           "He's always grumbling against heaven and everyone else, but for all his grumbling he never uses it to hurt anyone. Even when sneaking eggs, he only dares to steal one.",
-          "Short dark-brown hair with a cowlick sticking up at the front and a small ponytail at the back; a blue-teal cross-collared cloth robe with a blue sash, and reddish-brown fingerless bracers on both hands.",
+          "Dark-brown hair with a cowlick sticking up at the front, tied back in a ponytail; a teal cross-collared short robe with a mint-green sash, baggy teal trousers, and reddish-brown fingerless bracers on both hands. His trademark is that face: bulging eyes, heavy eye bags and a mouthful of crooked teeth.",
           "(Spoiler) Over three years, he goes from a lowly Tang Clan nobody to a true great hero... or else goes astray."
         ],
         lines: {
