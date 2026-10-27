@@ -232,12 +232,12 @@ CHARACTERS["zhaohuo"] = {
     "displayName": "趙活",
     "description": "活俠傳的主角趙活：在唐門打雜的外姓弟子，人稱「唐門醜俠」；自戀、嘴砲又賤，偷雞蛋只敢偷一顆，夢想有天當上大俠。（活俠傳同人・番外）",
     # 沿用大師兄的底圖骨架（tools/ref/make_zhaohuo_base.py），照官方立繪改：深棕髮綁馬尾，
-    # 青綠短衣、薄荷綠腰帶、青綠燈籠褲與黑靴；臉是招牌的醜：眼距開的凸出大白眼、小灰眼珠、細淡的眉毛、眼袋、深深的法令紋、參差的牙
+    # 青綠短衣、薄荷綠腰帶、青綠燈籠褲與黑靴；臉是招牌的醜：眼距開的凸出大白眼、小灰眼珠、細淡的眉毛、眼袋、淡淡的法令紋、參差的牙
     "bitmap": "tools/ref/zhaohuo_base.png",
     "bm_brows": "plain", "bm_eyes": "bulge", "bm_mouth": "teeth", "bm_face_lines": ("wrinkles",),
     "bm_eye_x": (19, 28),  # 眼距開
     "bm_brow_px": ((18, 20), (19, 20), (28, 20), (29, 20)),  # 細細淡淡的眉毛
-    "bm_wrinkle_px": ((22, 24), (21, 25), (21, 26), (20, 27), (26, 24), (27, 25), (27, 26), (28, 27)),  # 深深的法令紋，從鼻翼斜到嘴角外
+    "bm_wrinkle_px": ((21, 25), (21, 26), (27, 25), (27, 26)), "bm_wrinkle_k": 0.88,  # 淡淡的法令紋，太深會像鬍子
     "bm_feet": ((18, 23), (26, 31)),
     "skin": (240, 204, 170, 255), "outline": (18, 40, 50, 255),
     "sleeve": (56, 132, 142, 255), "bracer": (120, 72, 48, 255),
@@ -1255,7 +1255,7 @@ def draw_bitmap_frame(c, pose):
                 if img.getpixel((x + fox, y + foy)) == skin:
                     putf(x, y, shade)
     if "wrinkles" in lines:  # 臉頰上一道道像魚鰓的皺紋，加上法令紋
-        wr = tuple(int(v * 0.6) for v in skin[:3]) + (255,)
+        wr = tuple(int(v * c.get("bm_wrinkle_k", 0.6)) for v in skin[:3]) + (255,)
         for x, y in c.get("bm_wrinkle_px", ((18, 22), (18, 23), (30, 22), (30, 23),  # 眼角的魚尾紋
                      (21, 25), (21, 26), (22, 27), (27, 25), (27, 26), (26, 27))):  # 法令紋
             if img.getpixel((x + fox, y + foy)) in (skin, tuple(int(v * 0.86) for v in skin[:3]) + (255,)):
