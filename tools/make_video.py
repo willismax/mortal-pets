@@ -2,6 +2,7 @@
 
 用法：python3 tools/make_video.py [字型檔]
   promo/update-0.4.0.mp4   0.4.0 更新介紹（4:5，Threads 動態）
+  promo/update-0.5.0.mp4   0.5.0 更新介紹（4:5）
   promo/shorts.mp4         全角色介紹（9:16，YouTube Shorts、IG Reels、Threads）
 需要 ffmpeg 與能顯示中文的字型（同 make_promo.py）。
 """
@@ -155,6 +156,60 @@ def update_video():
     ], REPO / "promo" / "update-0.4.0.mp4")
 
 
+# ---------- 0.5.0 更新介紹（4:5） ----------
+def update_video_050():
+    cv = Canvas(1080, 1350)
+    duo = ("shangguanying", "zhaohuo")
+
+    def title(ms):
+        im, d = cv.new()
+        cv.center(d, 150, "活俠傳結緣寵物", 92, INK)
+        cv.seal(d, 270, "v0.5.0 更新", 40)
+        for i, cid in enumerate(duo):
+            cv.paste_center(im, frame_of(cid, "idle", ms, 3), 430, (i * 2 - 1) * 250)
+        cv.center(d, 1100, "新角色登場！", 64, SEAL)
+        cv.center(d, 1190, "New characters for Codex & Claude Code", 34, SOFT)
+        return im
+
+    def showcase(cid, name, sub, state, caption, caption_en):
+        def draw(ms):
+            im, d = cv.new()
+            cv.center(d, 90, name, 84, INK)
+            cv.center(d, 195, sub, 36, SOFT)
+            cv.paste_center(im, frame_of(cid, state, ms, 4), 300)
+            cv.center(d, 1150, caption, 56, SEAL)
+            cv.center(d, 1230, caption_en, 32, SOFT)
+            return im
+        return draw
+
+    def ending(ms):
+        im, d = cv.new()
+        cv.center(d, 110, "網頁直接玩", 72, INK)
+        cv.center(d, 210, "willismax.github.io/mortal-pets", 46, SEAL)
+        for i, cid in enumerate(duo):
+            cv.paste_center(im, frame_of(cid, "waving", ms, 3), 330, (i * 2 - 1) * 250)
+        cv.center(d, 1000, "已安裝的人：", 38, INK)
+        cv.center(d, 1055, "claude plugin marketplace update mortal-pets", 30, SOFT)
+        cv.center(d, 1100, "claude plugin update mortal-buddy@mortal-pets", 30, SOFT)
+        cv.center(d, 1175, "中文・日本語・한국어・English", 34, INK)
+        cv.center(d, 1240, "非官方同人作品，像素圖與台詞皆為原創", 28, SOFT)
+        return im
+
+    y_sub, z_sub = "福州上官千金・上官螢", "番外・唐門醜俠 趙活"
+    render(cv, [
+        (2.6, title),
+        (2.4, showcase("shangguanying", "上官螢", y_sub, "idle", "叉腰抬下巴，「哼」", "Hands on hips: \"Hmph.\"")),
+        (2.4, showcase("shangguanying", "上官螢", y_sub, "jumping", "眼冒愛心、臉紅冒煙", "Heart eyes, steaming cheeks")),
+        (2.6, showcase("shangguanying", "上官螢", y_sub, "failed", "氣到握拳……才沒哭", "Fuming… and definitely not crying")),
+        (2.2, showcase("shangguanying", "上官螢", y_sub, "running", "捧著帳本對帳", "Balancing the family ledgers")),
+        (2.6, showcase("zhaohuo", "趙活", z_sub, "idle", "撫著臉，越看越帥", "Admiring his own face")),
+        (3.0, showcase("zhaohuo", "趙活", z_sub, "jumping", "三個招牌姿勢", "Three signature poses")),
+        (2.4, showcase("zhaohuo", "趙活", z_sub, "review", "決鬥臉！", "The duel face!")),
+        (2.4, showcase("zhaohuo", "趙活", z_sub, "failed", "中招被揍，鼻青臉腫", "Took a hit, black eye and all")),
+        (4.0, ending),
+    ], REPO / "promo" / "update-0.5.0.mp4")
+
+
 # ---------- 全角色介紹（9:16） ----------
 # (角色, 名字, 稱號, 招牌動作的狀態, 中文字幕, 英文字幕)
 CAST = [
@@ -231,4 +286,5 @@ def shorts_video():
 
 if __name__ == "__main__":
     update_video()
+    update_video_050()
     shorts_video()
