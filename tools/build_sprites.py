@@ -1342,7 +1342,16 @@ def draw_bitmap_frame(c, pose):
             putf(23, 26, white); putf(24, 26, (224, 210, 160, 255)); putf(25, 26, white)
             for x in range(23, 26):
                 putf(x, 28, m)
-        elif mouth == "duel":  # 決鬥臉：嘴角咧到耳根，露出上排牙和舌頭
+        elif mouth == "duel":  # 決鬥臉：嘴角咧到耳根，露出上排牙和舌頭，下巴拉得又長又尖
+            jaw = c["eye"]
+            putf(20, 28, jaw); putf(28, 28, jaw)
+            for y, (x0, x1) in ((28, (21, 27)), (29, (21, 27)), (30, (22, 26)), (31, (23, 25)), (32, (24, 24))):
+                putf(x0 - 1, y, jaw); putf(x1 + 1, y, jaw)
+                for x in range(x0, x1 + 1):
+                    putf(x, y, skin)
+            putf(24, 33, jaw)
+            for x in range(23, 26):  # 嘴張得更開，往下拉
+                putf(x, 28, m); putf(x, 29, m) if x == 24 else None
             putf(20, 24, m); putf(28, 24, m)
             for x in range(21, 28):
                 putf(x, 25, m)
