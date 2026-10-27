@@ -198,7 +198,7 @@ CHARACTERS["shangguanying"] = {
     "description": "福州上官世家的獨女上官螢：驕傲好強的千金名媛，年紀輕輕便代父操持家業；嘴上不饒人，被說中心事就臉紅。（活俠傳同人）",
     # 依 LoM Wiki 立繪：深灰綠長髮往後梳、盤髻插著掛紫晶的金簪、腦後紅髮帶；
     # 白色立領內衣配米金交領、紫色寬袖外袍與白毛袖口、粉紫長裙，一手叉腰
-    "hair": (58, 64, 58, 255), "hair_hi": (104, 112, 100, 255),
+    "hair": (58, 64, 58, 255), "hair_hi": (112, 124, 108, 255),
     "skin": (255, 236, 226, 255), "skin_sh": (240, 204, 190, 255),
     "eye": (96, 64, 56, 255), "lid": (40, 30, 34, 255),
     "cloth": (124, 88, 164, 255), "cloth_sh": (94, 64, 132, 255),
@@ -211,7 +211,7 @@ CHARACTERS["shangguanying"] = {
     "pin": (214, 176, 84, 255), "ribbon": (196, 44, 56, 255),
     "shoe": (124, 88, 164, 255), "leg": (246, 244, 242, 255),
     "blush": (255, 150, 170, 255),
-    "outfit": "dress", "head": "updo", "topknot": True,
+    "outfit": "dress", "head": "updo", "topknot": True, "swept_back": True,
     "long_hair": True, "height_drop": -1, "tall": 1, "default_eyes": "open",
 }
 
@@ -685,6 +685,9 @@ def draw_frame(cid, pose):
         # 長髮往後梳、額頭露出來：只留髮際線，兩側長髮順著臉頰垂下
         p.ell(hx - 7, hy - 5, hx + 7, hy + 3, c["skin"])
         p.line([(hx - 5, hy - 5), (hx - 1, hy - 6)], c["hair_hi"])
+        if c.get("swept_back"):  # 上官螢：額上的頭髮往後梳進髮髻，幾道髮絲的光澤
+            for x0, x1, top in ((-6, -3, -11), (-1, 1, -12), (4, 4, -11), (7, 6, -9)):
+                p.line([(hx + x0, hy - 6), (hx + x1, hy + top)], c["hair_hi"])
         p.rect(hx - 11, hy - 3, hx - 9, hy + 12, hair)
         p.rect(hx + 9, hy - 3, hx + 11, hy + 12, hair)
         # 頭頂髮髻上橫插的金簪
