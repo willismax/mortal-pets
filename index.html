@@ -180,10 +180,10 @@ cd mortal-pets && ./install.sh codex</pre>
 </main>
 
 <!-- ?v= 是版本號：更新角色資料時一起改，避免瀏覽器拿快取裡的舊檔配新網頁 -->
-<script src="claude-plugin/mortal-buddy/scripts/characters.js?v=0.3.23"></script>
-<script src="claude-plugin/mortal-buddy/scripts/locales/ja.js?v=0.3.23"></script>
-<script src="claude-plugin/mortal-buddy/scripts/locales/ko.js?v=0.3.23"></script>
-<script src="claude-plugin/mortal-buddy/scripts/locales/en.js?v=0.3.23"></script>
+<script src="claude-plugin/mortal-buddy/scripts/characters.js?v=0.3.24"></script>
+<script src="claude-plugin/mortal-buddy/scripts/locales/ja.js?v=0.3.24"></script>
+<script src="claude-plugin/mortal-buddy/scripts/locales/ko.js?v=0.3.24"></script>
+<script src="claude-plugin/mortal-buddy/scripts/locales/en.js?v=0.3.24"></script>
 <script>
   const BASE = window.MORTAL_CHARS;
   const { UPCOMING } = BASE;
@@ -280,6 +280,12 @@ cd mortal-pets && ./install.sh codex</pre>
     "review": { row: 8, d: [150, 150, 150, 150, 150, 280] },
   };
   const ACT_ANIM = { pet: "waving", feed: "jumping", train: "running", gift: "jumping" };
+  // 圖集以外的額外動作（tools/build_sprites.py 的 EXTRA_POSES）：互動時有時改播這個，取代開心的動作
+  const EXTRA = {
+    zhaohuo: { hood: { src: "codex/extra/zhaohuo-hood.webp", d: [700, 500, 260, 900], chance: 0.4, replaces: ["pet", "feed", "gift"] } },
+  };
+  let sheetUrl = "";
+  let lastPick = { id: null, anim: null, until: 0 };  // 連續點的時候沿用同一種動作，不要兩種一直切換
   const ACT_GAIN = { pet: 1, feed: 1, train: 1, gift: 3 };
   const AFF_MAX = 99;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -321,7 +327,10 @@ cd mortal-pets && ./install.sh codex</pre>
   }
 
   function tick() {
-    const spec = ROWS[anim.state];
+    const extra = (EXTRA[store.current] || {})[anim.state];
+    const spec = ROWS[anim.state] || { row: 0, d: extra.d };
+    const img = extra ? `url("${extra.src}?v=0.3.24")` : sheetUrl;
+    if (sprite.style.backgroundImage !== img) sprite.style.backgroundImage = img;
     sprite.style.backgroundPosition = `${-anim.frame * CELL_W}px ${-spec.row * CELL_H}px`;
     if (reduceMotion && anim.state === "idle") return;
     anim.timer = setTimeout(() => {
@@ -377,7 +386,21 @@ cd mortal-pets && ./install.sh codex</pre>
     if (kind === "talk") return startTalk();
     addAff(ACT_GAIN[kind]);
     speak(kind, pick(c.lines[kind]));
-    play(ACT_ANIM[kind], { loops: kind === "train" ? 3 : 2 });
+    play(actAnim(kind), { loops: kind === "train" ? 3 : 2 });
+  }
+
+  function actAnim(kind) {
+    const extras = Object.entries(EXTRA[store.current] || {}).filter(([, e]) => e.replaces.includes(kind));
+    if (!extras.length) return ACT_ANIM[kind];
+    const now = Date.now();
+    if (lastPick.id === store.current && now < lastPick.until && (lastPick.anim === ACT_ANIM[kind] || extras.some(([n]) => n === lastPick.anim))) {
+      lastPick.until = now + 4000;
+      return lastPick.anim;
+    }
+    const [name, e] = extras[0];
+    const chosen = Math.random() < e.chance ? name : ACT_ANIM[kind];
+    lastPick = { id: store.current, anim: chosen, until: now + 4000 };
+    return chosen;
   }
 
   function startTalk() {
@@ -426,16 +449,32 @@ cd mortal-pets && ./install.sh codex</pre>
     }, 7000 + Math.random() * 6000);
   }
 
+  // Claude Code 指令：換寵物那行跟著目前選的角色變，看著網頁就能照抄
+  function renderCmds() {
+    const [pick_, act_, talk_, roleArg, role_, lang_] = T.cmds;
+    const pad = (cmd) => cmd.padEnd(30) + " ";
+    $("cmds").textContent = [
+      "/plugin install mortal-buddy --marketplace willismax/mortal-pets",
+      pad(`/mortal-buddy:pick ${store.current}`) + pick_,
+      pad("/mortal-buddy:pet feed") + act_,
+      pad("/mortal-buddy:talk") + talk_,
+      pad(`/mortal-buddy:roleplay ${roleArg}`) + role_,
+      pad(`/mortal-buddy:lang ${store.lang}`) + lang_
+    ].join("\n");
+  }
+
   function select(id) {
     store.current = id;
     persist();
+    renderCmds();
     const c = cur();
     document.documentElement.style.setProperty("--char", c.color);
     document.documentElement.style.setProperty("--char-soft", c.color + "22");
     document.querySelectorAll("#tabs .tab").forEach((t) => t.setAttribute("aria-selected", t.dataset.id === id));
     const outfits = c.outfits || [{ id, name: "" }];
     const petId = outfits.some((o) => o.id === store.outfit[id]) ? store.outfit[id] : outfits[0].id;
-    sprite.style.backgroundImage = `url(codex/pets/${petId}/spritesheet.webp?v=0.3.23)`;
+    sheetUrl = `url("codex/pets/${petId}/spritesheet.webp?v=0.3.24")`;
+    sprite.style.backgroundImage = sheetUrl;
     const ob = $("outfits");
     ob.innerHTML = "";
     ob.hidden = outfits.length < 2;
@@ -533,15 +572,6 @@ cd mortal-pets && ./install.sh codex</pre>
     document.querySelectorAll("[data-i18n]").forEach((el) => { el.innerHTML = T[el.dataset.i18n]; });
     sprite.setAttribute("aria-label", T.pet);
     document.querySelectorAll("#states .chip").forEach((b) => { b.textContent = T.states[b.dataset.state]; });
-    const [pick_, act_, talk_, roleArg, role_, lang_] = T.cmds;
-    $("cmds").textContent = [
-      "/plugin install mortal-buddy --marketplace willismax/mortal-pets",
-      `/mortal-buddy:pick xiaozhu     ${pick_}`,
-      `/mortal-buddy:pet feed         ${act_}`,
-      `/mortal-buddy:talk             ${talk_}`,
-      `/mortal-buddy:roleplay ${roleArg}  ${role_}`,
-      `/mortal-buddy:lang ${lang}         ${lang_}`
-    ].join("\n");
     document.querySelectorAll("#langs button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.lang === lang));
     renderTabs();
     select(CHARS[store.current] ? store.current : "xiaomei");

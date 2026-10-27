@@ -1960,10 +1960,10 @@ def poses_zhaohuo():
                    P(arms=("hip", "wave_mid"), eyes="happy", mouth="grin", dy=-1),
                    P(arms=("hip", "wave_up"), eyes="open", mouth="grin"),
                    P(arms=("hip", "wave_mid"), eyes="wink", mouth="grin")],
-        # 開心時擺官方的三個招牌姿勢：蘭花手仰頭大笑、衣服罩頭咬牙獰笑、撫臉拋媚眼
+        # 開心：蘭花手仰頭大笑，再撫著臉拋媚眼
         "jumping": [P(arms=("limp", "down"), eyes="happy", mouth="laugh"),
                     P(arms=("limp", "down"), eyes="happy", mouth="laugh", dy=-1, tilt=1),
-                    P(arms=("down", "down"), eyes="wide", mouth="clench", fx=("hood",)),
+                    P(arms=("limp", "down"), eyes="happy", mouth="laugh"),
                     P(arms=("cheek", "belly"), eyes="sly", mouth="smirk", tilt=1),
                     P(arms=("cheek", "belly"), eyes="wink", mouth="smirk", tilt=1)],
         # 失敗：中招被揍冒星星，摸著頭上的腫包哭
@@ -2153,6 +2153,18 @@ def poses_for(cid):
     return rows
 
 
+# 圖集以外、只給網頁用的額外動作（Codex 的圖集列數固定，放不下）：網頁點角色時偶爾改播這個
+# 趙活：上衣下襬還扎在腰帶裡、往上拉把頭整顆藏進去，瞪眼咬牙
+EXTRA_POSES = {
+    "zhaohuo": {
+        "hood": [P(arms=("down", "down"), eyes="wide", mouth="clench", fx=("hood",)),
+                 P(arms=("down", "down"), eyes="wide", mouth="clench", fx=("hood",), dy=1),
+                 P(arms=("down", "down"), eyes="blink", mouth="clench", fx=("hood",), dy=1),
+                 P(arms=("down", "down"), eyes="wide", mouth="clench", fx=("hood",))],
+    },
+}
+
+
 def render_rows(cid):
     rows = poses_for(cid)
     out = {}
@@ -2211,6 +2223,14 @@ def build(cid, preview=False):
         "spritesheetPath": "spritesheet.webp",
     }
     (pet_dir / "pet.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    for name, poses in EXTRA_POSES.get(cid, {}).items():  # 網頁專用的額外動作：一列橫排的 webp
+        strip = Image.new("RGBA", (CELL_W * len(poses), CELL_H), (0, 0, 0, 0))
+        for i, pose in enumerate(poses):
+            strip.alpha_composite(draw_frame(cid, pose), (i * CELL_W, 0))
+        extra = ROOT / "codex" / "extra"
+        extra.mkdir(parents=True, exist_ok=True)
+        strip.save(extra / f"{cid}-{name}.webp", "WEBP", lossless=True, quality=100)
 
     if preview:
         qa = ROOT / "codex" / "qa"
