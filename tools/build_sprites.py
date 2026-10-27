@@ -1243,6 +1243,19 @@ def draw_bitmap_frame(c, pose):
     # 五官
     for x, y in c.get("bm_face_clear", BM_FACE):
         putf(x, y, skin)
+    lines = c.get("bm_face_lines", ())
+    if "yinyang" in lines:  # 陰陽臉：右半邊臉蒙一層陰影
+        shade = tuple(int(v * 0.86) for v in skin[:3]) + (255,)
+        for y in range(16, 30):
+            for x in range(25, 33):
+                if img.getpixel((x + fox, y + foy)) == skin:
+                    putf(x, y, shade)
+    if "wrinkles" in lines:  # 臉頰上一道道像魚鰓的皺紋，加上法令紋
+        wr = tuple(int(v * 0.72) for v in skin[:3]) + (255,)
+        for x, y in ((19, 24), (19, 25), (20, 26), (29, 24), (29, 25), (28, 26),
+                     (21, 25), (21, 26), (27, 25), (27, 26)):
+            if img.getpixel((x + fox, y + foy)) in (skin, tuple(int(v * 0.86) for v in skin[:3]) + (255,)):
+                putf(x, y, wr)
     eyes = pose["eyes"] or c["default_eyes"]
     eyes = {"squint": "drowsy", "dull": "drowsy"}.get(eyes, eyes)
     mouth = pose["mouth"]
