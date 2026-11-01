@@ -1,5 +1,15 @@
 # 更新紀錄 / Changelog
 
+## 0.5.1
+
+- 修正多個 hook 同時執行（subagent、背景 agent、多個 Claude Code 對話）時，`state.json` 被重設回預設值、寵物變回小梅、好感歸零的問題（#7）：
+  - 讀 → 改 → 寫整段加上檔案鎖（`state.lock`），不會再有行程拿舊狀態蓋掉剛 `pick` 的角色或剛加的好感；拿鎖的行程當掉時，鎖超過 5 秒自動收回。
+  - 先寫暫存檔再換名，讀的人不會讀到寫一半的檔案；Windows 上換名暫時失敗會重試，失敗就清掉暫存檔。
+  - 檔案在但讀不到時不覆寫；內容真的損毀時備份成 `state.json.bad` 再從預設值重來，不會從此卡住不存。
+  - hook 沒改到狀態就不寫檔；清掉被中斷而殘留的暫存檔。
+- 跳過幾版才更新的人，開新對話時會把中間每一版的新內容都說一次。
+- Fixed `state.json` resetting to defaults (pet back to Xiaomei, affection cleared) when many hooks run concurrently (#7): the read-modify-write is now locked, writes are atomic with Windows rename retries, unreadable files are never overwritten, and corrupt files are backed up to `state.json.bad`.
+
 ## 0.5.0
 
 - 新增上官螢（福州上官世家獨女、人稱「上官千金」）：叉腰的驕傲千金、對帳、眼冒愛心頭頂冒煙、摀嘴害羞、氣到握拳、用袖子擦眼淚。

@@ -105,22 +105,75 @@ const STATE_FILE = path.join(HOME, "state.json");
 const STALE_MS = 5 * 60 * 1000;
 const AFF_MAX = 99;
 
-let loadFailed = false;
+const LOCK_FILE = path.join(HOME, "state.lock");
+const BAD_FILE = path.join(HOME, "state.json.bad");
+const IS_HOOK = process.argv[2] === "hook";
+let loadFailed = false; // 檔案在但讀不到（不是內容壞掉）：這次不寫，免得把預設值蓋回去
+let lockHeld = false;
+let lockFailed = false;
+
+const sleep = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+
+// 讀 → 改 → 寫整段上鎖：多個 hook、subagent 或 session 同時跑時，
+// 才不會有行程拿著舊狀態寫回去，把剛 pick 的角色或剛加的好感蓋掉
+function lock() {
+  if (lockHeld) return true;
+  try {
+    fs.mkdirSync(HOME, { recursive: true });
+  } catch {}
+  const deadline = Date.now() + 2000;
+  for (;;) {
+    try {
+      fs.closeSync(fs.openSync(LOCK_FILE, "wx"));
+      return (lockHeld = true);
+    } catch (e) {
+      if (e.code !== "EEXIST") return false;
+      try { // 拿著鎖的行程當掉了：鎖放超過 5 秒就收回
+        if (Date.now() - fs.statSync(LOCK_FILE).mtimeMs > 5000) fs.unlinkSync(LOCK_FILE);
+      } catch {}
+      if (Date.now() > deadline) return false;
+      sleep(5 + Math.random() * 10);
+    }
+  }
+}
+
+function unlock() {
+  if (!lockHeld) return;
+  lockHeld = false;
+  try {
+    fs.unlinkSync(LOCK_FILE);
+  } catch {}
+}
+process.on("exit", unlock);
 
 function readState() {
+  let err;
   for (let i = 0; i < 4; i++) {
     try {
       return JSON.parse(fs.readFileSync(STATE_FILE, "utf8"));
     } catch (e) {
       if (e.code === "ENOENT") return null;
-      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 20 * (i + 1));
+      err = e;
+      sleep(20 * (i + 1));
     }
   }
-  loadFailed = true; // 檔案存在但讀不出來：這次不覆寫，避免把預設值寫回磁碟
+  if (err instanceof SyntaxError) {
+    // 寫入是原子的，重讀幾次還是解析失敗就是檔案真的壞了：備份成 state.json.bad，從預設值重來，不要從此卡住不存
+    try {
+      fs.renameSync(STATE_FILE, BAD_FILE);
+      process.stderr.write(`mortal-buddy: state.json 損毀，已備份為 ${BAD_FILE}\n`);
+    } catch {
+      loadFailed = true;
+    }
+    return null;
+  }
+  loadFailed = true; // 讀取本身出錯（Windows 上檔案暫時被占用等）：這次不覆寫
   return null;
 }
 
-function load() {
+// readOnly：只看不改的指令（狀態列、status）不用搶鎖
+function load(readOnly = false) {
+  if (!readOnly && !lock()) lockFailed = true;
   const def = { current: "xiaomei", aff: {}, mood: "idle", moodAt: 0, line: "", muted: false, talk: null, actedAt: {} };
   const s = { ...def, ...readState() };
   if (!s.lang) s.lang = guessLang();
@@ -128,12 +181,48 @@ function load() {
   return s;
 }
 
+function renameRetry(from, to) {
+  for (let i = 0; ; i++) {
+    try {
+      return fs.renameSync(from, to);
+    } catch (e) {
+      // Windows：目標檔剛好被防毒或索引程式開著時會暫時失敗
+      if (i >= 5 || !["EPERM", "EBUSY", "EACCES"].includes(e.code)) throw e;
+      sleep(10 * (i + 1));
+    }
+  }
+}
+
+// 清掉寫到一半就被中斷而留下的暫存檔
+function sweepTmp() {
+  try {
+    for (const f of fs.readdirSync(HOME)) {
+      if (!/^state\.json\.\d+\.tmp$/.test(f)) continue;
+      const p = path.join(HOME, f);
+      if (Date.now() - fs.statSync(p).mtimeMs > 60000) fs.unlinkSync(p);
+    }
+  } catch {}
+}
+
 function save(s) {
-  if (loadFailed) return;
-  fs.mkdirSync(HOME, { recursive: true });
+  // 讀失敗不寫；hook 搶不到鎖也不寫（心情晚一點再更新就好，不能冒險蓋掉使用者的選擇）
+  if (loadFailed || (lockFailed && IS_HOOK)) return false;
   const tmp = `${STATE_FILE}.${process.pid}.tmp`;
-  fs.writeFileSync(tmp, JSON.stringify(s, null, 2));
-  fs.renameSync(tmp, STATE_FILE);
+  try {
+    fs.mkdirSync(HOME, { recursive: true });
+    fs.writeFileSync(tmp, JSON.stringify(s, null, 2));
+    renameRetry(tmp, STATE_FILE); // 先寫暫存檔再換名，讀的人不會看到寫一半的檔案
+    sweepTmp();
+    return true;
+  } catch (e) {
+    try {
+      fs.unlinkSync(tmp);
+    } catch {}
+    process.stderr.write(`mortal-buddy: 無法寫入 state.json（${e.code || e.message}）\n`);
+    return false;
+  } finally {
+    unlock();
+  }
 }
 
 // 版本：外掛裡讀 ../.claude-plugin/plugin.json，install.sh 裝的則讀同資料夾的 plugin.json
@@ -151,6 +240,12 @@ const LATEST_FILE = path.join(HOME, "latest.json");
 const DAY_MS = 24 * 60 * 60 * 1000;
 // 各版新增的內容，更新後第一次開對話時說一次
 const NEWS = {
+  "0.5.1": {
+    zh: "修正同時跑很多 hook（subagent、多個對話）時，選好的寵物和好感被重設回小梅的問題",
+    ja: "hook が同時にたくさん動くと（サブエージェントや複数の会話）、選んだペットと好感度が小梅に戻ってしまう不具合を修正",
+    ko: "hook가 동시에 많이 실행될 때(서브에이전트, 여러 대화) 고른 펫과 호감도가 소매로 초기화되던 문제를 수정",
+    en: "Fixed your chosen pet and affection resetting to Xiaomei when many hooks run at once (subagents, multiple sessions)"
+  },
   "0.5.0": {
     zh: "新增上官螢（福州上官千金），還有番外的主角趙活",
     ja: "上官螢（福州の上官家の令嬢）と、番外編の主人公・趙活が仲間入り",
@@ -195,8 +290,12 @@ function updateNotes(s, existed) {
   const notes = [];
   if (!VERSION) return notes;
   if (s.seenVersion !== VERSION) {
-    const news = NEWS[VERSION] && NEWS[VERSION][s.lang];
-    if (existed && news) notes.push(M.updated(VERSION, news));
+    // 跳過幾版才更新的人，把中間每一版的新內容都說一次
+    const news = Object.keys(NEWS)
+      .filter((v) => !newer(v, VERSION) && (!s.seenVersion || newer(v, s.seenVersion)))
+      .map((v) => NEWS[v][s.lang])
+      .filter(Boolean);
+    if (existed && news.length) notes.push(M.updated(VERSION, news.join(s.lang === "en" ? "; " : "；")));
     s.seenVersion = VERSION;
   }
   let latest = {};
@@ -274,6 +373,7 @@ function hook() {
   } catch {}
   const existed = fs.existsSync(STATE_FILE);
   const s = load();
+  const before = JSON.stringify(s);
   let speak = false;
   let notes = [];
   switch (ev.hook_event_name) {
@@ -303,7 +403,7 @@ function hook() {
       speak = true;
       break;
   }
-  save(s);
+  if (JSON.stringify(s) !== before) save(s); // 沒變就不寫，高頻的 PreToolUse 多半不用碰檔案
   // 更新提醒即使關掉反應訊息也照樣顯示
   const lines = [...(speak && !s.muted ? [format(s, s.line)] : []), ...notes.map((n) => n.trim())];
   if (lines.length) {
@@ -313,7 +413,7 @@ function hook() {
 
 function statusline() {
   readStdin();
-  const s = load();
+  const s = load(true);
   if (Date.now() - s.moodAt > STALE_MS) {
     // 閒置時每分鐘換一句，不必每次重畫都亂跳
     const idle = charOf(s).lines.idle;
@@ -385,7 +485,7 @@ function pickChar(id) {
 }
 
 function status() {
-  const s = load();
+  const s = load(true);
   for (const c of Object.values(CHARS)) {
     const n = s.aff[c.id] || 0;
     const mark = c.id === s.current ? "▶" : " ";
@@ -453,6 +553,6 @@ switch (cmd) {
   case "codex-notify": codexNotify(args[args.length - 1]); break;
   case "check-update": checkUpdate(); break;
   default:
-    load();
+    load(true);
     console.log(M.usage);
 }
