@@ -105,20 +105,35 @@ const STATE_FILE = path.join(HOME, "state.json");
 const STALE_MS = 5 * 60 * 1000;
 const AFF_MAX = 99;
 
+let loadFailed = false;
+
+function readState() {
+  for (let i = 0; i < 4; i++) {
+    try {
+      return JSON.parse(fs.readFileSync(STATE_FILE, "utf8"));
+    } catch (e) {
+      if (e.code === "ENOENT") return null;
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 20 * (i + 1));
+    }
+  }
+  loadFailed = true; // 檔案存在但讀不出來：這次不覆寫，避免把預設值寫回磁碟
+  return null;
+}
+
 function load() {
   const def = { current: "xiaomei", aff: {}, mood: "idle", moodAt: 0, line: "", muted: false, talk: null, actedAt: {} };
-  let s = def;
-  try {
-    s = { ...def, ...JSON.parse(fs.readFileSync(STATE_FILE, "utf8")) };
-  } catch {}
+  const s = { ...def, ...readState() };
   if (!s.lang) s.lang = guessLang();
   useLang(s.lang);
   return s;
 }
 
 function save(s) {
+  if (loadFailed) return;
   fs.mkdirSync(HOME, { recursive: true });
-  fs.writeFileSync(STATE_FILE, JSON.stringify(s, null, 2));
+  const tmp = `${STATE_FILE}.${process.pid}.tmp`;
+  fs.writeFileSync(tmp, JSON.stringify(s, null, 2));
+  fs.renameSync(tmp, STATE_FILE);
 }
 
 // 版本：外掛裡讀 ../.claude-plugin/plugin.json，install.sh 裝的則讀同資料夾的 plugin.json
