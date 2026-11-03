@@ -5,7 +5,7 @@
 | 檔案 | 尺寸 | 用在哪 |
 | --- | --- | --- |
 | `shorts.mp4` | 1080×1920（9:16）、34 秒、無聲 | YouTube Shorts、IG Reels、Threads |
-| Canva「活俠傳結緣寵物 輪播」 | 1080×1350（4:5）、11 張（還沒有上官螢、趙活的頁面） | IG 輪播、Threads 多圖 |
+| Canva「活俠傳結緣寵物 輪播」 | 1080×1440（3:4）、13 張：封面、12 位角色、怎麼玩 | IG 輪播、Threads 多圖 |
 | `promo-landscape.png` | 1600×1000 | 巴哈文章封面 |
 | `promo-moves.gif` | 招牌動作動畫 | 巴哈內文 |
 | `update-0.5.0.png／.gif／.mp4` | 0.5.0 更新公告用（4:5） | 見 `posts-0.5.0.md` |
@@ -59,7 +59,7 @@ Canva 資料夾：「活俠傳結緣寵物 宣傳」，角色圖和短影片都�
 
 #活俠傳 #LegendofMortal #活侠传 #활협전 #同人 #fanart #pixelart #像素藝術 #寫程式 #ClaudeCode
 
-### 輪播貼文（用 Canva 輪播 11 張）
+### 輪播貼文（用 Canva 輪播 13 張）
 
 活俠傳結緣寵物，全員到齊 ✨
 往右滑看看你最喜歡誰 👉
@@ -98,7 +98,7 @@ Canva 資料夾：「活俠傳結緣寵物 宣傳」，角色圖和短影片都�
 
 #活俠傳
 
-**第二則**（回覆串，配 Canva 輪播的第 11 張「怎麼玩」）
+**第二則**（回覆串，配 Canva 輪播的第 13 張「怎麼玩」）
 
 Claude Code 一行裝好：
 /plugin install mortal-buddy --marketplace willismax/mortal-pets
