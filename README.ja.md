@@ -9,6 +9,7 @@
 台湾の武侠 RPG『活俠傳（カッキョウデン）』の縁結びキャラクターを、**Codex のペット**と **Claude Code のペット**にしました。性格に合わせたセリフで、作業中にリアクションしてくれます。
 
 - ブラウザで遊ぶ：<https://willismax.github.io/mortal-pets/?lang=ja>
+- サバイバルゲーム『結縁サバイバー』：<https://willismax.github.io/mortal-survivor/>（スマホ・PC 対応、日本語あり）
 - Claude Code に入れる：`/plugin install mortal-buddy --marketplace willismax/mortal-pets`
 - 非公式のファン作品です。設定は公開情報をもとにまとめ、ドット絵とセリフはオリジナルの二次創作です（ゲームの素材や原文は使用していません）。
 

@@ -9,6 +9,7 @@
 把《活俠傳》的結緣角色做成 **Codex 寵物**和 **Claude Code 寵物**，並依角色個性寫了互動對話。目前有小梅（虞小梅）、小竹（郁竹）、小師妹（唐默鈴）、龍湘、夏侯蘭、葉雲裳、魏菊、上官螢八位，另有番外的大師兄唐布衣與主角趙活（非結緣對象，應網友許願加入）。
 
 - 線上試玩：<https://willismax.github.io/mortal-pets/>（直接開 `index.html` 也可以；右上角可切換中文、日本語、한국어、English，分享時可加 `?lang=ja`、`?lang=ko`、`?lang=en`）
+- 倖存者小遊戲《結緣倖存者》：<https://willismax.github.io/mortal-survivor/>（手機、電腦都能玩，支援中日韓英四語，十位角色各有六維與絕招）
 - Claude Code 安裝：`/plugin install mortal-buddy --marketplace willismax/mortal-pets`
 - 非官方二創：角色設定整理自公開資料；像素圖、台詞都是原創，沒有使用遊戲素材或原文。
 
@@ -29,6 +30,7 @@ mortal-pets/
 │       ├── buddy.cjs             hook、status line、互動指令、Codex 通知共用的程式
 │       ├── characters.js         角色資料與台詞（網頁、Claude、Codex 共用）
 │       └── locales/              日文、韓文、英文台詞（ja.js、ko.js、en.js）
+├── survivor/                     倖存者小遊戲《結緣倖存者》：index.html 是成品，原始碼與對照表也在這裡
 ├── promo/                        宣傳圖、招牌動作 GIF 與巴哈／Threads 貼文草稿
 └── tools/
     ├── build_sprites.py          產生像素 spritesheet
