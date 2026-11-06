@@ -1,5 +1,11 @@
 # 更新紀錄 / Changelog
 
+## 網頁更新
+
+- 新增獨立遊戲[《結緣倖存者》](https://willismax.github.io/mortal-survivor/)，招式與效果參考原作並改編為即時戰鬥，手機與電腦都能玩，支援中日韓英四語，也可以加到手機主畫面。
+- 網頁上方加入遊戲入口；網址加 `?pet=<角色 id>` 可直接開到指定角色。
+- Added a link to the standalone [Fated Survivors game](https://willismax.github.io/mortal-survivor/) with language selection, plus `?pet=<id>` deep links.
+
 ## 0.5.1
 
 - 修正多個 hook 同時執行（subagent、背景 agent、多個 Claude Code 對話）時，`state.json` 被重設回預設值、寵物變回小梅、好感歸零的問題（#7）：

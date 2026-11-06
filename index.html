@@ -34,6 +34,13 @@
   .langs button[aria-pressed="true"] { border-color: var(--seal); color: var(--seal); }
   .langs button:focus-visible { outline: 2px solid var(--char); outline-offset: 2px; }
 
+  .game-banner { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: space-between; margin-bottom: 14px; padding: 10px 14px; background: var(--ink); color: var(--paper-2); text-decoration: none; border-radius: 2px; }
+  .game-banner b { display: block; letter-spacing: .08em; }
+  .game-banner span { font-size: .88rem; color: #e8dcc8; min-width: 0; flex: 1 1 260px; }
+  .game-banner em { font-style: normal; background: var(--seal); color: #fff; padding: 4px 14px; border-radius: 2px; white-space: nowrap; }
+  .game-banner:hover em { background: var(--char); }
+  .game-banner:focus-visible { outline: 2px solid var(--seal); outline-offset: 2px; }
+
   .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
   .tab {
     border: 1px solid var(--line); background: var(--paper-2); color: var(--ink);
@@ -117,6 +124,11 @@
     <p data-i18n="intro">把活俠傳的結緣角色養在 Codex 與 Claude Code 裡。點她、餵她、陪她練功，好感會慢慢累積。</p>
   </header>
 
+  <a class="game-banner" href="https://willismax.github.io/mortal-survivor/?lang=zh">
+    <span><b data-i18n="gameT">新遊戲：結緣倖存者</b><span data-i18n="gameP">帶她們上戰場。十位角色六維各異，用原作秘笈撐過十五分鐘，手機也能玩。</span></span>
+    <em data-i18n="gameBtn">開始玩</em>
+  </a>
+
   <div class="tabs" role="tablist" id="tabs"></div>
 
   <div class="grid">
@@ -193,6 +205,7 @@ cd mortal-pets && ./install.sh codex</pre>
   const UI = {
     zh: {
       label: "中文", htmlLang: "zh-Hant",
+      gameT: "新遊戲：結緣倖存者", gameP: "帶她們上戰場。十位角色六維各異，用原作秘笈撐過十五分鐘，手機也能玩。", gameBtn: "開始玩",
       title: "活俠傳結緣寵物", fan: "同人",
       intro: "把活俠傳的結緣角色養在 Codex 與 Claude Code 裡。點她、餵她、陪她練功，好感會慢慢累積。",
       desc: "活俠傳同人：小梅、小竹、小師妹、龍湘、夏侯蘭、葉雲裳、魏菊、上官螢與番外大師兄、趙活的 Codex 與 Claude Code 寵物，可摸頭、餵食、練功、聊天累積好感。",
@@ -211,6 +224,7 @@ cd mortal-pets && ./install.sh codex</pre>
     },
     ja: {
       label: "日本語", htmlLang: "ja",
+      gameT: "新作ゲーム：結縁サバイバー", gameP: "彼女たちと戦場へ。能力の違う十人で十五分を生き延びるサバイバルゲーム。スマホ対応。", gameBtn: "遊ぶ",
       title: "活俠傳 縁結びペット", fan: "二次創作",
       intro: "『活俠傳（カッキョウデン）』の縁結びキャラを Codex と Claude Code で育てよう。なでたり、ごはんをあげたり、一緒に修行したりすると好感度が上がります。",
       desc: "活俠傳ファンメイド：小梅・小竹・小師妹・龍湘・夏侯蘭・葉雲裳・魏菊・上官螢、番外の大師兄と趙活の Codex／Claude Code ペット。なでる・ごはん・修行・おしゃべりで好感度アップ。",
@@ -229,6 +243,7 @@ cd mortal-pets && ./install.sh codex</pre>
     },
     ko: {
       label: "한국어", htmlLang: "ko",
+      gameT: "새 게임: 결연 생존자", gameP: "그녀들과 함께 전장으로. 능력이 다른 열 명과 15분을 버티는 서바이벌 게임. 모바일 지원.", gameBtn: "플레이",
       title: "활협전 인연 펫", fan: "팬메이드",
       intro: "활협전의 인연 캐릭터를 Codex와 Claude Code에서 키워 보세요. 쓰다듬고, 먹이고, 함께 수련하면 호감도가 조금씩 올라갑니다.",
       desc: "활협전 팬메이드: 소매, 소죽, 소사매, 용상, 하후란, 엽운상, 위국, 상관형과 번외편 대사형, 조활의 Codex / Claude Code 펫. 쓰다듬기, 먹이기, 수련, 대화로 호감도를 올려 보세요.",
@@ -247,6 +262,7 @@ cd mortal-pets && ./install.sh codex</pre>
     },
     en: {
       label: "English", htmlLang: "en",
+      gameT: "New game: Fated Survivors", gameP: "Take them into battle. Ten characters with their own stats, fifteen minutes to survive. Works on phones.", gameBtn: "Play",
       title: "Legend of Mortal Pets", fan: "Fan-made",
       intro: "Keep the romanceable heroines of Legend of Mortal as pets in Codex and Claude Code. Pet her, feed her, train with her, and watch your bond grow.",
       desc: "Fan-made Legend of Mortal companions for Codex and Claude Code: Xiaomei, Xiaozhu, Junior Sister, Long Xiang, Xiahou Lan, Ye Yunshang, Wei Ju, Shangguan Ying, plus bonus Senior Brother Tang Buyi and Zhao Huo himself. Pet, feed, train and chat to raise affection.",
@@ -298,6 +314,8 @@ cd mortal-pets && ./install.sh codex</pre>
   function loadSave() {
     try { return JSON.parse(localStorage.getItem("mortal-pets") || "{}"); } catch { return {}; }
   }
+  // ?pet=xiaomei 可直接開到指定角色（遊戲頁連過來時用）
+  let wantPet = new URLSearchParams(location.search).get("pet");
   const store = Object.assign({ current: "xiaomei", aff: {}, outfit: {} }, loadSave());
   store.outfit = store.outfit || {};
 
@@ -568,13 +586,16 @@ cd mortal-pets && ./install.sh codex</pre>
       : BASE);
     document.documentElement.lang = T.htmlLang;
     document.title = T.title;
+    document.querySelector(".game-banner").href = "https://willismax.github.io/mortal-survivor/?lang=" + lang;
     document.querySelector('meta[name="description"]').content = T.desc;
     document.querySelectorAll("[data-i18n]").forEach((el) => { el.innerHTML = T[el.dataset.i18n]; });
     sprite.setAttribute("aria-label", T.pet);
     document.querySelectorAll("#states .chip").forEach((b) => { b.textContent = T.states[b.dataset.state]; });
     document.querySelectorAll("#langs button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.lang === lang));
     renderTabs();
-    select(CHARS[store.current] ? store.current : "xiaomei");
+    const wanted = Object.keys(CHARS).includes(wantPet) ? wantPet : null;
+    wantPet = null;
+    select(wanted || (CHARS[store.current] ? store.current : "xiaomei"));
   }
 
   for (const l of LANGS) {

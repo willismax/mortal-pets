@@ -9,6 +9,7 @@
 The romanceable heroines of the Taiwanese wuxia RPG **Legend of Mortal (活俠傳)**, turned into **Codex pets** and **Claude Code pets**. Each one reacts to your work with lines written for her personality.
 
 - Play in the browser: <https://willismax.github.io/mortal-pets/?lang=en>
+- Survivor game *Fated Survivors* (結緣倖存者): <https://willismax.github.io/mortal-survivor/> (phone and desktop, available in English)
 - Install in Claude Code: `/plugin install mortal-buddy --marketplace willismax/mortal-pets`
 - Unofficial fan project. Character details are compiled from public sources; all pixel art and dialogue are original fan creations (no game assets or game text are used).
 

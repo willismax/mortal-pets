@@ -9,6 +9,7 @@
 대만 무협 RPG **활협전(Legend of Mortal)** 의 인연 캐릭터들을 **Codex 펫**과 **Claude Code 펫**으로 만들었습니다. 캐릭터 성격에 맞춘 대사로 작업 중에 반응해 줍니다.
 
 - 브라우저에서 놀기: <https://willismax.github.io/mortal-pets/?lang=ko>
+- 서바이벌 게임 《결연 생존자》: <https://willismax.github.io/mortal-survivor/> (모바일·PC 지원, 한국어 지원)
 - Claude Code에 설치: `/plugin install mortal-buddy --marketplace willismax/mortal-pets`
 - 비공식 팬 작품입니다. 설정은 공개 자료를 바탕으로 정리했고, 도트 그림과 대사는 직접 만든 2차 창작물입니다(게임 리소스나 원문은 사용하지 않았습니다).
 
